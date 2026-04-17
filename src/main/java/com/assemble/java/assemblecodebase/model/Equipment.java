@@ -1,12 +1,22 @@
 package com.assemble.java.assemblecodebase.model;
 
 public class Equipment {
+  private int id;
   private int typeId;
   private String description;
   
-  public Equipment(String description, int typeId) {
+  public Equipment(int id, String description, int typeId) {
+    setId(id);
     setDescription(description);
     setTypeId(typeId);
+  }
+  
+  public int getId() {
+    return id;
+  }
+  
+  public void setId(int id) {
+    this.id = id;
   }
   
   public int getTypeId() {
