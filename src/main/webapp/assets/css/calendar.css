@@ -1,0 +1,40 @@
+main {
+  border: 1px solid black;
+  margin: 2em 3em 2em 3em;
+
+  #calendar-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+
+    #month-name {
+      margin: 0;
+    }
+  }
+
+  #calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .calendar-day {
+      position: relative;
+      height: 0;
+      padding-bottom: 100%;
+      border: 1px solid black;
+
+      .day-number {
+        position: absolute;
+        top: .2em;
+        left: .2em;
+        margin: 0;
+
+        &.off-month {
+          opacity: 0.3;
+        }
+      }
+    }
+  }
+}
