@@ -1,12 +1,15 @@
 package com.assemble.java.assemblecodebase.model;
 
-public class Product {
+import java.io.Serializable;
+import java.time.LocalTime;
+
+public class Product implements Serializable {
   private int id;
   private String description;
-  private double duration;
+  private LocalTime duration;
   private int targetPersonnelCount;
   
-  public Product(int id, String description, double duration, int targetPersonnelCount) {
+  public Product(int id, String description, LocalTime duration, int targetPersonnelCount) {
     setId(id);
     setDescription(description);
     setDuration(duration);
@@ -29,11 +32,11 @@ public class Product {
     this.description = description;
   }
   
-  public double getDuration() {
+  public LocalTime getDuration() {
     return duration;
   }
   
-  public void setDuration(double duration) {
+  public void setDuration(LocalTime duration) {
     this.duration = duration;
   }
   

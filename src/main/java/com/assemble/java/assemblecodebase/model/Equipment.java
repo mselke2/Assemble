@@ -1,6 +1,8 @@
 package com.assemble.java.assemblecodebase.model;
 
-public class Equipment {
+import java.io.Serializable;
+
+public class Equipment implements Serializable {
   private int id;
   private int typeId;
   private String description;

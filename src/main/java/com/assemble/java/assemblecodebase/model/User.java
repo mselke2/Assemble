@@ -1,6 +1,8 @@
 package com.assemble.java.assemblecodebase.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
   private int id;
   private int permissionId;
   private String firstName;

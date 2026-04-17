@@ -1,6 +1,8 @@
 package com.assemble.java.assemblecodebase.model;
 
-public class Job {
+import java.io.Serializable;
+
+public class Job implements Serializable {
   private int id;
   private int productId;
   private String startTime;

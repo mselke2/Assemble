@@ -1,6 +1,8 @@
 package com.assemble.java.assemblecodebase.model;
 
-public class Inventory {
+import java.io.Serializable;
+
+public class Inventory implements Serializable {
   private int id;
   private int typeId;
   private int count;
