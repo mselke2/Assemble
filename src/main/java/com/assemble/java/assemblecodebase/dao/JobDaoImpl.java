@@ -2,6 +2,8 @@ package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Job;
 
+import java.time.LocalDate;
+
 public class JobDaoImpl implements JobDao {
   
   @Override
@@ -21,6 +23,12 @@ public class JobDaoImpl implements JobDao {
   
   @Override
   public Job retrieve(int id) {
+    return null;
+  }
+  
+  public Job[] retrieveForDate(LocalDate date) {
+    
+    
     return null;
   }
 }

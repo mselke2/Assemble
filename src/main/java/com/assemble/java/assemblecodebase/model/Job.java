@@ -1,19 +1,23 @@
 package com.assemble.java.assemblecodebase.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Job implements Serializable {
   private int id;
   private int productId;
-  private String startTime;
-  private String projectedEndTime;
+  private LocalTime startTime;
+  private LocalDate startDate;
+  private LocalTime projectedEndTime;
   private String actualEndTime;
   private int personnelCount;
   
-  public Job(int id, int productId, String startTime, int personnelCount) {
+  public Job(int id, int productId, LocalTime startTime, LocalDate startDate, int personnelCount) {
     setId(id);
     setProductId(productId);
     setStartTime(startTime);
+    setStartDate(startDate);
     setProjectedEndTime(startTime);
     setPersonnelCount(personnelCount);
   }
@@ -34,19 +38,27 @@ public class Job implements Serializable {
     this.productId = productId;
   }
   
-  public String getStartTime() {
+  public LocalTime getStartTime() {
     return startTime;
   }
   
-  public void setStartTime(String startTime) {
+  public void setStartTime(LocalTime startTime) {
     this.startTime = startTime;
   }
   
-  public String getProjectedEndTime() {
+  public LocalDate getStartDate() {
+    return startDate;
+  }
+  
+  public void setStartDate(LocalDate startDate) {
+    this.startDate = startDate;
+  }
+  
+  public LocalTime getProjectedEndTime() {
     return projectedEndTime;
   }
   
-  public void setProjectedEndTime(String projectedEndTime) {
+  public void setProjectedEndTime(LocalTime projectedEndTime) {
     this.projectedEndTime = projectedEndTime;
   }
   
