@@ -17,7 +17,7 @@ public class JobDaoImpl implements JobDao {
   }
   
   @Override
-  public void deleteJob(Job job) {
+  public void deleteJob(int id) {
   
   }
   

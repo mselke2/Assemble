@@ -6,6 +6,6 @@ public interface JobDao {
   
   void addJob(Job job);
   void updateJob(Job job);
-  void deleteJob(Job job);
+  void deleteJob(int id);
   Job retrieve(int id);
 }
