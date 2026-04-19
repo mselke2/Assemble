@@ -26,7 +26,7 @@ public class DeleteJobServlet extends HttpServlet {
     
     // Set success to true or false depending on status of delete operation
     
-    // Send the response back to the client m
+    // Send the response back to the client
     
     getServletContext().getRequestDispatcher("").forward(request, response);
     
