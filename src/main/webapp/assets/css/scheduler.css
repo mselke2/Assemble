@@ -49,7 +49,42 @@ body {
 
     .right-panel {
       flex-grow: 2;
+
       .job-info-wrapper {
+        position: absolute;
+        inset: 0;
+        overflow: auto;
+
+        .job-info {
+          font-size: 28px;
+
+          h1 {
+            padding: 0.2em 0 0.2em 0.5em;
+            margin: 0;
+            border-bottom: 4px solid black;
+            font-size: 1.4em;
+          }
+
+          p {
+            margin: 0;
+            display: inline;
+          }
+
+          .info-left {
+            display: inline-block;
+            width: 8em;
+            text-align: right;
+          }
+
+          input[type="number"] {
+            width: 3em;
+          }
+
+          button, input[type="submit"] {
+            font-size: .8em;
+            padding: 0 .4em 0 .4em;
+          }
+        }
       }
     }
   }

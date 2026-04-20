@@ -38,7 +38,6 @@
                         <p>11:00pm</p>
                     </div>
                     <div id="timeline-lanes">
-
                     </div>
                 </div>
             </div>
@@ -46,7 +45,25 @@
         <div class="right-panel">
             <div class="job-info-wrapper">
                 <div class="job-info">
-
+                    <h1>Date: MM/DD/YYYY</h1>
+                    <label for="job-id" class="info-left">JobId:</label>
+                    <p>XX</p><br>
+                    <label for="product-choice" class="info-left">Product:</label>
+                    <select id="product-choice">
+                        <option>ProductA</option>
+                        <option>ProductB</option>
+                        <option>ProductC</option>
+                    </select><br>
+                    <label for="start-time" class="info-left">From:</label>
+                    <input id="start-time" type="time"><br>
+                    <label for="end-time" class="info-left">To:</label>
+                    <input id="end-time" type="time"><br>
+                    <label for="num-members" class="info-left">#OfTeamMembers:</label>
+                    <input id="num-members" type="number" min="1">
+                    <label for="line-num">Line #:</label>
+                    <input id="line-num" type="number" min="1"><br>
+                    <button>Cancel</button>
+                    <input type="submit">
                 </div>
             </div>
         </div>
