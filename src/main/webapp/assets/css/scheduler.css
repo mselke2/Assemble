@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+
+  .split-wrapper {
+    display: flex;
+    position: absolute;
+    inset: 0;
+
+    &>div {
+      position: relative;
+    }
+
+    .left-panel {
+      flex-grow: 1;
+
+      .timeline-wrapper {
+        border-right: 4px solid black;
+        position: absolute;
+        inset: 0;
+        overflow: auto;
+
+        .timeline {
+          display: flex;
+          --hour-tick-space: 120px;
+
+          .timeline-ticks {
+            background-image: url("../img/timeline-ticks.png");
+            background-repeat: repeat-y;
+            background-size: auto var(--hour-tick-space);
+            width: calc(var(--hour-tick-space) / 180 * 160);
+            border-right: 4px solid black;
+
+            p {
+              height: 0;
+              position: relative;
+              font-size: 28px;
+              bottom: 1em;
+              margin: 0 0 var(--hour-tick-space) 0;
+            }
+          }
+
+          #timeline-lanes {
+            flex-grow: 1;
+
+          }
+        }
+      }
+    }
+
+    .right-panel {
+      flex-grow: 2;
+      .job-info-wrapper {
+      }
+    }
+  }
+}
