@@ -38,6 +38,15 @@
                         <p>11:00pm</p>
                     </div>
                     <div id="timeline-lanes">
+                        <div style="--start-time: 5; --end-time: 15; --lane: 0; background-color: orange;">
+                            <p>01</p>
+                        </div>
+                        <div style="--start-time: 17; --end-time: 24; --lane: 1; background-color: green;">
+                            <p>02</p>
+                        </div>
+                        <div style="--start-time: 20; --end-time: 22; --lane: 0; background-color: darkblue;">
+                            <p>03</p>
+                        </div>
                     </div>
                 </div>
             </div>

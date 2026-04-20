@@ -41,7 +41,28 @@ body {
 
           #timeline-lanes {
             flex-grow: 1;
+            position: relative;
 
+            div {
+              position: absolute;
+
+              width: 100px;
+              height: calc((var(--end-time) - var(--start-time)) / 6 * var(--hour-tick-space));
+
+              top: calc(var(--start-time) / 6 * var(--hour-tick-space));
+              left: calc(var(--lane) * 100px);
+
+              background-color: orange;
+              border-radius: 5px;
+              container-type: size;
+
+              p {
+                font-size: min(36px, 50cqh);
+                color: white;
+                margin: .4em;
+                text-align: center;
+              }
+            }
           }
         }
       }
