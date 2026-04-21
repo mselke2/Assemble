@@ -22,6 +22,17 @@ public class ScheduleJobServlet extends HttpServlet {
   
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     
+    // Get productID from client as an int
+    
+    // Get startTime from the client as a LocalDateTime
+    
+    // Validate and sanitize the productID and startTime
+    
+    // Create a JobDao object
+    
+    // run addJob() and pass in the productId and startTime
+    
+    // return success: true ass JSON if successful, and success: false with an error message if not.
     getServletContext().getRequestDispatcher("").forward(request, response);
     
   }

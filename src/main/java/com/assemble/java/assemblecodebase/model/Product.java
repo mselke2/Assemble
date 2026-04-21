@@ -9,6 +9,9 @@ public class Product implements Serializable {
   private LocalTime duration;
   private int targetPersonnelCount;
   
+  public Product() {
+  }
+  
   public Product(int id, String description, LocalTime duration, int targetPersonnelCount) {
     setId(id);
     setDescription(description);

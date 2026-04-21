@@ -11,7 +11,10 @@ public class Job implements Serializable {
   private LocalDateTime actualEndTime;
   private int personnelCount;
   
-  public Job(int id, int productId, LocalDateTime startTime,int personnelCount) {
+  public Job() {
+  }
+  
+  public Job(int id, int productId, LocalDateTime startTime, int personnelCount) {
     setId(id);
     setProductId(productId);
     setStartTime(startTime);

@@ -9,6 +9,9 @@ public class User implements Serializable {
   private String lastName;
   private String passwordHash;
   
+  public User() {
+  }
+  
   public User(int id, int permissionId, String firstName, String lastName, String passwordHash) {
     setId(id);
     setPermissionId(permissionId);

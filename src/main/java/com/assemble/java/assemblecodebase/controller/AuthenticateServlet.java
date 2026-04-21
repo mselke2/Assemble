@@ -22,6 +22,14 @@ public class AuthenticateServlet extends HttpServlet {
   
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     
+    // Get loginToken cookie from client
+    
+    // Check DB to see if login token matches a session in the database
+    
+    // If a match is found, return authenticated: true as JSON
+    
+    // If a match is not found, return authenticated: false as JSON
+    
     getServletContext().getRequestDispatcher("").forward(request, response);
     
   }

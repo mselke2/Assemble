@@ -22,6 +22,14 @@ public class LogoutServlet extends HttpServlet {
   
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     
+    // Get sessionId from client cookies
+    
+    // Use SessionDao to delete the session from the database
+    
+    // Delete the sessionId cookie from the client by setting its max age to 0 and adding it to the response
+    
+    // Return success: true as JSON to the client if successful, otherwise return success: false with an error message as JSON.
+    
     getServletContext().getRequestDispatcher("").forward(request, response);
     
   }

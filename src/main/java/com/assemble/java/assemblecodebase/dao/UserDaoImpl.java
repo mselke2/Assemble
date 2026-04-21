@@ -15,12 +15,12 @@ public class UserDaoImpl implements UserDao {
   }
   
   @Override
-  public void deleteUser(User user) {
+  public void deleteUser(int userId) {
   
   }
   
   @Override
-  public User retrieve(User user) {
-    return null;
+  public int retrieve(String username, String password) {
+    return 0;
   }
 }
