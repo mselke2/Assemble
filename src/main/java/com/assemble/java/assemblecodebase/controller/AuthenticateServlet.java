@@ -22,6 +22,16 @@ public class AuthenticateServlet extends HttpServlet {
   
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     
+    // Get sessionID cookie from client
+    
+    // Create SessionDao object
+    
+    // Run retreive()
+    
+    // If a positive integer is returned, return authenticated: true as JSON
+    
+    // If not, return authenticated: false as JSON
+    
     getServletContext().getRequestDispatcher("").forward(request, response);
     
   }

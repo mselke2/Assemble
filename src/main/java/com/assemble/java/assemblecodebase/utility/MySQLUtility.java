@@ -10,8 +10,8 @@ public class MySQLUtility {
   public static final int TIMEOUT = 30;
 
   public static final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
-  //TODO get db connection information to put in the connection string.
-  public static final String CONNECTION = "jdbc:mysql://127.0.0.1:3306/[dbname]?user=[username]&password=[password]";
+  
+  public static final String CONNECTION = "jdbc:mysql://127.0.0.1:3306/assemble?user=root&password=68741Cub";
 
   public static Connection createConnection() throws ClassNotFoundException, SQLException {
 

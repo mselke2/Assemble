@@ -7,6 +7,9 @@ public class Inventory implements Serializable {
   private int typeId;
   private int count;
   
+  public Inventory() {
+  }
+  
   public Inventory(int id, int typeId, int count) {
     setId(id);
     setTypeId(typeId);

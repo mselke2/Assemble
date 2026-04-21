@@ -7,6 +7,9 @@ public class Equipment implements Serializable {
   private int typeId;
   private String description;
   
+  public Equipment() {
+  }
+  
   public Equipment(int id, String description, int typeId) {
     setId(id);
     setDescription(description);

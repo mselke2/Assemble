@@ -4,8 +4,8 @@ import com.assemble.java.assemblecodebase.model.Product;
 
 public interface ProductDao {
   
-  void addProduct(Product product);
+  int addProduct(Product product);
   void updateProduct(Product product);
-  void deleteProduct(Product product);
+  int deleteProduct(Product product);
   Product retrieve(int id);
 }

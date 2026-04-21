@@ -6,22 +6,79 @@ public class EquipmentDaoImpl implements EqipmentDao{
   
   
   @Override
-  public void addEquipment(int typeId, String description) {
+  public int addEquipment(int typeId, String description) {
+    
+    // Get a connection to the database
+    
+    // Prepare a select statement to see if Equipment exists
+      // with this typeID and execute it.
   
+    // IF Equipment exists
+      // Throw an EquipmentDaoException with the message "Equipment already exists."
+    
+    // ELSE
+      // Prepare an insert statement to add this equipment to the database and execute it.
+      // Prepare a select statement to get the newly created equipmentID and execute it.
+      // Return the equipmentID.
+    
+    // ENDIF
+    return 0;
   }
   
   @Override
   public void updateEquipment(int typeId, String description) {
-  
+    
+    // Get a connection to the database
+    
+    // Prepare a select statement to see if Equipment exists
+      // with this typeID and execute it.
+    
+    // IF Equipment exists
+      // Prepare an update statement to update this equipment in the database and execute it.
+    
+    // ELSE
+      // Throw an EquipmentDaoException with the message "Equipment does not exist."
+    
+    // ENDIF
   }
   
   @Override
-  public void deleteEquipment(int typeId) {
-  
+  public int deleteEquipment(int typeId) {
+    
+    // Get a connection to the database
+    
+    // Prepare a select statement to see if Equipment exists
+      // with this typeID and execute it.
+    
+    // IF Equipment exists
+      // Store the equipmentID in a variable
+      // Prepare a delete statement to delete this equipment from the database and execute it.
+      // Return the equipmentID.
+    
+    // ELSE
+      // Throw an EquipmentDaoException with the message "Equipment does not exist."
+    
+    // ENDIF
+    return 0;
   }
   
   @Override
   public Equipment retrieve(int id) {
+    
+    // Get a connection to the database
+    
+    // Prepare a select statement to see if Equipment exists
+      // with this typeID and execute it.
+    
+    // IF Equipment exists
+      // Move the cursor to the first result
+      // Create an Equipment object with the data from the result and return it.
+    
+    // ELSE
+      // Throw an EquipmentDaoException with the message "Equipment does not exist."
+    
+    // ENDIF
+    
     return null;
   }
 }

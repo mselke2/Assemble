@@ -23,6 +23,15 @@ DeleteUserServlet extends HttpServlet {
   
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     
+    // Get userId from the client
+    
+    // Validate and sanitize userId
+    
+    // Create a UserDAO object
+    
+    // Run deleteUser() and pass in the userId
+    
+    // Return success: true if successful and success: false if not.
     getServletContext().getRequestDispatcher("").forward(request, response);
     
   }
