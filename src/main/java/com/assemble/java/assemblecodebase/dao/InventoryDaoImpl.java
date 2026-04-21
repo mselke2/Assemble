@@ -10,7 +10,7 @@ public class InventoryDaoImpl implements InventoryDao{
     // Get a connection to the database
     
     // Prepare a select statement to see if Inventory exists
-      // with this productID and execute it.
+      // with this inventoryID and execute it.
     
     // IF inventory exists
       // Throw an InventoryDaoException with the message "Inventory already exists."
@@ -30,7 +30,7 @@ public class InventoryDaoImpl implements InventoryDao{
     // Get a connection to the database
     
     // Prepare a select statement to see if Inventory exists
-      // with this productID and execute it.
+      // with this inventoryID and execute it.
     
     // IF inventory exists
       // Prepare an update statement to update this inventory in the database and execute it.
@@ -47,7 +47,7 @@ public class InventoryDaoImpl implements InventoryDao{
     // Get a connection to the database
     
     // Prepare a select statement to see if Inventory exists
-      // with this productID and execute it.
+      // with this inventoryID and execute it.
     
     // IF inventory exists
       // Store the inventoryID in a variable
@@ -66,7 +66,7 @@ public class InventoryDaoImpl implements InventoryDao{
     // Get a connection to the database
     
     // Prepare a select statement to see if Inventory exists
-      // with this productID and execute it.
+      // with this inventoryID and execute it.
     
     // IF inventory exists
       // Move cursor to the result
