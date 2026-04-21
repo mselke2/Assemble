@@ -20,11 +20,7 @@ class UserDaoImplTest {
     
     UserDaoImpl userDao = new UserDaoImpl();
     
-    assertDoesNotThrow(() -> {
-      
-      assertTrue(userDao.addUser(user) > 0);
-      
-    });
+    assertDoesNotThrow(() -> assertTrue(userDao.addUser(user) > 0));
     
     assertThrows(Exception.class, () -> userDao.addUser(user));
 
