@@ -47,7 +47,7 @@ public class UserDaoImpl implements UserDao {
         preparedStatement.executeUpdate();
         
         // Prepare a select statement to get the newly created userID and execute it.
-        String mySqlSelectId = "SELECT id, passwordHash FROM user WHERE username = ?";
+        String mySqlSelectId = "SELECT ID, passwordHash FROM user WHERE username = ?";
         preparedStatement = conn.prepareStatement(mySqlSelectId);
         preparedStatement.setString(1, user.getUsername());
         results = preparedStatement.executeQuery();
