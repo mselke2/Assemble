@@ -22,6 +22,14 @@ public class User implements Serializable {
     setPasswordHash(passwordHash);
   }
   
+  public User(String username, int permissionId, String firstName, String lastName, String passwordHash) {
+    setUsername(username);
+    setPermissionId(permissionId);
+    setFirstName(firstName);
+    setLastName(lastName);
+    setPasswordHash(passwordHash);
+  }
+  
   public int getId() {
     return id;
   }

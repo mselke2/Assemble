@@ -29,7 +29,7 @@ public class UserDaoImpl implements UserDao {
       ResultSet results = preparedStatement.executeQuery();
       
       // IF a user exists for this username
-      if (results.isAfterLast()) {
+      if (results.isBeforeFirst()) {
         // Throw a UserDaoException with the message "User already exists."
         throw new UserDaoException("User already exists");
         
@@ -69,6 +69,11 @@ public class UserDaoImpl implements UserDao {
           preparedStatement.setString(1, passwordOut);
           preparedStatement.setString(2, user.getUsername());
           preparedStatement.executeUpdate();
+          
+          // Cleanup
+          results.close();
+          preparedStatement.close();
+          conn.close();
           
           return id;
           // Return the userID.
