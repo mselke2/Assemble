@@ -1,0 +1,112 @@
+body {
+  margin: 0;
+
+  .split-wrapper {
+    display: flex;
+    position: absolute;
+    inset: 0;
+
+    &>div {
+      position: relative;
+    }
+
+    .left-panel {
+      flex-grow: 1;
+
+      .timeline-wrapper {
+        border-right: 4px solid black;
+        position: absolute;
+        inset: 0;
+        overflow: auto;
+
+        .timeline {
+          display: flex;
+          --hour-tick-space: 120px;
+
+          .timeline-ticks {
+            background-image: url("../img/timeline-ticks.png");
+            background-repeat: repeat-y;
+            background-size: auto var(--hour-tick-space);
+            width: calc(var(--hour-tick-space) / 180 * 160);
+            border-right: 4px solid black;
+
+            p {
+              height: 0;
+              position: relative;
+              font-size: 28px;
+              bottom: 1em;
+              margin: 0 0 var(--hour-tick-space) 0;
+            }
+          }
+
+          #timeline-lanes {
+            flex-grow: 1;
+            position: relative;
+
+            div {
+              position: absolute;
+
+              width: 100px;
+              height: calc((var(--end-time) - var(--start-time)) / 6 * var(--hour-tick-space));
+
+              top: calc(var(--start-time) / 6 * var(--hour-tick-space));
+              left: calc(var(--lane) * 100px);
+
+              background-color: orange;
+              border-radius: 5px;
+              container-type: size;
+
+              p {
+                font-size: min(36px, 50cqh);
+                color: white;
+                margin: .4em;
+                text-align: center;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .right-panel {
+      flex-grow: 2;
+
+      .job-info-wrapper {
+        position: absolute;
+        inset: 0;
+        overflow: auto;
+
+        .job-info {
+          font-size: 28px;
+
+          h1 {
+            padding: 0.2em 0 0.2em 0.5em;
+            margin: 0;
+            border-bottom: 4px solid black;
+            font-size: 1.4em;
+          }
+
+          p {
+            margin: 0;
+            display: inline;
+          }
+
+          .info-left {
+            display: inline-block;
+            width: 8em;
+            text-align: right;
+          }
+
+          input[type="number"] {
+            width: 3em;
+          }
+
+          button, input[type="submit"] {
+            font-size: .8em;
+            padding: 0 .4em 0 .4em;
+          }
+        }
+      }
+    }
+  }
+}
