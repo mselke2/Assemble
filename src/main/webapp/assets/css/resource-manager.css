@@ -1,0 +1,52 @@
+body {
+  .panel {
+    border: 1px solid black;
+    width: fit-content;
+    margin: 20vh auto 0 auto;
+    padding: 2em 3em 5em 3em;
+
+    h1 {
+      text-align: center;
+    }
+
+    .new-entry-bar {
+      margin: 1em;
+
+      #tool-type {
+        width: 15em;
+      }
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 0 auto;
+
+      th,
+      td {
+        width: 5em;
+        box-sizing: border-box;
+
+        .count-control {
+          background: none;
+          border: none;
+        }
+
+        .delete-btn {
+          padding: 0 1em;
+        }
+
+        &:nth-child(1) {
+          text-align: right;
+          padding-right: 0.5em;
+        }
+
+        &:nth-child(2),
+        &:nth-child(3) {
+          border: 1px solid black;
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+
