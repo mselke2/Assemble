@@ -12,7 +12,7 @@ body {
     .new-entry-bar {
       margin: 1em;
 
-      #tool-type {
+      select {
         width: 15em;
       }
 
