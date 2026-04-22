@@ -30,7 +30,7 @@ body {
 
       th,
       td {
-        width: 5em;
+        width: 6em;
         box-sizing: border-box;
 
         .count-control {

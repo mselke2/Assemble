@@ -20,7 +20,7 @@
     <table>
         <tr>
             <th></th>
-            <th>Id</th>
+            <th>InventoryId</th>
             <th>Quantity</th>
             <th></th>
         </tr>
