@@ -1,24 +1,28 @@
 package com.assemble.java.assemblecodebase.model;
 
+import java.time.LocalDateTime;
+
 public class Session {
   
-  String sessionId;
+  int sessionId;
+  String loginToken;
   int userId;
+  LocalDateTime lastUsed;
   
   public Session() {
   }
   
-  public Session(String sessionId, int userId) {
-    setSessionId(sessionId);
+  public Session(String loginToken, int userId) {
+    setLoginToken(loginToken);
     setUserId(userId);
   }
   
-  public String getSessionId() {
-    return sessionId;
+  public String getLoginToken() {
+    return loginToken;
   }
   
-  public void setSessionId(String sessionId) {
-    this.sessionId = sessionId;
+  public void setLoginToken(String loginToken) {
+    this.loginToken = loginToken;
   }
   
   public int getUserId() {
