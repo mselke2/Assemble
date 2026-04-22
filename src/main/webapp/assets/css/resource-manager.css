@@ -15,6 +15,13 @@ body {
       #tool-type {
         width: 15em;
       }
+
+      .hidden {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
     }
 
     table {
