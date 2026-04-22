@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class User implements Serializable {
   private int id;
+  private String username;
   private int permissionId;
   private String firstName;
   private String lastName;
@@ -12,8 +13,17 @@ public class User implements Serializable {
   public User() {
   }
   
-  public User(int id, int permissionId, String firstName, String lastName, String passwordHash) {
+  public User(int id, String username, int permissionId, String firstName, String lastName, String passwordHash) {
     setId(id);
+    setUsername(username);
+    setPermissionId(permissionId);
+    setFirstName(firstName);
+    setLastName(lastName);
+    setPasswordHash(passwordHash);
+  }
+  
+  public User(String username, int permissionId, String firstName, String lastName, String passwordHash) {
+    setUsername(username);
     setPermissionId(permissionId);
     setFirstName(firstName);
     setLastName(lastName);
@@ -26,6 +36,14 @@ public class User implements Serializable {
   
   public void setId(int id) {
     this.id = id;
+  }
+  
+  public String getUsername() {
+    return username;
+  }
+  
+  public void setUsername(String username) {
+    this.username = username;
   }
   
   public int getPermissionId() {
