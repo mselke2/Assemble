@@ -89,21 +89,32 @@ public class UserDaoImpl implements UserDao {
   
   @Override
   public void updateUser(User user) {
-    
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if a user exists
+    //TODO Finish updateUser()
+    try {
+      // Get a connection to the database
+      Connection conn = MySQLUtility.createConnection();
+      
+      // Prepare a select statement to see if a user exists
       // with this username and execute it.
-    
-    // IF a user exists for this username
-      // IF password is not null
+      String mySqlSelectExists = "SELECT * FROM user WHERE username = ?";
+      PreparedStatement preparedStatement = conn.prepareStatement(mySqlSelectExists);
+      preparedStatement.setString(1, user.getUsername());
+      ResultSet results = preparedStatement.executeQuery();
+      
+      // IF a user exists for this username
+      if (results.isBeforeFirst()) {
+        // IF password is not null
         // Salt the new password with the userID
         // Re-hash the password with the new salt.
-      // Prepare an update statement to update this user in the database and execute it.
+        // Prepare an update statement to update this user in the database and execute it.
+      } else {
+        // ELSE
+        // Throw a UserDaoException with the message "User does not exist."
+      }
       // ENDIF
-    // ELSE
-      // Throw a UserDaoException with the message "User does not exist."
-    // ENDIF
+    } catch (Exception e) {
+      throw new UserDaoException(e.getMessage());
+    }
   }
   
   @Override
