@@ -72,7 +72,7 @@
                     <label for="line-num">Line #:</label>
                     <input id="line-num" type="number" min="1"><br>
                     <button>Cancel</button>
-                    <input type="submit">
+                    <input type="submit" value="Submit">
                 </div>
             </div>
         </div>
