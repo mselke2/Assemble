@@ -1,0 +1,15 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Tools</title>
+    <link rel="stylesheet" href="assets/css/admin-tools.css">
+</head>
+<body>
+<div class="panel">
+    <h1>Admin Tools</h1>
+    <button>Add Account</button>
+    <button>Remove Account</button>
+</div>
+</body>
+</html>
