@@ -1,7 +1,11 @@
 package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Job;
+import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 
 public class JobDaoImpl implements JobDao {
@@ -80,21 +84,49 @@ public class JobDaoImpl implements JobDao {
   
   public Job[] retrieveForDate(LocalDate date) {
     
-    // Create a Job array
-    
     // Get a connection to the database
-    
-    // Prepare a select statement to see what jobs exist for the
+    try {
+      Connection connection = MySQLUtility.createConnection();
+      // Prepare a select statement to see what jobs exist for the
       // passed in date and execute it.
-    
-    // IF jobs exist
-      // Use a loop to move the cursor through the results and create a new job object for each result and add it to the array.
-      // Return the array of jobs.
-    
-    // ELSE
+      String mySqlSelectExists = "SELECT * FROM job WHERE DATE(StartTime) = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectExists);
+      preparedStatement.setString(1, date.toString());
+      ResultSet resultSet;
+      resultSet = preparedStatement.executeQuery();
+      
+      // IF jobs exist
+      if (resultSet.isBeforeFirst()) {
+        resultSet.last();
+        int rows = resultSet.getRow();
+        resultSet.beforeFirst();
+        
+        // Create a Job array
+        Job[] jobs  = new Job[rows];
+        
+        // Use a loop to move the cursor through the results and create a new job object for each result and add it to the array.
+        for (int i = 1; i <= rows; i++) {
+          resultSet.next();
+          Job job = new Job(resultSet.getInt(1), resultSet.getInt(2), resultSet.getTimestamp(3),resultSet.getInt(6));
+          job.setProjectedEndTime(resultSet.getTimestamp(4));
+          job.setActualEndTime(resultSet.getTimestamp(5));
+          
+          jobs[i - 1] = job;
+        }
+        
+        // Return the array of jobs.
+        return jobs;
+      } else {
+        throw new JobDaoException("No jobs exist for this date.");
+      }
+      
+      
+      // ELSE
       // Return an empty array or null.
+    } catch (Exception e) {
+      throw new RuntimeException(e.getMessage());
+    }
     
-    return null;
   }
   
   public boolean updatePrerequisites(Job job) {
