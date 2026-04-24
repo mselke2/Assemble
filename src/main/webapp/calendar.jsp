@@ -15,8 +15,10 @@
     </div>
     <ol id="calendar-days">
         <% for (int i = 0; i < 35; i++) { %>
-        <li class="calendar-day">
-            <p class="day-number"></p>
+        <li class="calendar-day-wrapper">
+            <div class="calendar-day">
+                <p class="day-number"></p>
+            </div>
         </li>
         <% } %>
     </ol>

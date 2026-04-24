@@ -20,20 +20,28 @@ main {
     margin: 0;
     padding: 0;
 
-    .calendar-day {
+    .calendar-day-wrapper {
       position: relative;
       height: 0;
       padding-bottom: 100%;
       border: 1px solid black;
 
-      .day-number {
+      .calendar-day {
         position: absolute;
-        top: .2em;
-        left: .2em;
-        margin: 0;
+        inset: 0;
+        overflow: auto;
 
-        &.off-month {
-          opacity: 0.3;
+        .day-number {
+          margin: 0 0.2em;
+
+          &.off-month {
+            opacity: 0.3;
+          }
+        }
+
+        .job-entry {
+          border-radius: 5px;
+          border: 1px solid black;
         }
 
         .job-entry {
