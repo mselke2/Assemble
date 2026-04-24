@@ -7,7 +7,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.ServletException;
 
-@WebServlet(name = "DeleteJobServlet", value = "/DeleteJobServlet")
+@WebServlet(name = "DeleteJobServlet", value = "/DeleteJob")
 public class DeleteJobServlet extends HttpServlet {
   
   public void init() {
