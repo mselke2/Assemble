@@ -9,9 +9,9 @@
 <script src="assets/js/calendar.js"></script>
 <main>
     <div id="calendar-header">
-        <button class="prev-btn">Previous</button>
         <h1 id="month-name">January</h1>
-        <button class="next-btn">Next</button>
+        <button id="prev-btn">Previous</button>
+        <button id="next-btn">Next</button>
     </div>
     <ol id="calendar-days">
         <% for (int i = 0; i < 35; i++) { %>

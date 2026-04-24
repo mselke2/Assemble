@@ -41,5 +41,15 @@ $(function() {
   $monthName = $("#month-name");
   $dateNumbers = $(".day-number");
 
+  $("#prev-btn").on("click", () => {
+    calendarDate.setMonth(calendarDate.getMonth() - 1);
+    populateCalendar();
+  });
+
+  $("#next-btn").on("click", () => {
+    calendarDate.setMonth(calendarDate.getMonth() + 1);
+    populateCalendar();
+  });
+
   populateCalendar();
 });
