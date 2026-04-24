@@ -35,7 +35,7 @@ function populateCalendar() {
       .toggleClass("off-month", date.getMonth() !== monthIdx);
 
     // query for jobs scheduled for that day
-    $.getJSON("GetTimelineServlet", date.getTime().toString(), data => {
+    $.getJSON("GetTimeline", date.getTime().toString(), data => {
       // for each job scheduled that day...
       for (let job of data) {
         // add a div with the product name to the date box
