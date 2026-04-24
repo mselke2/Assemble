@@ -9,14 +9,14 @@
 <script src="assets/js/calendar.js"></script>
 <main>
     <div id="calendar-header">
-        <h1 id="month-name">January</h1>
         <button id="prev-btn">Previous</button>
+        <h1 id="month-name"></h1>
         <button id="next-btn">Next</button>
     </div>
     <ol id="calendar-days">
         <% for (int i = 0; i < 35; i++) { %>
         <li class="calendar-day">
-            <p class="day-number">1</p>
+            <p class="day-number"></p>
         </li>
         <% } %>
     </ol>
