@@ -6,7 +6,7 @@ let calendarDate = new Date();
 calendarDate.setDate(1);
 
 let $monthName;
-let $dateNumbers;
+let $dateBoxes;
 
 function populateCalendar() {
   // create new date so we don't have to modify the original
@@ -25,12 +25,26 @@ function populateCalendar() {
     date.setDate(date.getDate() - 1);
   }
 
-  $dateNumbers.each(function() {
+  $dateBoxes.each(function() {
+    let $dateBox = $(this);
+
     // set the date number text to the date number of the stored date object
-    $(this).text(date.getDate())
+    $dateBox.find(".day-number").text(date.getDate())
     // if the date object's month does not match the month we stored earlier,
     // fade it out
       .toggleClass("off-month", date.getMonth() !== monthIdx);
+
+    // query for jobs scheduled for that day
+    $.getJSON("GetTimelineServlet", date.getTime().toString(), data => {
+      // for each job scheduled that day...
+      for (let job of data) {
+        // add a div with the product name to the date box
+        $dateBox.append($(`<div></div>`, {
+          text: job["productName"],
+          class: "job-entry"
+        }));
+      }
+    });
 
     // advance the date object forward by one day.
     date.setDate(date.getDate() + 1);
@@ -39,7 +53,7 @@ function populateCalendar() {
 
 $(function() {
   $monthName = $("#month-name");
-  $dateNumbers = $(".day-number");
+  $dateBoxes = $(".calendar-day");
 
   $("#prev-btn").on("click", () => {
     calendarDate.setMonth(calendarDate.getMonth() - 1);

@@ -35,6 +35,11 @@ main {
         &.off-month {
           opacity: 0.3;
         }
+
+        .job-entry {
+          border-radius: 5px;
+          border: 1px solid black;
+        }
       }
     }
   }
