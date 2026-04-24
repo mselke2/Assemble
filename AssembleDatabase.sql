@@ -23,12 +23,10 @@ DROP TABLE IF EXISTS `equipment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `equipment` (
-  `ID` smallint unsigned NOT NULL,
+  `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `TypeID` smallint unsigned NOT NULL,
   `Status` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `equipment_TypeID_idx` (`TypeID`),
-  CONSTRAINT `equipment_TypeID` FOREIGN KEY (`TypeID`) REFERENCES `equipmenttype` (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -72,12 +70,10 @@ DROP TABLE IF EXISTS `inventory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `inventory` (
-  `ID` mediumint unsigned NOT NULL,
+  `ID` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `TypeID` smallint unsigned NOT NULL,
   `Count` mediumint unsigned NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `TypeID_idx` (`TypeID`),
-  CONSTRAINT `TypeID` FOREIGN KEY (`TypeID`) REFERENCES `inventorytype` (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -98,7 +94,7 @@ DROP TABLE IF EXISTS `inventorytype`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `inventorytype` (
-  `ID` smallint unsigned NOT NULL,
+  `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `Description` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -121,15 +117,13 @@ DROP TABLE IF EXISTS `job`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `job` (
-  `ID` mediumint unsigned NOT NULL,
+  `ID` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `ProductID` smallint unsigned NOT NULL,
   `StartTime` datetime NOT NULL,
   `ProjectedEndTime` datetime NOT NULL,
   `ActualEndTime` datetime DEFAULT NULL,
   `PersonnelCount` tinyint NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `job_ProductID_idx` (`ProductID`),
-  CONSTRAINT `job_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -152,10 +146,7 @@ DROP TABLE IF EXISTS `jobequipment`;
 CREATE TABLE `jobequipment` (
   `JobID` mediumint unsigned NOT NULL,
   `EquipmentID` smallint unsigned NOT NULL,
-  PRIMARY KEY (`JobID`,`EquipmentID`),
-  KEY `EquipmentID_idx` (`EquipmentID`),
-  CONSTRAINT `JobEquipment_EquipmentID` FOREIGN KEY (`EquipmentID`) REFERENCES `equipment` (`ID`),
-  CONSTRAINT `JobEquipment_JobID` FOREIGN KEY (`JobID`) REFERENCES `job` (`ID`)
+  PRIMARY KEY (`JobID`,`EquipmentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -179,10 +170,7 @@ CREATE TABLE `jobinventory` (
   `JobID` mediumint unsigned NOT NULL,
   `InventoryID` mediumint unsigned NOT NULL,
   `InventoryUsedCount` tinyint unsigned NOT NULL,
-  PRIMARY KEY (`JobID`,`InventoryID`),
-  KEY `InventoryID_idx` (`InventoryID`),
-  CONSTRAINT `jobinventory_InventoryID` FOREIGN KEY (`InventoryID`) REFERENCES `inventory` (`ID`),
-  CONSTRAINT `jobinventory_JobID` FOREIGN KEY (`JobID`) REFERENCES `job` (`ID`)
+  PRIMARY KEY (`JobID`,`InventoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -203,7 +191,7 @@ DROP TABLE IF EXISTS `product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product` (
-  `ID` smallint unsigned NOT NULL,
+  `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `Description` varchar(50) NOT NULL,
   `Duration` int NOT NULL,
   `TargetPersonnelCount` tinyint unsigned NOT NULL,
@@ -231,10 +219,7 @@ CREATE TABLE `productequipment` (
   `ProductID` smallint unsigned NOT NULL,
   `EquipmentTypeID` smallint unsigned NOT NULL,
   `RequiredEquipmentTypeCount` tinyint unsigned DEFAULT NULL,
-  PRIMARY KEY (`ProductID`,`EquipmentTypeID`),
-  KEY `productequipment_EquipmentTypeID_idx` (`EquipmentTypeID`),
-  CONSTRAINT `productequipment_EquipmentTypeID` FOREIGN KEY (`EquipmentTypeID`) REFERENCES `equipmenttype` (`ID`),
-  CONSTRAINT `productequipment_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`)
+  PRIMARY KEY (`ProductID`,`EquipmentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -258,10 +243,7 @@ CREATE TABLE `productinventory` (
   `ProductID` smallint unsigned NOT NULL,
   `InventoryTypeID` smallint unsigned NOT NULL,
   `RequiredInventoryCount` tinyint unsigned NOT NULL,
-  PRIMARY KEY (`ProductID`,`InventoryTypeID`),
-  KEY `InventoryTypeID_idx` (`InventoryTypeID`),
-  CONSTRAINT `productinventory_InventoryTypeID` FOREIGN KEY (`InventoryTypeID`) REFERENCES `inventorytype` (`ID`),
-  CONSTRAINT `productinventory_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`)
+  PRIMARY KEY (`ProductID`,`InventoryTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -275,6 +257,31 @@ LOCK TABLES `productinventory` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `session`
+--
+
+DROP TABLE IF EXISTS `session`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `session` (
+  `ID` int unsigned NOT NULL AUTO_INCREMENT,
+  `LoginToken` char(64) NOT NULL,
+  `UserID` smallint unsigned NOT NULL,
+  `LastUsed` datetime DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `session`
+--
+
+LOCK TABLES `session` WRITE;
+/*!40000 ALTER TABLE `session` DISABLE KEYS */;
+/*!40000 ALTER TABLE `session` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -282,14 +289,13 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-  `ID` smallint unsigned NOT NULL,
+  `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
+  `Username` varchar(50) NOT NULL,
   `PermissionID` tinyint unsigned NOT NULL,
-  `FirstName` varchar(50) NOT NULL,
-  `LastName` varchar(50) NOT NULL,
+  `FirstName` varchar(50) DEFAULT NULL,
+  `LastName` varchar(50) DEFAULT NULL,
   `PasswordHash` char(64) NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `user_PermissionID_idx` (`PermissionID`),
-  CONSTRAINT `user_PermissionID` FOREIGN KEY (`PermissionID`) REFERENCES `userpermission` (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -310,7 +316,7 @@ DROP TABLE IF EXISTS `userpermission`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `userpermission` (
-  `ID` tinyint unsigned NOT NULL,
+  `ID` tinyint unsigned NOT NULL AUTO_INCREMENT,
   `Description` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -334,4 +340,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-19 23:46:54
+-- Dump completed on 2026-04-22 14:13:18
