@@ -13,9 +13,11 @@
     <form action="Inventory" method="post" class="new-entry-bar">
         <label for="inventory-type-id">Inventory Type</label>
         <select name="inventory-type-id" id="inventory-type">
-            <option value="0">Rivets</option>
-            <option value="1">Washers</option>
-            <option value="2">Nails</option>
+            <c:if test="${not empty inventoryTypes}">
+                <c:forEach var="inventoryType" items="${inventoryTypes}">
+                    <option value="${inventoryType.id}">${inventoryType.description}</option>
+                </c:forEach>
+            </c:if>
         </select>
         <input type="submit" name="submit" value="Submit">
     </form>
