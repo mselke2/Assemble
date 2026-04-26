@@ -2,13 +2,25 @@ package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Job;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
+import com.mysql.cj.x.protobuf.MysqlxPrepare;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.Math.abs;
 
 public class JobDaoImpl implements JobDao {
+  
+  private String prerequisitesError = "";
+  
+  public String getPrerequisitesError() {
+    return prerequisitesError;
+  }
   
   @Override
   public int addJob(Job job) {
@@ -129,43 +141,121 @@ public class JobDaoImpl implements JobDao {
     
   }
   
-  public boolean updatePrerequisites(Job job) {
+  public void updatePrerequisites(Job job) {
     
-    // Get a connection to the database
+    Timestamp startTime = job.getStartTime();
+    Timestamp projectedEndTime = job.getProjectedEndTime();
     
-    // Prepare a select statement to see if a job already exists
-      // with this productID and datetime range and execute it.
+    int inventoryRequired;
+    int inventoryAvailable;
+    int equipmentRequired;
+    int equipmentAvailable;
     
-    // Check to see if equipment is available for job.
     
-    // IF a job exists
-      // Throw a JobDaoException with the message "Job already exists."
-    
-    // ELSE
-      // Check to see if inventory is available for job.
-      // Prepare a select statement to find inventory types and counts required for job and store them.
-      // Prepare a select statement to find inventory counts available for required types and store them
-    
-      // IF inventory required is greater than inventory available
-        // Throw a JobDaoException with the message "Not enough inventory available."
+    try {
+      // Get a connection to the deatabase
+      Connection connection = MySQLUtility.createConnection();
       
-      // ELSE
+      // Prepare a select statement to see if a job already exists
+      // with this productID and datetime range and execute it.
+      String mySqlSelect = "SELECT * FROM job WHERE productID = ? AND ((StartTime <= ? AND ProjectedEndTime >= ?) OR (StartTime <= ? AND ProjectedEndTime >= ?))";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
+      preparedStatement.setInt(1, job.getProductId());
+      preparedStatement.setTimestamp(2, startTime);
+      preparedStatement.setTimestamp(3, projectedEndTime);
+      preparedStatement.setTimestamp(4, startTime);
+      preparedStatement.setTimestamp(5, projectedEndTime);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // IF a job exists
+      if (resultSet.isBeforeFirst()) {
+        // Throw a JobDaoException with the message "Job already exists."
+        throw new JobDaoException("Job already exists.");
+      }else {
+        // ELSE
+        // Check to see if inventory is available for job.
+        // Prepare a select statement to find inventory types and counts required for job and store them.
+        String mySqlSelectInventoryRequired = "SELECT * FROM ProductInventory WHERE ProductID = ?;";
+        PreparedStatement preparedStatementInventory = connection.prepareStatement(mySqlSelectInventoryRequired);
+        preparedStatement.setInt(1, job.getProductId());
+        ResultSet results  = preparedStatementInventory.executeQuery();
+        
+        if (results.isBeforeFirst()) {
+          
+          
+          results.last();
+          int rows = results.getRow();
+          results.beforeFirst();
+          
+          // Two-dimensional array to store TypeIDs and associated available/required counts.
+          int[][] idsRequiredsAvailables = new int[3][rows];
+          
+          // Add ProductIDs and required counts to the first and second rows of the array using a loop.
+          for (int i = 0; i < rows; i++) {
+            results.next();
+            
+            idsRequiredsAvailables[0][i] = results.getInt(1);
+            idsRequiredsAvailables[1][i] = results.getInt(2);
+            
+          }
+          
+          // Prepare a select statement to find inventory counts available for required typeIDs and store them
+          // in the third row of the array.
+          String mySqlSelectInventoryAvailable = "SELECT * FROM Inventory WHERE TypeID = ?;";
+          for (int i = 1; i <= rows; i++) {
+            PreparedStatement preparedStatementInventoryAvailable = connection.prepareStatement(mySqlSelectInventoryAvailable);
+            preparedStatementInventoryAvailable.setInt(1, idsRequiredsAvailables[0][i]);
+            ResultSet resultsAvailable  = preparedStatementInventoryAvailable.executeQuery();
+            
+            if (resultsAvailable.isBeforeFirst()) {
+              resultsAvailable.next();
+              idsRequiredsAvailables[2][i] = resultsAvailable.getInt(3);
+            } else {
+              throw new JobDaoException("Inventory Type Error.");
+            }
+          }
+          
+          // IF inventory required is greater than inventory available for any typeID
+          // add "Not enough of ID:[TypeID]. You need [number of TypeID short] more."
+          // to the prerequisites error.
+          for (int i = 0; i < rows; i++) {
+            int excess = idsRequiredsAvailables[2][i] - idsRequiredsAvailables[1][i];
+            
+            if (excess < 0) {
+              prerequisitesError += String.format("Not enough of ID: %d. You need %d more.", idsRequiredsAvailables[0][i], abs(excess));
+            }
+            
+          }
+          
+        } else {
+          throw new JobDaoException("No inventory exists.");
+        }
+        
+        
+        
+        
+        // ELSE
         // Subtract inventory required from inventory available and store in a variable.
-    
+        
         // Check to see if equipment is available for job.
         // Prepare a select statement to find equipment types and counts required for job and store them.
         // Prepare a select statement to find equipment counts available for required types and store them
         
         // IF equipment required is greater than equipment available
-          // Throw a JobDaoException with the message "Not enough equipment available."
+        // Throw a JobDaoException with the message "Not enough equipment available."
         
         // ELSE
-          // Subtract equipment required from equipment available and store in a variable.
-          // Prepare an update statement to update inventory counts in the database and execute it.
-          // Prepare an update statement to update equipment counts in the database and execute it.
-          // Return true.
+        // Subtract equipment required from equipment available and store in a variable.
+        // Prepare an update statement to update inventory counts in the database and execute it.
+        // Prepare an update statement to update equipment counts in the database and execute it.
+        // Return true.
+      }
       
-    return true;
+      
+      
+    } catch (Exception e) {
+      throw new JobDaoException(e.getMessage());
+    }
   }
   
   public boolean releasePrerequisites(Job job) {
