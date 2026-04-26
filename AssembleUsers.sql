@@ -1,0 +1,32 @@
+
+DROP USER IF EXISTS 'AssembleAdmin'@'%';
+DROP USER IF EXISTS 'AssembleEditor'@'%';
+DROP USER IF EXISTS 'AssembleViewer'@'%';  
+CREATE USER 'AssembleAdmin'@'%' IDENTIFIED BY 'kM.l79R1lhD';
+GRANT SELECT, INSERT, DELETE, UPDATE, SHOW VIEW ON assemble.* TO 'AssembleAdmin'@'%';
+CREATE USER 'AssembleEditor'@'%' IDENTIFIED BY 'A73mbQ:`89£A';
+-- GRANT SELECT ON assemble.* TO 'AssembleEditor'@'%'; 
+GRANT USAGE ON assemble.* TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.equipment TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.equipmenttype TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.inventorytype TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.inventory TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.job TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.jobequipment TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.jobinventory TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.product TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.productequipment TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.productinventory TO 'AssembleEditor'@'%';
+
+CREATE USER 'AssembleViewer'@'%' IDENTIFIED BY '10l7DN&?c`8D';
+GRANT USAGE ON assemble.* TO 'AssembleViewer'@'%';
+GRANT SELECT ON assemble.equipment TO  'AssembleViewer'@'%';
+GRANT SELECT ON assemble.equipmenttype TO 'AssembleViewer'@'%';
+GRANT SELECT ON assemble.inventorytype TO 'AssembleViewer'@'%';
+GRANT SELECT ON assemble.inventory TO 'AssembleViewer'@'%';
+GRANT SELECT ON assemble.job TO 'AssembleViewer'@'%';
+GRANT SELECT ON assemble.jobequipment TO 'AssembleViewer'@'%';
+GRANT SELECT ON assemble.jobinventory TO 'AssembleViewer'@'%';
+GRANT SELECT ON assemble.product TO 'AssembleViewer'@'%';
+GRANT SELECT ON assemble.productequipment TO 'AssembleViewer'@'%';
+GRANT SELECT ON assemble.productinventory TO 'AssembleViewer'@'%';
