@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,17 +25,21 @@
             <th>Quantity</th>
             <th></th>
         </tr>
-        <tr>
-            <td>
-                <button class="count-control">+</button>
-                <button class="count-control">-</button>
-            </td>
-            <td>0123</td>
-            <td>25</td>
-            <td>
-                <button class="delete-btn">Delete</button>
-            </td>
-        </tr>
+        <c:if test="${not empty inventory}">
+            <c:forEach var="resource" items="${inventory}">
+                <tr resource-id="${resource.id}">
+                    <td>
+                        <button class="count-control add">+</button>
+                        <button class="count-control remove">-</button>
+                    </td>
+                    <td>${resource.id}</td>
+                    <td class="resource-count">${resource.count}</td>
+                    <td>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+            </c:forEach>
+        </c:if>
     </table>
 </div>
 </body>
