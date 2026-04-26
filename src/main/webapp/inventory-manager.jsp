@@ -7,17 +7,18 @@
     <link rel="stylesheet" href="assets/css/resource-manager.css">
 </head>
 <body>
+<script src="assets/js/inventory-manager.js"></script>
 <div class="panel">
     <h1>Inventory</h1>
-    <div class="new-entry-bar">
-        <label for="inventory-type">Inventory Type</label>
-        <select id="inventory-type">
-            <option>Rivets</option>
-            <option>Washers</option>
-            <option>Nails</option>
+    <form action="Inventory" method="post" class="new-entry-bar">
+        <label for="inventory-type-id">Inventory Type</label>
+        <select name="inventory-type-id" id="inventory-type">
+            <option value="0">Rivets</option>
+            <option value="1">Washers</option>
+            <option value="2">Nails</option>
         </select>
-        <input type="submit" value="Submit">
-    </div>
+        <input type="submit" name="submit" value="Submit">
+    </form>
     <table>
         <tr>
             <th></th>
