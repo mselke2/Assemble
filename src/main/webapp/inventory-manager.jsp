@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="assets/css/resource-manager.css">
 </head>
 <body>
-<script src="assets/js/inventory-manager.js"></script>
 <div class="panel">
     <h1>Inventory</h1>
     <form action="Inventory" method="post" class="new-entry-bar">
@@ -45,5 +44,7 @@
         </c:if>
     </table>
 </div>
+<script src="assets/js/resource-manager.js"></script>
+<script src="assets/js/inventory-manager.js"></script>
 </body>
 </html>
