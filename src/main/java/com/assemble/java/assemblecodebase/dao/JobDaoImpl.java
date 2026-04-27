@@ -18,6 +18,20 @@ public class JobDaoImpl implements JobDao {
   
   private String prerequisitesError = "";
   
+  // These are 2D arrays used as a kind of database table on the server.
+  // The structure looks like this:
+  // {
+  //   {Col 0,           Col 1,           Col 2,           ...}
+  //   ------------------------------------------------------------
+  //   {TypeID1,         TypeID2,         TypeID3,         ...},  |   {Row 0}
+  //   {RequiredCount1,  RequiredCount2,  RequiredCount3,  ...},  |   {Row 1}
+  //   {AvailableCount1, AvailableCount2, AvailableCount3, ...},  |   {Row 2}
+  //   {Leftover1,       Leftover2,       Leftover3,       ...}   |   {Row 3}
+  // }
+  
+  private int[][] inventoryCounts;
+  private int[][] equipmentCounts;
+  
   public String getPrerequisitesError() {
     return prerequisitesError;
   }
@@ -143,6 +157,10 @@ public class JobDaoImpl implements JobDao {
   
   public void updatePrerequisites(Job job) {
     
+    // Use this method to update the database with new values for
+    // inventory and equipment counts.
+    
+    
   
   }
   
@@ -150,20 +168,6 @@ public class JobDaoImpl implements JobDao {
     
     Timestamp startTime = job.getStartTime();
     Timestamp projectedEndTime = job.getProjectedEndTime();
-    
-    // These are 2D arrays used as a kind of database table on the server.
-    // The structure looks like this:
-    // {
-    //   {Col 0,           Col 1,           Col 2,           ...}
-    //   ------------------------------------------------------------
-    //   {TypeID1,         TypeID2,         TypeID3,         ...},  |   {Row 0}
-    //   {RequiredCount1,  RequiredCount2,  RequiredCount3,  ...},  |   {Row 1}
-    //   {AvailableCount1, AvailableCount2, AvailableCount3, ...},  |   {Row 2}
-    //   {Leftover1,       Leftover2,       Leftover3,       ...}   |   {Row 3}
-    // }
-          
-    int[][] inventoryCounts;
-    int[][] equipmentCounts;
     
     try {
       // Get a connection to the database
