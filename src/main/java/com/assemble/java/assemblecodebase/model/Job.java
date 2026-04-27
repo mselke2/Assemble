@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public class Job implements Serializable {
   private int id;
   private int productId;
+  private int lineNumber;
   private Timestamp startTime;
   private Timestamp projectedEndTime;
   private Timestamp actualEndTime;
@@ -15,9 +16,10 @@ public class Job implements Serializable {
   public Job() {
   }
   
-  public Job(int id, int productId, Timestamp startTime, int personnelCount) {
+  public Job(int id, int productId, int lineNumber, Timestamp startTime, int personnelCount) {
     setId(id);
     setProductId(productId);
+    setLineNumber(lineNumber);
     setStartTime(startTime);
     setProjectedEndTime(startTime);
     setPersonnelCount(personnelCount);
@@ -37,6 +39,14 @@ public class Job implements Serializable {
   
   public void setProductId(int productId) {
     this.productId = productId;
+  }
+  
+  public int getLineNumber() {
+    return lineNumber;
+  }
+  
+  public void setLineNumber(int lineNumber) {
+    this.lineNumber = lineNumber;
   }
   
   public Timestamp getStartTime() {
