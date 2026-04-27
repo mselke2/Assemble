@@ -64,7 +64,7 @@ public class JobDaoImpl implements JobDao {
     
     // Prepare a select statement to see if a job exists with this jobID and execute it.
     
-    // If ajob exists
+    // If a job exists
       // Store the jobID in a variable
       // Run releasePrerequisites(job) to add inventory and equipment back to database
       // Prepare a delete statement to delete this job from the database and execute it.
@@ -155,7 +155,7 @@ public class JobDaoImpl implements JobDao {
     int[][] counts;
     
     try {
-      // Get a connection to the deatabase
+      // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
       
       // Prepare a select statement to see if a job already exists
@@ -237,9 +237,9 @@ public class JobDaoImpl implements JobDao {
             
             // IF inventory required is greater than inventory available for any typeID
             // add "Not enough of ID:[TypeID]. You need [number of TypeID short] more."
-            // to the prerequisites error.
+            // to the prerequisite error.
             if (counts[3][i] < 0) {
-              prerequisitesError += String.format("Not enough of InvetoryTypeID: %d. You need %d more.", counts[0][i], abs(counts[3][i]));
+              prerequisitesError += String.format("Not enough of InventoryTypeID: %d. You need %d more.", counts[0][i], abs(counts[3][i]));
             }
           }
           
