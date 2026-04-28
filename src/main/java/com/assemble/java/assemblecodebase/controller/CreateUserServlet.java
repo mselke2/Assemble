@@ -7,7 +7,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.ServletException;
 
-@WebServlet(name = "CreateUserServlet", value = "/CreateUserServlet")
+@WebServlet(name = "CreateUserServlet", value = "/CreateUser")
 public class CreateUserServlet extends HttpServlet {
   
   public void init() {

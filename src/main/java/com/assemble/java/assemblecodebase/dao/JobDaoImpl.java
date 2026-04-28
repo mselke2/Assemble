@@ -2,13 +2,25 @@ package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Job;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
+import com.mysql.cj.x.protobuf.MysqlxPrepare;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.Math.abs;
 
 public class JobDaoImpl implements JobDao {
+  
+  private String prerequisitesError = "";
+  
+  public String getPrerequisitesError() {
+    return prerequisitesError;
+  }
   
   @Override
   public int addJob(Job job) {
@@ -129,43 +141,9 @@ public class JobDaoImpl implements JobDao {
     
   }
   
-  public boolean updatePrerequisites(Job job) {
+  public void updatePrerequisites(Job job) {
     
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if a job already exists
-      // with this productID and datetime range and execute it.
-    
-    // Check to see if equipment is available for job.
-    
-    // IF a job exists
-      // Throw a JobDaoException with the message "Job already exists."
-    
-    // ELSE
-      // Check to see if inventory is available for job.
-      // Prepare a select statement to find inventory types and counts required for job and store them.
-      // Prepare a select statement to find inventory counts available for required types and store them
-    
-      // IF inventory required is greater than inventory available
-        // Throw a JobDaoException with the message "Not enough inventory available."
-      
-      // ELSE
-        // Subtract inventory required from inventory available and store in a variable.
-    
-        // Check to see if equipment is available for job.
-        // Prepare a select statement to find equipment types and counts required for job and store them.
-        // Prepare a select statement to find equipment counts available for required types and store them
-        
-        // IF equipment required is greater than equipment available
-          // Throw a JobDaoException with the message "Not enough equipment available."
-        
-        // ELSE
-          // Subtract equipment required from equipment available and store in a variable.
-          // Prepare an update statement to update inventory counts in the database and execute it.
-          // Prepare an update statement to update equipment counts in the database and execute it.
-          // Return true.
-      
-    return true;
+  
   }
   
   public boolean releasePrerequisites(Job job) {

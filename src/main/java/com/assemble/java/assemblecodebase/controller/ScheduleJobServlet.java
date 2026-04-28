@@ -7,7 +7,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.ServletException;
 
-@WebServlet(name = "ScheduleJobServlet", value = "/ScheduleJobServlet")
+@WebServlet(name = "ScheduleJobServlet", value = "/ScheduleJob")
 public class ScheduleJobServlet extends HttpServlet {
   
   public void init() {

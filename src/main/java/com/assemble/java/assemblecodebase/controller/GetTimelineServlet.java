@@ -7,7 +7,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.ServletException;
 
-@WebServlet(name = "GetTimelineServlet", value = "/GetTimelineServlet")
+@WebServlet(name = "GetTimelineServlet", value = "/GetTimeline")
 public class GetTimelineServlet extends HttpServlet {
   
   public void init() {
