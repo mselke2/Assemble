@@ -59,6 +59,7 @@ public class JobDaoImpl implements JobDao {
           preparedStatement.executeUpdate();
           
           preparedStatement.close();
+          jobId = job.getId();
           
           
         } else {
