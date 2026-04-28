@@ -27,7 +27,7 @@ CREATE TABLE `equipment` (
   `TypeID` smallint unsigned NOT NULL,
   `Status` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,6 +36,7 @@ CREATE TABLE `equipment` (
 
 LOCK TABLES `equipment` WRITE;
 /*!40000 ALTER TABLE `equipment` DISABLE KEYS */;
+INSERT INTO `equipment` VALUES (1,1,'0'),(2,1,'1'),(3,1,'1'),(4,1,'1'),(5,1,'1'),(6,1,'1'),(7,2,'1'),(8,2,'0'),(9,2,'1'),(10,2,'1'),(11,3,'1'),(12,3,'1'),(13,3,'0'),(14,3,'1'),(15,3,'1');
 /*!40000 ALTER TABLE `equipment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -47,10 +48,10 @@ DROP TABLE IF EXISTS `equipmenttype`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `equipmenttype` (
-  `ID` smallint unsigned NOT NULL,
+  `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `Description` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -59,6 +60,7 @@ CREATE TABLE `equipmenttype` (
 
 LOCK TABLES `equipmenttype` WRITE;
 /*!40000 ALTER TABLE `equipmenttype` DISABLE KEYS */;
+INSERT INTO `equipmenttype` VALUES (1,'mold press'),(2,'button mold'),(3,'rod mold');
 /*!40000 ALTER TABLE `equipmenttype` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -74,7 +76,7 @@ CREATE TABLE `inventory` (
   `TypeID` smallint unsigned NOT NULL,
   `Count` mediumint unsigned NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,6 +85,7 @@ CREATE TABLE `inventory` (
 
 LOCK TABLES `inventory` WRITE;
 /*!40000 ALTER TABLE `inventory` DISABLE KEYS */;
+INSERT INTO `inventory` VALUES (1,1,10),(2,1,35),(3,1,1),(4,2,42),(5,2,56),(6,3,200),(7,3,100);
 /*!40000 ALTER TABLE `inventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,7 +100,7 @@ CREATE TABLE `inventorytype` (
   `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `Description` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,6 +109,7 @@ CREATE TABLE `inventorytype` (
 
 LOCK TABLES `inventorytype` WRITE;
 /*!40000 ALTER TABLE `inventorytype` DISABLE KEYS */;
+INSERT INTO `inventorytype` VALUES (1,'Steel'),(2,'Brass'),(3,'Copper');
 /*!40000 ALTER TABLE `inventorytype` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -193,10 +197,10 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `Description` varchar(50) NOT NULL,
-  `Duration` int NOT NULL,
+  `Duration` time NOT NULL,
   `TargetPersonnelCount` tinyint unsigned NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -205,6 +209,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
+INSERT INTO `product` VALUES (1,'steel button','00:30:00',1),(2,'brass button','01:00:00',1),(3,'steel rod','01:45:00',2),(4,'copper rod','01:30:00',2);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,6 +234,7 @@ CREATE TABLE `productequipment` (
 
 LOCK TABLES `productequipment` WRITE;
 /*!40000 ALTER TABLE `productequipment` DISABLE KEYS */;
+INSERT INTO `productequipment` VALUES (1,1,1),(1,2,1),(2,1,1),(2,2,1),(3,1,1),(3,3,1),(4,1,1),(4,3,1);
 /*!40000 ALTER TABLE `productequipment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,6 +259,7 @@ CREATE TABLE `productinventory` (
 
 LOCK TABLES `productinventory` WRITE;
 /*!40000 ALTER TABLE `productinventory` DISABLE KEYS */;
+INSERT INTO `productinventory` VALUES (1,1,1),(2,2,1),(3,1,2),(4,3,2);
 /*!40000 ALTER TABLE `productinventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -319,7 +326,7 @@ CREATE TABLE `userpermission` (
   `ID` tinyint unsigned NOT NULL AUTO_INCREMENT,
   `Description` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -328,8 +335,144 @@ CREATE TABLE `userpermission` (
 
 LOCK TABLES `userpermission` WRITE;
 /*!40000 ALTER TABLE `userpermission` DISABLE KEYS */;
+INSERT INTO `userpermission` VALUES (1,'admin'),(2,'editor'),(3,'viewer');
 /*!40000 ALTER TABLE `userpermission` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'assemble'
+--
+/*!50003 DROP PROCEDURE IF EXISTS `ClearTables` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ClearTables`()
+BEGIN
+	truncate equipment;
+    truncate equipmenttype;
+    truncate inventory;
+    truncate inventorytype;
+    truncate job;
+	truncate jobequipment;
+    truncate jobinventory;
+    truncate product;
+    truncate productequipment;
+	truncate productinventory;
+    truncate assemble.`session`;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GenData_BasicData` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GenData_BasicData`()
+BEGIN
+	-- truncate tables
+	truncate equipment;
+    truncate equipmenttype;
+    truncate inventory;
+    truncate inventorytype;
+    truncate job;
+	truncate jobequipment;
+    truncate jobinventory;
+    truncate product;
+    truncate productequipment;
+	truncate productinventory;
+    truncate assemble.`session`;
+	-- truncate `user`;
+    
+   
+	INSERT INTO `equipmenttype` (`Description`)
+	VALUES 
+		("mold press"),
+		("button mold"),
+        ("rod mold");
+	INSERT INTO `equipment` (`TypeID`, `Status`) 
+    VALUES
+		(1, "0"),
+        (1, "1"),
+        (1, "1"),
+        (1, "1"),
+        (1, "1"),
+        (1, "1"),
+        (2, "1"), (2, "0"),
+        (2, "1"),
+        (2, "1"),
+        (3, "1"),
+        (3, "1"),
+        (3, "0"),
+        (3, "1"),
+        (3, "1");
+	INSERT INTO `inventorytype` (`Description`)
+	VALUES 
+		("Steel"),
+        ("Brass"),
+        ("Copper");
+	INSERT INTO `inventory` (`TypeID`, `Count`)
+    VALUES
+		(1, 10),
+        (1, 35),
+        (1, 1),
+        (2, 42),
+        (2, 56),
+        (3, 200),
+        (3, 100);
+        
+    -- create 3 products
+	INSERT INTO `product` (`Description`, `Duration`, `TargetPersonnelCount`)
+    VALUES
+		("steel button", "0:30:00", 1),
+		("brass button", "1:00:00", 1),
+		("steel rod", "1:45:00", 2),
+		("copper rod", "1:30:00", 2);
+        
+	-- Create productequipment
+	INSERT INTO `productequipment` (`ProductID`, `EquipmentTypeID`, `RequiredEquipmentTypeCount`)
+	VALUES
+		(1, 1, 1),
+		(1, 2, 1),
+		(2, 1, 1),
+		(2, 2, 1),
+		(3, 1, 1),
+	    (3, 3, 1),
+	    (4, 1, 1),
+	    (4, 3, 1);
+        
+        -- create productInventory
+	INSERT INTO `productInventory` (`ProductID`, `InventoryTypeID`, `RequiredInventoryCount`)
+	VALUES
+		(1, 1, 1),
+		(2, 2, 1),
+		(3, 1, 2),
+		(4, 3, 2);
+        
+	
+    
+    
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -340,4 +483,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-22 14:13:18
+-- Dump completed on 2026-04-27 20:01:01
