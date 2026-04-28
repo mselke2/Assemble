@@ -4,10 +4,7 @@ import com.assemble.java.assemblecodebase.model.Job;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 import com.mysql.cj.x.protobuf.MysqlxPrepare;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -201,35 +198,96 @@ public class JobDaoImpl implements JobDao {
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }
-    // Test comment
+    
   }
   
   public boolean updatePrerequisites() {
-    
     
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
       
-      String mySqlUpdateInventory = "UPDATE Inventory SET Count = ? WHERE TypeID = ?;";
-      String mySqlUpdateEquipment = "UPDATE Equipment SET Count = ? WHERE TypeID = ?;";
-      // Prepare an update statement to update the new leftover amount for each
-      // inventory type in the array
+      String mySqlUpdateInventory = "UPDATE Inventory SET Count = ? WHERE ID = ?;";
+      String mySqlUpdateEquipment = "UPDATE Equipment SET Status = 0 WHERE ID = ?;";
+      String mySqlSelectEquipment = "SELECT * FROM Equipment WHERE TypeID = ?;";
+      String mySqlSelectInventory = "SELECT * FROM Inventory WHERE TypeID = ?;";
       
-      // Prepare an update statement to update the new leftover amount for each
-      // equipment type in the array
+      // Update inventory.
+      // iterate through each required TypeID
       for (int i = 0; i < inventoryCounts[0].length; i++) {
-        PreparedStatement preparedStatement = connection.prepareStatement(mySqlUpdateInventory);
-        preparedStatement.setInt(1, inventoryCounts[3][i]);
-        preparedStatement.setInt(2, inventoryCounts[0][i]);
-        preparedStatement.executeUpdate();
+        // Select all Inventory items of the specified type.
+        PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectInventory);
+        preparedStatement.setInt(1, inventoryCounts[0][i]);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        int inventoryRequired = inventoryCounts[1][i];
+        
+        // Step through Inventory items of the specified type,
+        // see if subtracting what is required is possible.
+        // If so, subtract what we need and break.
+        // If not, subtract what we can from the
+        // currently selected item down
+        // to zero, update what we still need
+        // and move to the next iteration to find the next inventory item
+        // to remove from.
+        if (resultSet.isBeforeFirst()) {
+          while (resultSet.next()) {
+            PreparedStatement preparedUpdateStatement = connection.prepareStatement(mySqlUpdateInventory);
+            
+            if (resultSet.getInt("Count") - inventoryRequired >= 0) {
+              // Set the count of the currently selected inventory item to the current count minus the inventory required for this job.
+              preparedUpdateStatement.setInt(1, resultSet.getInt("Count") -  inventoryRequired);
+              preparedUpdateStatement.setInt(2, resultSet.getInt("ID"));
+              preparedStatement.executeUpdate();
+              preparedUpdateStatement.close();
+              // Break because there's no more inventory required for the job.
+              break;
+              
+            } else {
+              
+              // Store amount we are able to subtract from the currently selected inventory item.
+              int subtracting = resultSet.getInt("Count");
+              // Set the count for the currently selected inventory item to 0
+              preparedUpdateStatement.setInt(1, 0);
+              preparedUpdateStatement.setInt(2, resultSet.getInt("ID"));
+              preparedUpdateStatement.executeUpdate();
+              preparedUpdateStatement.close();
+              // Update the amount of inventory we still need to subtract.
+              inventoryRequired -= subtracting;
+              
+            }
+            
+          }
+        }
       }
       
+      // Update equipment.
+      // Iterate through each required TypeID
       for (int i = 0; i < equipmentCounts[0].length; i++) {
-        PreparedStatement preparedStatement = connection.prepareStatement(mySqlUpdateEquipment);
-        preparedStatement.setInt(1, equipmentCounts[3][i]);
-        preparedStatement.setInt(2, equipmentCounts[0][i]);
-        preparedStatement.executeUpdate();
+        // Select all equipment of the specified TypeID
+        PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectEquipment);
+        preparedStatement.setInt(1, equipmentCounts[0][i]);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        int equipmentRequired = equipmentCounts[1][i];
+        
+        
+        if (resultSet.isBeforeFirst()) {
+          
+          // Step through equipment of the required type
+          while (resultSet.next() && equipmentRequired > 0) {
+            // Select the next piece of equipment
+            PreparedStatement preparedUpdateStatement = connection.prepareStatement(mySqlUpdateEquipment);
+            // If it's available.
+            if(resultSet.getInt("Status") == 1) {
+              // Set it to not available
+              preparedUpdateStatement.setInt(1, resultSet.getInt("ID"));
+              preparedUpdateStatement.executeUpdate();
+              preparedUpdateStatement.close();
+              // Update equipment required.
+              equipmentRequired -= 1;
+            }
+          }
+        }
+        
       }
       
     }catch (Exception e) {
