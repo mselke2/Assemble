@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class Job implements Serializable {
-  private int id;
+  private int id = -1;
   private int productId;
   private int lineNumber;
   private Timestamp startTime;

@@ -39,22 +39,71 @@ public class JobDaoImpl implements JobDao {
   @Override
   public int addJob(Job job) {
     
-    // Run updatePrerequisites(job)
+    int jobId = -1;
     
-    // IF updatePrerequisites throws an exception
-      // Catch the exception and throw a JobDaoException with the message from the caught exception.
+    // Run checkPrerequisites(job)
+    if(checkPrerequisites(job)){
     
-    // ELSE
-      // Get a connection to the database
-      // Prepare an insert statement to add this job to the database.
-      // IF job.id is not null, include it in the insert statement, otherwise let the database generate it.
-      // Execute the insert statement.
-      // Prepare a select statement to get the newly created jobID and execute it.
-      // Return the jobID.
+      String mySqlInsert = "INSERT INTO Job (ProductID, LineNumber, StartTime, ProjectedEndTime, PersonnelCount) VALUES (?, ?, ?, ?, ?);";
+      String mySqlUpdate = "UPDATE Job SET ProductID = ?, LineNumber = ?, StartTime = ?, ProjectedEndTime = ?, PersonnelCount = ? WHERE ID = ?;";
+      try {
+        
+        Connection connection = MySQLUtility.createConnection();
+        
+        if (job.getId() != -1) {
+          PreparedStatement preparedStatement = connection.prepareStatement(mySqlUpdate);
+          
+          preparedStatement.setInt(1, job.getProductId());
+          preparedStatement.setInt(2, job.getLineNumber());
+          preparedStatement.setTimestamp(3, job.getStartTime());
+          preparedStatement.setTimestamp(4, job.getProjectedEndTime());
+          preparedStatement.setInt(5, job.getPersonnelCount());
+          preparedStatement.setInt(6, job.getId());
+          preparedStatement.executeUpdate();
+          
+          preparedStatement.close();
+          
+          
+        } else {
+          PreparedStatement preparedStatement = connection.prepareStatement(mySqlInsert);
+          
+          preparedStatement.setInt(1, job.getProductId());
+          preparedStatement.setInt(2, job.getLineNumber());
+          preparedStatement.setTimestamp(3, job.getStartTime());
+          preparedStatement.setTimestamp(4, job.getProjectedEndTime());
+          preparedStatement.setInt(5, job.getPersonnelCount());
+          preparedStatement.executeUpdate();
+          
+          preparedStatement.close();
+          
+          String mySqlSelectId = "SELECT ID FROM Job WHERE ProductID = ? AND LineNumber = ? AND StartTime = ?;";
+          preparedStatement = connection.prepareStatement(mySqlSelectId);
+          preparedStatement.setInt(1, job.getProductId());
+          preparedStatement.setInt(2, job.getLineNumber());
+          preparedStatement.setTimestamp(3, job.getStartTime());
+          ResultSet resultSet = preparedStatement.executeQuery();
+          
+          if(resultSet.isBeforeFirst()) {
+            resultSet.next();
+            jobId = resultSet.getInt("ID");
+          }
+        }
+        
+        connection.close();
+        updatePrerequisites();
+        
+      } catch (Exception e) {
+        throw new JobDaoException(e.getMessage());
+      }
+      
+    } else {
+      throw new JobDaoException(prerequisitesError);
+    }
     
-    return 0;
+    return jobId;
   }
   
+  // May not need this method ------------------------------
   @Override
   public void updateJob(Job job) {
     
@@ -190,7 +239,7 @@ public class JobDaoImpl implements JobDao {
     return true;
   }
   
-  public boolean checkPrerequisites(Job job, String prerequisite) {
+  public boolean checkPrerequisites(Job job) {
     
     Timestamp startTime = job.getStartTime();
     Timestamp projectedEndTime = job.getProjectedEndTime();
