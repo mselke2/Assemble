@@ -155,13 +155,39 @@ public class JobDaoImpl implements JobDao {
     
   }
   
-  public void updatePrerequisites(Job job) {
-    
-    // Use this method to update the database with new values for
-    // inventory and equipment counts.
+  public boolean updatePrerequisites() {
     
     
-  
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      
+      String mySqlUpdateInventory = "UPDATE Inventory SET Count = ? WHERE TypeID = ?;";
+      String mySqlUpdateEquipment = "UPDATE Equipment SET Count = ? WHERE TypeID = ?;";
+      // Prepare an update statement to update the new leftover amount for each
+      // inventory type in the array
+      
+      // Prepare an update statement to update the new leftover amount for each
+      // equipment type in the array
+      for (int i = 0; i < inventoryCounts[0].length; i++) {
+        PreparedStatement preparedStatement = connection.prepareStatement(mySqlUpdateInventory);
+        preparedStatement.setInt(1, inventoryCounts[3][i]);
+        preparedStatement.setInt(2, inventoryCounts[0][i]);
+        preparedStatement.executeUpdate();
+      }
+      
+      for (int i = 0; i < equipmentCounts[0].length; i++) {
+        PreparedStatement preparedStatement = connection.prepareStatement(mySqlUpdateEquipment);
+        preparedStatement.setInt(1, equipmentCounts[3][i]);
+        preparedStatement.setInt(2, equipmentCounts[0][i]);
+        preparedStatement.executeUpdate();
+      }
+      
+    }catch (Exception e) {
+      throw new JobDaoException(e.getMessage());
+    }
+    
+    return true;
   }
   
   public boolean checkPrerequisites(Job job, String prerequisite) {
