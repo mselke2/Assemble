@@ -28,6 +28,9 @@ function populateCalendar() {
   $dateBoxes.each(function() {
     let $dateBox = $(this);
 
+    let query = "d=" + date.getFullYear().toString() + (date.getMonth() + 1).toString().padStart(2, "0") + date.getDate().toString().padStart(2, "0");
+    $dateBox.attr("href", "ScheduleJob?" + query);
+
     // set the date number text to the date number of the stored date object
     $dateBox.find(".day-number").text(date.getDate())
     // if the date object's month does not match the month we stored earlier,

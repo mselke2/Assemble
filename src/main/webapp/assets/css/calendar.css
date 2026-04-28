@@ -30,9 +30,11 @@ main {
         position: absolute;
         inset: 0;
         overflow: auto;
+        text-decoration: none;
 
         .day-number {
           margin: 0 0.2em;
+          color: black;
 
           &.off-month {
             opacity: 0.3;
@@ -42,11 +44,7 @@ main {
         .job-entry {
           border-radius: 5px;
           border: 1px solid black;
-        }
-
-        .job-entry {
-          border-radius: 5px;
-          border: 1px solid black;
+          color: black;
         }
       }
     }
