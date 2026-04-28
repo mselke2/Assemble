@@ -269,10 +269,13 @@ public class JobDaoImpl implements JobDao {
         
         String mySqlInventoryTypeIds = "SELECT * FROM ProductInventory WHERE ProductID = ?;";
         String mySqlEquipmentTypeIds = "SELECT * FROM EquipmentInventory WHERE ProductID = ?;";
+        
         PreparedStatement inventoryTypeIdStatement = connection.prepareStatement(mySqlInventoryTypeIds);
         PreparedStatement equipmentIdStatement = connection.prepareStatement(mySqlEquipmentTypeIds);
+        
         inventoryTypeIdStatement.setInt(1, job.getProductId());
         equipmentIdStatement.setInt(1, job.getProductId());
+        
         ResultSet inventoryTypeIds = inventoryTypeIdStatement.executeQuery();
         ResultSet equipmentTypeIds = equipmentIdStatement.executeQuery();
         
@@ -313,83 +316,84 @@ public class JobDaoImpl implements JobDao {
         }
         
         // Prepare SQL statements to find the available and required counts
-        // and fill in the arrays
-        String mySqlInventoryCount =
-          "SELECT" +
-            "pi.RequiredInventoryCount AS InventoryRequired, " +
-            "i.Count AS InventoryAvailable, " +
-            "(i.Count - pi.RequiredInventoryCount) AS Leftover " +
-          "FROM " +
-            "Product AS p " +
-            "INNER JOIN ProductInventory AS pi ON p.ID = pi.ProductID " +
-            "INNER JOIN InventoryType AS it ON pi.InventoryTypeID = it.ID " +
-            "INNER JOIN Inventory AS i ON it.ID = i.TypeID " +
-          "WHERE " +
-            "pi.InventoryTypeID = ?;";
-        
-        String mySqlEquipmentCount =
-          "SELECT " +
-            "pe.RequiredEquipmentTypeCount AS EquipmentRequired, " +
-            "e.Count AS EquipmentAvailable, " +
-            "(e.Count - pe.RequiredEquipmentTypeCount) AS Leftover " +
-          "FROM " +
-            "Product AS p " +
-            "INNER JOIN ProductEquipment AS pe ON p.ID = pe.ProductID " +
-            "INNER JOIN EquipmentType AS et ON pe.EquipmentTypeID = et.ID " +
-            "INNER JOIN Equipment AS e ON et.ID = e.TypeID " +
-          "WHERE " +
-            "pe.EquipmentTypeID = ?;";
+        // and fill in the arrays.
+        String mySqlInventoryRequired = "SELECT TypeID, SUM(`Count`) AS `Count` FROM Inventory WHERE TypeID = ? GROUP BY TypeID;";
+        String mySqlEquipmentRequired = "SELECT EquipmentTypeID, SUM(`RequiredEquipmentTypeCount`) AS `Count` FROM ProductEquipment WHERE ProductID = ? GROUP BY EquipmentTypeID;";
+        String mySqlInventoryAvailable = "SELECT TypeID, SUM(`Count`) AS `Count` FROM Inventory WHERE TypeID = ? GROUP BY TypeID;";
+        String mySqlEquipmentAvailable = "SELECT TypeID, COUNT(ID) AS `Count` FROM Equipment WHERE TypeID = ? GROUP BY TypeID;";
         
         // Fill in the inventoryCounts array with a rotating SQL statement
         // searching for counts by TypeIDs
         for (int i = 0; i < inventoryCounts[0].length; i++) {
-          PreparedStatement inventoryCountStatement = connection.prepareStatement(mySqlInventoryCount);
-          // Set the TypeID for the inventoryCountStatement
-          inventoryCountStatement.setInt(1, inventoryCounts[0][i]);
-          ResultSet inventoryCount = inventoryCountStatement.executeQuery();
-          if (inventoryCount.isBeforeFirst()) {
-            inventoryCount.next();
-            
-            // Set required and available, and calculate leftover
-            inventoryCounts[1][i] =  inventoryCount.getInt("InventoryRequired");
-            inventoryCounts[2][i] = inventoryCount.getInt("InventoryAvailable");
-            inventoryCounts[3][i] = inventoryCount.getInt("Leftover");
-            
-            // Add to the error if necessary
-            if (inventoryCounts[3][i] < 0) {
-              prerequisitesError += String.format("Not enough of InventoryTypeID: %d. You need %d more.", inventoryCounts[0][i], abs(inventoryCounts[3][i]));
-            }
-            
+          PreparedStatement inventoryRequiredStatement = connection.prepareStatement(mySqlInventoryRequired);
+          inventoryRequiredStatement.setInt(1, inventoryCounts[0][i]);
+          
+          ResultSet inventoryRequiredResults = inventoryRequiredStatement.executeQuery();
+          
+          PreparedStatement inventoryAvailableStatement = connection.prepareStatement(mySqlInventoryAvailable);
+          inventoryAvailableStatement.setInt(1, inventoryCounts[0][i]);
+          
+          ResultSet inventoryAvailableResults = inventoryAvailableStatement.executeQuery();
+          
+          if (inventoryRequiredResults.isBeforeFirst()) {
+            inventoryRequiredResults.next();
+            inventoryCounts[1][i] = inventoryRequiredResults.getInt("Count");
           } else {
-            throw new  JobDaoException("Inventory Count Error");
+            throw new JobDaoException("Inventory Required Count Error");
           }
+          
+          if (inventoryAvailableResults.isBeforeFirst()) {
+            inventoryAvailableResults.next();
+            inventoryCounts[2][i] = inventoryAvailableResults.getInt("Count");
+          } else {
+            throw new JobDaoException("Inventory Available Count Error");
+          }
+          
+          inventoryCounts[3][i] = inventoryCounts[2][i] - inventoryCounts[1][i];
+          
+          if (inventoryCounts[3][i] < 0) {
+            prerequisitesError += String.format("You need %d more of Inventory Type ID: %d", abs(inventoryCounts[3][i]), inventoryCounts[0][i]);
+          }
+          
         }
         
         // Fill in the equipmentCounts array with a rotating SQL statement
         // searching for counts by TypeIDs
         for(int i = 0; i < equipmentCounts[0].length; i++) {
-          PreparedStatement equipmentCountStatement = connection.prepareStatement(mySqlEquipmentCount);
-          // Set the TypeID for the equipmentCountStatement
-          equipmentCountStatement.setInt(1, equipmentCounts[0][i]);
-          ResultSet equipmentCount = equipmentCountStatement.executeQuery();
+          PreparedStatement equipmentRequiredStatement = connection.prepareStatement(mySqlEquipmentRequired);
+          equipmentRequiredStatement.setInt(1, equipmentCounts[0][i]);
           
-          if (equipmentCount.isBeforeFirst()) {
-            equipmentCount.next();
-            
-            // Set required and available, and calculate leftover
-            equipmentCounts[1][i] =  equipmentCount.getInt("EquipmentRequired");
-            equipmentCounts[2][i] = equipmentCount.getInt("EquipmentAvailable");
-            equipmentCounts[3][i] = equipmentCount.getInt("Leftover");
-            
-            // Ass to the error if necessary
-            if (equipmentCounts[3][i] < 0) {
-              prerequisitesError += String.format("Not enough of EquipmentTypeID: %d. You need %d more.", equipmentCounts[0][i], abs(equipmentCounts[3][i]));
-            }
-            
+          ResultSet equipmentRequiredResults = equipmentRequiredStatement.executeQuery();
+          
+          PreparedStatement equipmentAvailableStatement = connection.prepareStatement(mySqlEquipmentAvailable);
+          equipmentAvailableStatement.setInt(1, equipmentCounts[0][i]);
+          
+          ResultSet equipmentAvailableResults = equipmentAvailableStatement.executeQuery();
+          
+          if (equipmentRequiredResults.isBeforeFirst()) {
+            equipmentRequiredResults.next();
+            equipmentCounts[1][i] = equipmentRequiredResults.getInt("Count");
           } else {
-            throw new  JobDaoException("Equipment Count Error");
+            throw new JobDaoException("Equipment Required Count Error");
           }
+          
+          if (equipmentAvailableResults.isBeforeFirst()) {
+            equipmentAvailableResults.next();
+            equipmentCounts[2][i] = equipmentAvailableResults.getInt("Count");
+          } else {
+            throw new JobDaoException("Equipment Available Count Error");
+          }
+          
+          equipmentCounts[3][i] = equipmentCounts[2][i] - equipmentCounts[1][i];
+          
+          if (equipmentCounts[3][i] < 0) {
+            prerequisitesError += String.format("You need %d more of Equipment Type ID: %d", abs(equipmentCounts[3][i]), equipmentCounts[0][i]);
+          }
+        
         }
+        
+        job.setInventoryCounts(inventoryCounts);
+        job.setEquipmentCounts(equipmentCounts);
         
         if (!prerequisitesError.isEmpty()) {
           return false;
@@ -403,14 +407,22 @@ public class JobDaoImpl implements JobDao {
     return true;
   }
   
-  public boolean releasePrerequisites(Job job) {
+  public static boolean releasePrerequisites(Job job) {
     
-    // Get a connection to the database
-    
-    // Prepare a select statement to find inventory types and counts required for job and store them using a loop.
-    // Prepare a select statement to find equipment types and counts required for job and store them using a loop.
-    
-    // Use InventoryDao and EquipmentDao to add counts back to the database for each inventory and equipment type required for this job
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      String mySqlUpdate = "UPDATE Equipment SET Count = ? WHERE ID = ? ;";
+      
+      for (int i = 0; i < job.getEquipmentCounts()[0].length; i++) {
+        PreparedStatement equipmentCountStatement = connection.prepareStatement(mySqlUpdate);
+        
+      }
+      
+      // Use InventoryDao and EquipmentDao to add counts back to the database for each inventory and equipment type required for this job
+    } catch (Exception e) {
+      throw new JobDaoException(e.getMessage());
+    }
     return true;
   }
 }
