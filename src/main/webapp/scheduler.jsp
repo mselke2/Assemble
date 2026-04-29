@@ -53,29 +53,34 @@
         <div class="right-panel">
             <div class="job-info-wrapper">
                 <div class="job-info">
-                    <h1>Date: MM/DD/YYYY</h1>
-                    <label for="job-id" class="info-left">JobId:</label>
-                    <p>XX</p><br>
-                    <label for="product-choice" class="info-left">Product:</label>
-                    <select id="product-choice">
-                        <option>ProductA</option>
-                        <option>ProductB</option>
-                        <option>ProductC</option>
-                    </select><br>
-                    <label for="start-time" class="info-left">From:</label>
-                    <input id="start-time" type="time"><br>
-                    <label for="end-time" class="info-left">To:</label>
-                    <input id="end-time" type="time"><br>
-                    <label for="num-members" class="info-left">#OfTeamMembers:</label>
-                    <input id="num-members" type="number" min="1">
-                    <label for="line-num">Line #:</label>
-                    <input id="line-num" type="number" min="1"><br>
-                    <button>Cancel</button>
-                    <input type="submit" value="Submit">
+                    <h1>Date: ${param.d.substring(4, 6)}/${param.d.substring(6)}/${param.d.substring(0, 4)}</h1>
+                    <div id="job-form" hidden>
+                        <label for="job-id" class="info-left">JobId:</label>
+                        <p id="job-id">XX</p><br>
+                        <label for="product-choice" class="info-left">Product:</label>
+                        <select name="product-choice-id" id="product-choice">
+                            <c:if test="${not empty productTypes}">
+                                <c:forEach var="productType" items="${productTypes}">
+                                    <option value="${productType.id}">${productType.description}</option>
+                                </c:forEach>
+                            </c:if>
+                        </select><br>
+                        <label for="start-time" class="info-left">From:</label>
+                        <input type="time" name="start-time" id="start-time"><br>
+                        <label for="end-time" class="info-left">To:</label>
+                        <input type="time" name="end-time" id="end-time"><br>
+                        <label for="num-members" class="info-left">#OfTeamMembers:</label>
+                        <input  type="number" min="1" name="num-members" id="num-members">
+                        <label for="line-num">Line #:</label>
+                        <input type="number" min="1" name="line-num" id="line-num"><br>
+                        <button id="cancel-btn">Cancel</button>
+                        <button id="submit-btn">Submit</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </main>
+<script src="assets/js/scheduler.js"></script>
 </body>
 </html>
