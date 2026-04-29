@@ -31,8 +31,8 @@ function populateCalendar() {
   $dateBoxes.each(function() {
     let $dateBox = $(this);
 
-    let query = "d=" + date.getFullYear().toString() + (date.getMonth() + 1).toString().padStart(2, "0") + date.getDate().toString().padStart(2, "0");
-    $dateBox.attr("href", "ScheduleJob?" + query);
+    let dateString = date.getFullYear().toString() + (date.getMonth() + 1).toString().padStart(2, "0") + date.getDate().toString().padStart(2, "0");
+    $dateBox.attr("href", "GetTimeline?d=" + dateString);
 
     // set the date number text to the date number of the stored date object
     $dateBox.find(".day-number").text(date.getDate())
@@ -41,7 +41,10 @@ function populateCalendar() {
       .toggleClass("off-month", date.getMonth() !== monthIdx);
 
     // query for jobs scheduled for that day
-    $.getJSON("GetTimeline", date.getTime().toString(), data => {
+    $.getJSON("GetTimeline", {
+      d: dateString,
+      format: "json"
+    }, data => {
       // for each job scheduled that day...
       for (let job of data) {
         // add a div with the product name to the date box
