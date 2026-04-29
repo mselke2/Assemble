@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,15 +39,13 @@
                         <p>11:00pm</p>
                     </div>
                     <div id="timeline-lanes">
-                        <div style="--start-time: 5; --end-time: 15; --lane: 0; background-color: orange;">
-                            <p>01</p>
-                        </div>
-                        <div style="--start-time: 17; --end-time: 24; --lane: 1; background-color: green;">
-                            <p>02</p>
-                        </div>
-                        <div style="--start-time: 20; --end-time: 22; --lane: 0; background-color: darkblue;">
-                            <p>03</p>
-                        </div>
+                        <c:if test="${not empty jobs}">
+                            <c:forEach var="job" items="${jobs}">
+                                <div class="job-entry" job-id="${job.id}" style="--start-time: ${job.startTime.getHours() + job.startTime.getMinutes() / 60}; --end-time: ${job.projectedEndTime.getHours() + job.projectedEndTime.getMinutes() / 60}; --lane: 1; background-color: orange;">
+                                    <p>${job.id}</p>
+                                </div>
+                            </c:forEach>
+                        </c:if>
                     </div>
                 </div>
             </div>
