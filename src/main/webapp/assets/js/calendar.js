@@ -32,7 +32,7 @@ function populateCalendar() {
     let $dateBox = $(this);
 
     let dateString = date.getFullYear().toString() + (date.getMonth() + 1).toString().padStart(2, "0") + date.getDate().toString().padStart(2, "0");
-    $dateBox.attr("href", "GetTimeline?d=" + dateString);
+    $dateBox.attr("href", "Timeline?d=" + dateString);
 
     // set the date number text to the date number of the stored date object
     $dateBox.find(".day-number").text(date.getDate())
@@ -41,7 +41,7 @@ function populateCalendar() {
       .toggleClass("off-month", date.getMonth() !== monthIdx);
 
     // query for jobs scheduled for that day
-    $.getJSON("GetTimeline", {
+    $.getJSON("Timeline", {
       d: dateString,
       format: "json"
     }, data => {

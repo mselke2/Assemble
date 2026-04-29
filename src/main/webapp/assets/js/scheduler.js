@@ -58,15 +58,16 @@ $(function() {
 
   $("#submit-btn").on("click", function() {
     // perform PUT request with info from form
-    $.ajax(`ScheduleJob/${$activeJobEntry.attr("job-id")}`, {
+    $.ajax(`Job/${$activeJobEntry.attr("job-id")}`, {
       method: "PUT",
-      data: {
+      contentType: "application/json",
+      data: JSON.stringify({
         productId: $productChoiceInput.val(),
         startTime: $startTimeInput.val(),
         projectedEndTime: $endTimeInput.val(),
         numMembers: $numMembersInput.val(),
         lineNum: $lineNumInput.val()
-      }
+      })
     });
   });
 
@@ -87,7 +88,7 @@ $(function() {
     let jobId = $activeJobEntry.attr("job-id");
 
     // perform a GET request for the job
-    $.getJSON(`ScheduleJob/${jobId}`, data => {
+    $.getJSON(`Job/${jobId}`, data => {
       // update GUI with data from GET
       $jobIdDisplay.text(jobId);
 

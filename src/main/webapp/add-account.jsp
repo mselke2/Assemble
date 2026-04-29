@@ -8,7 +8,7 @@
 <body>
 <div class="panel">
     <h1>Add Account</h1>
-    <form action="CreateUser" method="post">
+    <form action="User" method="post">
         <label for="username">Username</label>
         <input type="text" name="username" id="username">
         <label for="password">Password</label>

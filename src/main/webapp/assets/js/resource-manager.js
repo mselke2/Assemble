@@ -1,14 +1,15 @@
 function initializeControls(endpoint) {
-  $(".count-control.add").on("click", function(e) {
+  $(".count-control.add").on("click", function (e) {
     let $target = $(e.target);
     let $row = $target.parent().parent();
 
     let resourceId = $row.attr("resource-id");
     $.ajax(`${endpoint}/${resourceId}`, {
       method: "PUT",
-      data: {
+      contentType: "application/json",
+      data: JSON.stringify({
         action: "add"
-      }
+      })
     });
 
     let $resourceCount = $row.find(".resource-count");
@@ -16,16 +17,17 @@ function initializeControls(endpoint) {
     $resourceCount.text(count);
   });
 
-  $(".count-control.remove").on("click", function(e) {
+  $(".count-control.remove").on("click", function (e) {
     let $target = $(e.target);
     let $row = $target.parent().parent();
 
     let resourceId = $row.attr("resource-id");
     $.ajax(`${endpoint}/${resourceId}`, {
       method: "PUT",
-      data: {
+      contentType: "application/json",
+      data: JSON.stringify({
         action: "remove"
-      }
+      })
     });
 
     let $resourceCount = $row.find(".resource-count");
@@ -38,7 +40,7 @@ function initializeControls(endpoint) {
     }
   });
 
-  $(".delete-btn").on("click", function(e) {
+  $(".delete-btn").on("click", function (e) {
     let $target = $(e.target);
     let $row = $target.parent().parent();
 
