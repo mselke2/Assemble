@@ -26,7 +26,7 @@ function populateCalendar() {
   }
 
   // clear existing job entries from calendar
-  $dateBoxes.find("job-entry").remove();
+  $dateBoxes.find(".job-entry").remove();
 
   $dateBoxes.each(function() {
     let $dateBox = $(this);
