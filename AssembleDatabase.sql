@@ -394,7 +394,7 @@ BEGIN
     truncate product;
     truncate productequipment;
 	truncate productinventory;
-    truncate assemble.`session`;
+    truncate `session`;
 	-- truncate `user`;
     
    
