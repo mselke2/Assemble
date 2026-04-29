@@ -1,25 +1,49 @@
 package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Inventory;
+import com.assemble.java.assemblecodebase.utility.MySQLUtility;
+import com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class InventoryDaoImpl implements InventoryDao{
   
   @Override
   public int addInventory(Inventory inventory) {
   
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if Inventory exists
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      
+      // Prepare a select statement to see if Inventory exists
       // with this inventoryID and execute it.
-    
-    // IF inventory exists
+      String MySQLSelect = "SELECT * FROM inventory WHERE inventoryID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
+      preparedStatement.setInt(1, inventory.getId());
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // IF inventory exists
       // Throw an InventoryDaoException with the message "Inventory already exists."
-    
-    // ELSE
-      // Prepare an insert statement to add this inventory to the database and execute it.
-      // Prepare a select statement to get the newly created inventoryID and execute
-      // Return the inventoryID.
-    // ENDIF
+      if(resultSet.isBeforeFirst()) {
+        throw new InventoryDaoException("Inventory already exists.");
+      } else {
+        // ELSE
+        // Prepare an insert statement to add this inventory to the database and execute it.
+        String mySqlInsert = "INSERT INTO inventory (Type, Count) VALUES (?, ?);";
+        PreparedStatement preparedStatementInsert = connection.prepareStatement(mySqlInsert);
+        preparedStatementInsert.setInt(1, inventory.getTypeId());
+        preparedStatementInsert.setInt(2, inventory.getCount());
+        preparedStatementInsert.executeUpdate();
+        
+        // Prepare a select statement to get the newly created inventoryID and execute
+        // Return the inventoryID.
+        // ENDIF
+      }
+    } catch (Exception e) {
+      throw new InventoryDaoException(e.getMessage());
+    }
     
     return 0;
   }
