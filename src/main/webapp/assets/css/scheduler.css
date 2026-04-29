@@ -43,14 +43,14 @@ body {
             flex-grow: 1;
             position: relative;
 
-            div {
+            .job-entry {
               position: absolute;
 
               width: 100px;
-              height: calc((var(--end-time) - var(--start-time)) / 6 * var(--hour-tick-space));
+              height: calc((var(--end-time) - var(--start-time)) * var(--hour-tick-space));
 
-              top: calc(var(--start-time) / 6 * var(--hour-tick-space));
-              left: calc(var(--lane) * 100px);
+              top: calc(var(--start-time) * var(--hour-tick-space));
+              left: calc((var(--lane) - 1) * 100px);
 
               background-color: orange;
               border-radius: 5px;
