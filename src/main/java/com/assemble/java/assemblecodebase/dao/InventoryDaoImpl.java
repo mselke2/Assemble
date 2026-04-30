@@ -7,19 +7,20 @@ import com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class InventoryDaoImpl implements InventoryDao{
   
   @Override
   public int addInventory(Inventory inventory) {
-  
+    
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
       
       // Prepare a select statement to see if Inventory exists
       // with this inventoryID and execute it.
-      String MySQLSelect = "SELECT * FROM inventory WHERE inventoryID = ?;";
+      String MySQLSelect = "SELECT * FROM inventory WHERE ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
       preparedStatement.setInt(1, inventory.getId());
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -31,14 +32,17 @@ public class InventoryDaoImpl implements InventoryDao{
       } else {
         // ELSE
         // Prepare an insert statement to add this inventory to the database and execute it.
-        String mySqlInsert = "INSERT INTO inventory (Type, Count) VALUES (?, ?);";
-        PreparedStatement preparedStatementInsert = connection.prepareStatement(mySqlInsert);
+        String mySqlInsert = "INSERT INTO inventory (TypeID, Count) VALUES (?, ?);";
+        PreparedStatement preparedStatementInsert = connection.prepareStatement(mySqlInsert,  Statement.RETURN_GENERATED_KEYS);
         preparedStatementInsert.setInt(1, inventory.getTypeId());
         preparedStatementInsert.setInt(2, inventory.getCount());
+        // Return the inventoryID.
         preparedStatementInsert.executeUpdate();
         
-        // Prepare a select statement to get the newly created inventoryID and execute
-        // Return the inventoryID.
+        ResultSet generatedKeys = preparedStatementInsert.getGeneratedKeys();
+        if(generatedKeys.next()) {
+          return generatedKeys.getInt(1);
+        }
         // ENDIF
       }
     } catch (Exception e) {
