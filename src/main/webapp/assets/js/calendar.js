@@ -8,6 +8,9 @@ calendarDate.setDate(1);
 let $monthName;
 let $dateBoxes;
 
+let $prevMonthBtn;
+let $nextMonthBtn;
+
 let dateBoxXHRs = [];
 
 function populateCalendar() {
@@ -71,17 +74,30 @@ function populateCalendar() {
   });
 }
 
-$(function() {
+$(function () {
   $monthName = $("#month-name");
   $dateBoxes = $(".calendar-day");
 
-  $("#prev-btn").on("click", () => {
+  $prevMonthBtn = $("#prev-btn").on("click", () => {
     calendarDate.setMonth(calendarDate.getMonth() - 1);
+
+    $nextMonthBtn.prop("disabled", false);
+    if (calendarDate.getFullYear() <= 2000) {
+      $prevMonthBtn.prop("disabled", true);
+    }
+
     populateCalendar();
   });
 
-  $("#next-btn").on("click", () => {
+  $nextMonthBtn = $("#next-btn").on("click", () => {
     calendarDate.setMonth(calendarDate.getMonth() + 1);
+
+
+    $prevMonthBtn.prop("disabled", false);
+    if (calendarDate.getFullYear() >= 2500) {
+      $nextMonthBtn.prop("disabled", true);
+    }
+
     populateCalendar();
   });
 
