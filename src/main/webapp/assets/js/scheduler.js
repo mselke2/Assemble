@@ -52,7 +52,17 @@ $(function() {
     $activeJobEntry.css("--end-time", +hours + minutes / 60);
   });
 
+  $numMembersInput.on("change", function() {
+    if ($numMembersInput.val() < 1) {
+      $numMembersInput.val(1);
+    }
+  });
+
   $lineNumInput.on("change", function() {
+    if ($lineNumInput.val() < 1) {
+      $lineNumInput.val(1);
+    }
+
     $activeJobEntry.css("--lane", $lineNumInput.val())
   });
 
