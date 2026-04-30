@@ -8,6 +8,8 @@ calendarDate.setDate(1);
 let $monthName;
 let $dateBoxes;
 
+let dateBoxXHRs = [];
+
 function populateCalendar() {
   // create new date so we don't have to modify the original
   let date = new Date(calendarDate);
@@ -28,7 +30,15 @@ function populateCalendar() {
   // clear existing job entries from calendar
   $dateBoxes.find(".job-entry").remove();
 
-  $dateBoxes.each(function() {
+  // abort any requests that haven't been fulfilled yet.
+  // can happen if you are clicking the prev/next buttons really fast.
+  for (let request of dateBoxXHRs) {
+    request.abort();
+  }
+
+  dateBoxXHRs = [];
+
+  $dateBoxes.each(function () {
     let $dateBox = $(this);
 
     let dateString = date.getFullYear().toString() + (date.getMonth() + 1).toString().padStart(2, "0") + date.getDate().toString().padStart(2, "0");
@@ -36,12 +46,13 @@ function populateCalendar() {
 
     // set the date number text to the date number of the stored date object
     $dateBox.find(".day-number").text(date.getDate())
-    // if the date object's month does not match the month we stored earlier,
-    // fade it out
+      // if the date object's month does not match the month we stored earlier,
+      // fade it out
       .toggleClass("off-month", date.getMonth() !== monthIdx);
 
-    // query for jobs scheduled for that day
-    $.getJSON("Timeline", {
+    // query for jobs scheduled for that day, and add the requests to
+    // the XHRs array
+    dateBoxXHRs.push($.getJSON("Timeline", {
       d: dateString,
       format: "json"
     }, data => {
@@ -53,7 +64,7 @@ function populateCalendar() {
           class: "job-entry"
         }));
       }
-    });
+    }));
 
     // advance the date object forward by one day.
     date.setDate(date.getDate() + 1);
