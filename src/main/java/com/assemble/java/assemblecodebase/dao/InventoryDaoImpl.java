@@ -12,39 +12,6 @@ public class InventoryDaoImpl implements InventoryDao{
   
   @Override
   public int addInventory(Inventory inventory) {
-  
-    try {
-      // Get a connection to the database
-      Connection connection = MySQLUtility.createConnection();
-      
-      // Prepare a select statement to see if Inventory exists
-      // with this inventoryID and execute it.
-      String MySQLSelect = "SELECT * FROM inventory WHERE inventoryID = ?;";
-      PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
-      preparedStatement.setInt(1, inventory.getId());
-      ResultSet resultSet = preparedStatement.executeQuery();
-      
-      // IF inventory exists
-      // Throw an InventoryDaoException with the message "Inventory already exists."
-      if(resultSet.isBeforeFirst()) {
-        throw new InventoryDaoException("Inventory already exists.");
-      } else {
-        // ELSE
-        // Prepare an insert statement to add this inventory to the database and execute it.
-        String mySqlInsert = "INSERT INTO inventory (Type, Count) VALUES (?, ?);";
-        PreparedStatement preparedStatementInsert = connection.prepareStatement(mySqlInsert);
-        preparedStatementInsert.setInt(1, inventory.getTypeId());
-        preparedStatementInsert.setInt(2, inventory.getCount());
-        preparedStatementInsert.executeUpdate();
-        
-        // Prepare a select statement to get the newly created inventoryID and execute
-        // Return the inventoryID.
-        // ENDIF
-      }
-    } catch (Exception e) {
-      throw new InventoryDaoException(e.getMessage());
-    }
-    
     return 0;
   }
   
