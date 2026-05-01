@@ -11,6 +11,7 @@ body {
     }
 
     form {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -19,6 +20,31 @@ body {
       input[type="submit"] {
         margin-top: 2em;
         padding: 0.2em 2.5em;
+      }
+
+      input[type="text"], input[type="password"] {
+        border: 1px solid black;
+        border-radius: .2em;
+        transition: box-shadow 0.2s;
+
+        &:user-invalid {
+          box-shadow: 0 0 0 2px white, 0 0 0 4px red
+        }
+      }
+
+      #password-requirements {
+        position: absolute;
+        translate: 100% 0;
+        right: 0;
+        background: white;
+        border: 1px solid black;
+
+        opacity: 0;
+        transition: opacity .2s;
+      }
+
+      #password:focus + #password-requirements {
+        opacity: 1;
       }
     }
   }
