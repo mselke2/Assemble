@@ -5,14 +5,14 @@ import java.io.Serializable;
 public class Equipment implements Serializable {
   private int id;
   private int typeId;
-  private String description;
+  private int Count;
   
   public Equipment() {
   }
   
-  public Equipment(int id, String description, int typeId) {
+  public Equipment(int id, int count, int typeId) {
     setId(id);
-    setDescription(description);
+    setCount(count);
     setTypeId(typeId);
   }
   
@@ -32,11 +32,11 @@ public class Equipment implements Serializable {
     this.typeId = typeId;
   }
   
-  public String getDescription() {
-    return description;
+  public int getCount() {
+    return Count;
   }
   
-  public void setDescription(String description) {
-    this.description = description;
+  public void setCount(int count) {
+    Count = count;
   }
 }
