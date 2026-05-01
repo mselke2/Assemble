@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InventoryDaoImplTest {
   
+  
   @Test
   void addInventory() {
     
@@ -72,19 +73,38 @@ class InventoryDaoImplTest {
   }
   
   @Test
-  void deleteInventoryById() {
+  void retrieveById() {
+    
+    int id = 4;
+    
+    assertDoesNotThrow(() -> {
+      InventoryDao inventoryDao = new InventoryDaoImpl();
+      Inventory inventory = inventoryDao.retrieveById(id);
+      assertNotNull(inventory);
+      assertEquals(id, inventory.getId());
+      assertTrue(inventory.getTypeId() > 0 && inventory.getCount() >= 0);
+      System.out.println("Inventory retrieved: ID = " + inventory.getId() + ", TypeID = " + inventory.getTypeId() + ", Count = " + inventory.getCount());
+      
+      assertThrows(Exception.class, () -> {
+        inventoryDao.retrieveById(12);
+      });
+    });
+  }
   
+  @Test
+  void deleteInventoryById() {
+    
     assertDoesNotThrow(() -> {
       InventoryDao inventoryDao = new InventoryDaoImpl();
       for (int i = 1; i <= 10; i++) {
-        assertEquals(inventoryDao.deleteInventoryById(i), i);
+        assertEquals(i, inventoryDao.deleteInventoryById(i));
       }
       
       assertThrows(Exception.class, () -> {
         inventoryDao.deleteInventoryById(1);
       });
     });
-  
+    
     
   }
 }
