@@ -89,22 +89,42 @@ public class InventoryDaoImpl implements InventoryDao{
   }
   
   @Override
-  public int deleteInventory(Inventory inventory) {
-    
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if Inventory exists
+  public int deleteInventoryById(int id) {
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      
+      // Prepare a select statement to see if Inventory exists
       // with this inventoryID and execute it.
+      
+      String MySQLSelect = "SELECT * FROM inventory WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
+      preparedStatement.setInt(1, id);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // IF inventory exists
+      if(resultSet.isBeforeFirst()) {
+        // Store the inventoryID in a variable
+        resultSet.next();
+        int idSelected = resultSet.getInt("ID");
+        // Prepare a delete statement to delete this inventory from the database and execute it.
+        // Return the inventoryID.
+        String MySQLDelete = "DELETE FROM inventory WHERE ID = ?;";
+        PreparedStatement preparedStatementDelete = connection.prepareStatement(MySQLDelete);
+        preparedStatementDelete.setInt(1, idSelected);
+        preparedStatementDelete.executeUpdate();
+        
+        preparedStatementDelete.close();
+        connection.close();
+        return idSelected;
+      } else {
+        throw new InventoryDaoException("Inventory does not exists.");
+      }
+      
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new InventoryDaoException(e.getMessage());
+    }
     
-    // IF inventory exists
-      // Store the inventoryID in a variable
-      // Prepare a delete statement to delete this inventory from the database and execute it.
-      // Return the inventoryID.
-    // ELSE
-      // Throw an InventoryDaoException with the message "Inventory does not exist."
-    // ENDIF
-    
-    return 0;
   }
   
   @Override

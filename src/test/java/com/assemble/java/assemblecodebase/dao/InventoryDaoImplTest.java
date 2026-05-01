@@ -70,4 +70,21 @@ class InventoryDaoImplTest {
         
       });
   }
+  
+  @Test
+  void deleteInventoryById() {
+  
+    assertDoesNotThrow(() -> {
+      InventoryDao inventoryDao = new InventoryDaoImpl();
+      for (int i = 1; i <= 10; i++) {
+        assertEquals(inventoryDao.deleteInventoryById(i), i);
+      }
+      
+      assertThrows(Exception.class, () -> {
+        inventoryDao.deleteInventoryById(1);
+      });
+    });
+  
+    
+  }
 }

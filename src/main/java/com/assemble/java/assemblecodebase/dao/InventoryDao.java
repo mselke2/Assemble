@@ -6,6 +6,6 @@ public interface InventoryDao {
   
   int addInventory(Inventory inventory);
   boolean updateInventory(Inventory inventory);
-  int deleteInventory(Inventory inventory);
+  int deleteInventoryById(int id);
   Inventory retrieve(int id);
 }
