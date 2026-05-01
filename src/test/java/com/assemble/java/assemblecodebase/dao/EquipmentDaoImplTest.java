@@ -68,4 +68,19 @@ class EquipmentDaoImplTest {
       
     });
   }
+  
+  @Test
+  void deleteEquipmentById() {
+    
+    assertDoesNotThrow(() -> {
+      EquipmentDaoImpl equipmentDaoImpl = new EquipmentDaoImpl();
+      
+      for (int i = 1; i <= 10; i++) {
+        assertEquals(i, equipmentDaoImpl.deleteEquipmentById(i));
+      }
+      
+      assertThrows(Exception.class, () -> equipmentDaoImpl.deleteEquipmentById(1));
+      
+    });
+  }
 }

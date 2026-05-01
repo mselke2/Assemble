@@ -89,21 +89,38 @@ public class EquipmentDaoImpl implements EqipmentDao{
   @Override
   public int deleteEquipmentById(int id) {
     
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if Equipment exists
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      // Prepare a select statement to see if Equipment exists
       // with this typeID and execute it.
-    
-    // IF Equipment exists
-      // Store the equipmentID in a variable
-      // Prepare a delete statement to delete this equipment from the database and execute it.
-      // Return the equipmentID.
-    
-    // ELSE
-      // Throw an EquipmentDaoException with the message "Equipment does not exist."
-    
-    // ENDIF
-    return 0;
+      String sqlSelect = "SELECT * FROM equipment WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(sqlSelect);
+      preparedStatement.setInt(1, id);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // IF Equipment exists
+      if (resultSet.isBeforeFirst()) {
+        // Store the equipmentID in a variable
+        resultSet.next();
+        int returnId = resultSet.getInt("ID");
+        // Prepare a delete statement to delete this equipment from the database and execute it.
+        String mySqlDelete = "DELETE FROM equipment WHERE ID = ?;";
+        preparedStatement = connection.prepareStatement(mySqlDelete);
+        preparedStatement.setInt(1, returnId);
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
+        connection.close();
+        // Return the equipmentID.
+        return returnId;
+      } else {
+        // ELSE
+        // Throw an EquipmentDaoException with the message "Equipment does not exist."
+        throw new EquipmentDaoException("Equipment does not exist.");
+      }
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   @Override

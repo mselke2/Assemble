@@ -106,17 +106,17 @@ public class InventoryDaoImpl implements InventoryDao{
       if(resultSet.isBeforeFirst()) {
         // Store the inventoryID in a variable
         resultSet.next();
-        int idSelected = resultSet.getInt("ID");
+        int returnId = resultSet.getInt("ID");
         // Prepare a delete statement to delete this inventory from the database and execute it.
         // Return the inventoryID.
         String MySQLDelete = "DELETE FROM inventory WHERE ID = ?;";
         PreparedStatement preparedStatementDelete = connection.prepareStatement(MySQLDelete);
-        preparedStatementDelete.setInt(1, idSelected);
+        preparedStatementDelete.setInt(1, returnId);
         preparedStatementDelete.executeUpdate();
         
         preparedStatementDelete.close();
         connection.close();
-        return idSelected;
+        return returnId;
       } else {
         throw new InventoryDaoException("Inventory does not exists.");
       }
