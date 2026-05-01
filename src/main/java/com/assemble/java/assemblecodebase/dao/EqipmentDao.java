@@ -4,9 +4,9 @@ import com.assemble.java.assemblecodebase.model.Equipment;
 
 public interface EqipmentDao {
   
-  int addEquipment(int typeId, String description);
-  void updateEquipment(int typeId, String description);
-  int deleteEquipment(int typeId);
-  Equipment retrieve(int id);
+  int addEquipment(Equipment equipment);
+  boolean updateEquipment(Equipment equipment);
+  int deleteEquipmentById(int id);
+  Equipment retrieveById(int id);
   
 }

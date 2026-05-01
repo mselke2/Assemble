@@ -5,15 +5,15 @@ import java.io.Serializable;
 public class Equipment implements Serializable {
   private int id;
   private int typeId;
-  private String description;
+  private int status;
   
   public Equipment() {
   }
   
-  public Equipment(int id, String description, int typeId) {
+  public Equipment(int id, int typeId, int status) {
     setId(id);
-    setDescription(description);
     setTypeId(typeId);
+    setStatus(status);
   }
   
   public int getId() {
@@ -32,11 +32,11 @@ public class Equipment implements Serializable {
     this.typeId = typeId;
   }
   
-  public String getDescription() {
-    return description;
+  public int getStatus() {
+    return status;
   }
   
-  public void setDescription(String description) {
-    this.description = description;
+  public void setStatus(int status) {
+    this.status = status;
   }
 }
