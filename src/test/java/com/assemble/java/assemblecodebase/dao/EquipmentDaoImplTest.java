@@ -83,4 +83,25 @@ class EquipmentDaoImplTest {
       
     });
   }
+  
+  @Test
+  void retrieveById() {
+    
+    EquipmentDaoImpl equipmentDaoImpl = new EquipmentDaoImpl();
+    
+    assertDoesNotThrow(() -> {
+      
+      for (int i = 1; i <= 10; i++) {
+        Equipment equipment = equipmentDaoImpl.retrieveById(i);
+        assertEquals(i, equipment.getId());
+        assertTrue(equipment.getTypeId() > 0);
+        assertTrue(equipment.getStatus() == 0 || equipment.getStatus() == 1);
+        System.out.println("Equipment ID: " + equipment.getId() + ", Type ID: " + equipment.getTypeId() + ", Status: " + equipment.getStatus());
+      }
+      
+      assertThrows(Exception.class, () -> {
+        Equipment equipment = equipmentDaoImpl.retrieveById(15);
+      });
+    });
+  }
 }

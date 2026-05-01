@@ -126,20 +126,34 @@ public class EquipmentDaoImpl implements EqipmentDao{
   @Override
   public Equipment retrieveById(int id) {
     
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if Equipment exists
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      
+      // Prepare a select statement to see if Equipment exists
       // with this typeID and execute it.
-    
-    // IF Equipment exists
+      String sqlSelect = "SELECT * FROM equipment WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(sqlSelect);
+      preparedStatement.setInt(1, id);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // IF Equipment exists
       // Move the cursor to the first result
       // Create an Equipment object with the data from the result and return it.
-    
-    // ELSE
-      // Throw an EquipmentDaoException with the message "Equipment does not exist."
-    
-    // ENDIF
-    
-    return null;
+      if (resultSet.isBeforeFirst()) {
+        resultSet.next();
+        
+        Equipment equipment = new Equipment(resultSet.getInt("ID"), resultSet.getInt("TypeID"), resultSet.getInt("Status"));
+        preparedStatement.close();
+        connection.close();
+        return equipment;
+      } else {
+        // ELSE
+        // Throw an EquipmentDaoException with the message "Equipment does not exist."
+        throw new EquipmentDaoException("Equipment does not exist.");
+      }
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
