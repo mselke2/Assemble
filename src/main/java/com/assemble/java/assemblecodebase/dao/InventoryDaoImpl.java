@@ -4,10 +4,7 @@ import com.assemble.java.assemblecodebase.model.Inventory;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 import com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class InventoryDaoImpl implements InventoryDao{
   
@@ -51,19 +48,43 @@ public class InventoryDaoImpl implements InventoryDao{
   }
   
   @Override
-  public void updateInventory(Inventory inventory) {
+  public boolean updateInventory(Inventory inventory) {
     
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if Inventory exists
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      
+      // Prepare a select statement to see if Inventory exists
       // with this inventoryID and execute it.
-    
-    // IF inventory exists
+      
+      String MySQLSelect = "SELECT * FROM inventory WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
+      preparedStatement.setInt(1, inventory.getId());
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // IF inventory exists
       // Prepare an update statement to update this inventory in the database and execute it.
-    
-    // ELSE
+      if(resultSet.isBeforeFirst()) {
+        String mySqlUpdate = "UPDATE inventory SET TypeID = ?, Count = ? WHERE ID = ?;";
+        PreparedStatement preparedStatementUpdate = connection.prepareStatement(mySqlUpdate);
+        preparedStatementUpdate.setInt(1, inventory.getTypeId());
+        preparedStatementUpdate.setInt(2, inventory.getCount());
+        preparedStatementUpdate.setInt(3, inventory.getId());
+        preparedStatementUpdate.executeUpdate();
+        preparedStatementUpdate.close();
+        connection.close();
+        
+        return true;
+      
+      } else {
+        throw new InventoryDaoException("Inventory does not exists.");
+      }
+      // ELSE
       // Throw an InventoryDaoException with the message "Inventory does not exist."
-    // ENDIf
+      // ENDIf
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new InventoryDaoException(e.getMessage());
+    }
   
   }
   
