@@ -8,8 +8,8 @@
 <body>
 <div class="panel">
     <h1>Admin Tools</h1>
-    <button>Add Account</button>
-    <button>Remove Account</button>
+    <a href="CreateUser">Add Account</a>
+    <a href="DeleteUser">Remove Account</a>
 </div>
 </body>
 </html>

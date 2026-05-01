@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,17 +10,17 @@
 <body>
 <div class="panel">
     <h1>Personnel</h1>
-    <div class="new-entry-bar">
+    <form action="Personnel" method="post" class="new-entry-bar">
         <span>
             Date Range
             <label for="start-date" class="hidden">Start Date</label>
-            <input type="date" id="start-date">
+            <input type="date" name="start-date" id="start-date">
             -
             <label for="end-date" class="hidden">End Date</label>
-            <input type="date" id="end-date">
-            <input type="submit" value="Submit">
+            <input type="date" name="end-date" id="end-date">
+            <input type="submit" name="submit" value="Submit">
         </span>
-    </div>
+    </form>
     <table>
         <tr>
             <th></th>
@@ -26,18 +28,24 @@
             <th>Quantity</th>
             <th></th>
         </tr>
-        <tr>
-            <td>
-                <button class="count-control">+</button>
-                <button class="count-control">-</button>
-            </td>
-            <td>05/01/2026</td>
-            <td>25</td>
-            <td>
-                <button class="delete-btn">Delete</button>
-            </td>
-        </tr>
+        <c:if test="${not empty personnel}">
+            <c:forEach var="scheduledPersonnel" items="${personnel}">
+                <tr resource-id="${scheduledPersonnel.id}">
+                    <td>
+                        <button class="count-control add">+</button>
+                        <button class="count-control remove">-</button>
+                    </td>
+                    <td>${scheduledPersonnel.date.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))}</td>
+                    <td class="resource-count">${scheduledPersonnel.count}</td>
+                    <td>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+            </c:forEach>
+        </c:if>
     </table>
 </div>
+<script src="assets/js/resource-manager.js"></script>
+<script src="assets/js/personnel-manager.js"></script>
 </body>
 </html>

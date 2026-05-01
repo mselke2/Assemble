@@ -9,10 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "CreateUserServlet", value = "/CreateUser")
-public class CreateUserServlet extends HttpServlet {
+@WebServlet(name = "CalendarServlet", value = "/Calendar")
+public class CalendarServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    getServletContext().getRequestDispatcher("/add-account.jsp").forward(request, response);
+    getServletContext().getRequestDispatcher("/calendar.jsp").forward(request, response);
   }
+
 }
