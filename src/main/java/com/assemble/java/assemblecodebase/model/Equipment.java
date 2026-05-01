@@ -5,15 +5,15 @@ import java.io.Serializable;
 public class Equipment implements Serializable {
   private int id;
   private int typeId;
-  private int Count;
+  private int status;
   
   public Equipment() {
   }
   
-  public Equipment(int id, int count, int typeId) {
+  public Equipment(int id, int typeId, int status) {
     setId(id);
-    setCount(count);
     setTypeId(typeId);
+    setStatus(status);
   }
   
   public int getId() {
@@ -32,11 +32,11 @@ public class Equipment implements Serializable {
     this.typeId = typeId;
   }
   
-  public int getCount() {
-    return Count;
+  public int getStatus() {
+    return status;
   }
   
-  public void setCount(int count) {
-    Count = count;
+  public void setStatus(int status) {
+    this.status = status;
   }
 }

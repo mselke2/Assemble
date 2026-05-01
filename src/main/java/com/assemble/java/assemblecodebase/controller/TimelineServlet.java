@@ -33,7 +33,7 @@ public class TimelineServlet extends HttpServlet {
     } else {
       Timestamp startTime = new Timestamp(2026, 5, 3, 3, 0, 0, 0);
       Timestamp projectedEndTime = new Timestamp(2026, 5, 3, 5, 45, 0, 0);
-      Job job1 = new Job(67, 1, startTime, 20);
+      Job job1 = new Job(67, 1, 1, startTime, 20);
       job1.setProjectedEndTime(projectedEndTime);
       List<Job> jobList = List.of(job1);
 

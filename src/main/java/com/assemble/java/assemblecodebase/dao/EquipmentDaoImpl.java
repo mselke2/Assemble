@@ -19,7 +19,7 @@ public class EquipmentDaoImpl implements EqipmentDao{
       Connection connection = MySQLUtility.createConnection();
       // Prepare a select statement to see if Equipment exists
       // with this ID and execute it.
-      String sqlSelect = "SELECT * FROM inventory WHERE ID = ?;";
+      String sqlSelect = "SELECT * FROM equipment WHERE ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(sqlSelect);
       preparedStatement.setInt(1, equipment.getId());
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -31,12 +31,12 @@ public class EquipmentDaoImpl implements EqipmentDao{
       } else {
         // ELSE
         // Prepare an insert statement to add this equipment to the database and execute it.
-        String mySqlInsert = "INSERT INTO inventory (ID, TypeID, Count) VALUES (?, ?, ?);";
+        String mySqlInsert = "INSERT INTO equipment (ID, TypeID, Status) VALUES (?, ?, ?);";
         // Prepare a select statement to get the newly created equipmentID and execute it.
         preparedStatement = connection.prepareStatement(mySqlInsert);
         preparedStatement.setInt(1, equipment.getId());
         preparedStatement.setInt(2, equipment.getTypeId());
-        preparedStatement.setInt(3, equipment.getCount());
+        preparedStatement.setInt(3, equipment.getStatus());
         preparedStatement.executeUpdate();
         
         preparedStatement.close();
@@ -51,19 +51,38 @@ public class EquipmentDaoImpl implements EqipmentDao{
   }
   
   @Override
-  public void updateEquipment(Equipment equipment) {
+  public boolean updateEquipment(Equipment equipment) {
     
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if Equipment exists
-      // with this typeID and execute it.
-    
-    // IF Equipment exists
-      // Prepare an update statement to update this equipment in the database and execute it.
-    
-    // ELSE
-      // Throw an EquipmentDaoException with the message "Equipment does not exist."
-    
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      // Prepare a select statement to see if Equipment exists
+      // with this ID and execute it.
+      String sqlSelect = "SELECT * FROM equipment WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(sqlSelect);
+      preparedStatement.setInt(1, equipment.getId());
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // IF Equipment exists
+      if (resultSet.isBeforeFirst()) {
+        String mySqlUpdate = "UPDATE equipment SET TypeID = ?, Status = ? WHERE ID = ?;";
+        preparedStatement = connection.prepareStatement(mySqlUpdate);
+        preparedStatement.setInt(1, equipment.getTypeId());
+        preparedStatement.setInt(2, equipment.getStatus());
+        preparedStatement.setInt(3, equipment.getId());
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
+        connection.close();
+        
+        return true;
+        // ELSE
+      } else {
+        // Throw an EquipmentDaoException with the message "Equipment does not exist."
+        throw new EquipmentDaoException("Equipment does not exist.");
+      }
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
     // ENDIF
   }
   
