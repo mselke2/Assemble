@@ -5,7 +5,7 @@ import com.assemble.java.assemblecodebase.model.Inventory;
 public interface InventoryDao {
   
   int addInventory(Inventory inventory);
-  void updateInventory(Inventory inventory);
-  int deleteInventory(Inventory inventory);
-  Inventory retrieve(int id);
+  boolean updateInventory(Inventory inventory);
+  int deleteInventoryById(int id);
+  Inventory retrieveById(int id);
 }

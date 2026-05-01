@@ -5,19 +5,35 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class Job implements Serializable {
-  private int id;
+  private int id = -1;
   private int productId;
+  private int lineNumber;
   private Timestamp startTime;
   private Timestamp projectedEndTime;
   private Timestamp actualEndTime;
   private int personnelCount;
   
+  // These are 2D arrays used as a kind of database table on the server.
+  // The structure looks like this:
+  // {
+  //   {Col 0,           Col 1,           Col 2,           ...}
+  //   ------------------------------------------------------------
+  //   {TypeID1,         TypeID2,         TypeID3,         ...},  |   {Row 0}
+  //   {RequiredCount1,  RequiredCount2,  RequiredCount3,  ...},  |   {Row 1}
+  //   {AvailableCount1, AvailableCount2, AvailableCount3, ...},  |   {Row 2}
+  //   {Leftover1,       Leftover2,       Leftover3,       ...}   |   {Row 3}
+  // }
+  
+  private int[][] inventoryCounts;
+  private int[][] equipmentCounts;
+  
   public Job() {
   }
   
-  public Job(int id, int productId, Timestamp startTime, int personnelCount) {
+  public Job(int id, int productId, int lineNumber, Timestamp startTime, int personnelCount) {
     setId(id);
     setProductId(productId);
+    setLineNumber(lineNumber);
     setStartTime(startTime);
     setProjectedEndTime(startTime);
     setPersonnelCount(personnelCount);
@@ -37,6 +53,14 @@ public class Job implements Serializable {
   
   public void setProductId(int productId) {
     this.productId = productId;
+  }
+  
+  public int getLineNumber() {
+    return lineNumber;
+  }
+  
+  public void setLineNumber(int lineNumber) {
+    this.lineNumber = lineNumber;
   }
   
   public Timestamp getStartTime() {
@@ -69,5 +93,21 @@ public class Job implements Serializable {
   
   public void setPersonnelCount(int personnelCount) {
     this.personnelCount = personnelCount;
+  }
+  
+  public int[][] getInventoryCounts() {
+    return inventoryCounts;
+  }
+  
+  public void setInventoryCounts(int[][] inventoryCounts) {
+    this.inventoryCounts = inventoryCounts;
+  }
+  
+  public int[][] getEquipmentCounts() {
+    return equipmentCounts;
+  }
+  
+  public void setEquipmentCounts(int[][] equipmentCounts) {
+    this.equipmentCounts = equipmentCounts;
   }
 }
