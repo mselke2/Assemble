@@ -32,5 +32,6 @@
         <input type="submit" name="submit" value="Submit">
     </form>
 </div>
+<script src="assets/js/add-account.js"></script>
 </body>
 </html>
