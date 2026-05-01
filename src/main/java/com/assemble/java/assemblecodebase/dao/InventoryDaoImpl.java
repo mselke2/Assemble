@@ -32,24 +32,22 @@ public class InventoryDaoImpl implements InventoryDao{
       } else {
         // ELSE
         // Prepare an insert statement to add this inventory to the database and execute it.
-        String mySqlInsert = "INSERT INTO inventory (TypeID, Count) VALUES (?, ?);";
-        PreparedStatement preparedStatementInsert = connection.prepareStatement(mySqlInsert,  Statement.RETURN_GENERATED_KEYS);
-        preparedStatementInsert.setInt(1, inventory.getTypeId());
-        preparedStatementInsert.setInt(2, inventory.getCount());
+        String mySqlInsert = "INSERT INTO inventory (ID, TypeID, Count) VALUES (?, ?, ?);";
+        PreparedStatement preparedStatementInsert = connection.prepareStatement(mySqlInsert);
+        preparedStatementInsert.setInt(1, inventory.getId());
+        preparedStatementInsert.setInt(2, inventory.getTypeId());
+        preparedStatementInsert.setInt(3, inventory.getCount());
         // Return the inventoryID.
         preparedStatementInsert.executeUpdate();
+        preparedStatementInsert.close();
+        connection.close();
         
-        ResultSet generatedKeys = preparedStatementInsert.getGeneratedKeys();
-        if(generatedKeys.next()) {
-          return generatedKeys.getInt(1);
-        }
+        return inventory.getId();
         // ENDIF
       }
     } catch (Exception e) {
       throw new InventoryDaoException(e.getMessage());
     }
-    
-    return 0;
   }
   
   @Override

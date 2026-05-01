@@ -16,11 +16,6 @@ public class Inventory implements Serializable {
     setCount(count);
   }
   
-  public Inventory(int typeId, int count) {
-    setTypeId(typeId);
-    setCount(count);
-  }
-  
   public int getCount() {
     return count;
   }

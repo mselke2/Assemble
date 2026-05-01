@@ -10,11 +10,31 @@ class InventoryDaoImplTest {
   @Test
   void addInventory() {
     
-    Inventory inventory = new Inventory(2, 5);
+    Inventory inventory1 = new Inventory(1, 1, 20);
+    Inventory inventory2 = new Inventory(2, 3, 15);
+    Inventory inventory3 = new Inventory(3, 7, 10);
+    Inventory inventory4 = new Inventory(4, 4, 5);
+    Inventory inventory5 = new Inventory(5, 6, 8);
+    Inventory inventory6 = new Inventory(6, 4, 9);
+    Inventory inventory7 = new Inventory(7, 3, 13);
+    Inventory inventory8 = new Inventory(8, 3, 20);
+    Inventory inventory9 = new Inventory(9, 6, 25);
+    Inventory inventory10 = new Inventory(10, 1, 5);
+    
+    Inventory[] inventories = {inventory1, inventory2, inventory3, inventory4, inventory5, inventory6, inventory7, inventory8, inventory9,  inventory10};
     
     assertDoesNotThrow(() -> {
       InventoryDao inventoryDao = new InventoryDaoImpl();
-      System.out.println(inventoryDao.addInventory(inventory));
+      for (Inventory inventory : inventories) {
+        assertEquals(inventoryDao.addInventory(inventory), inventory.getId());
+      }
+    });
+    
+    assertThrows(Exception.class, () -> {
+      InventoryDao inventoryDao = new InventoryDaoImpl();
+      for (Inventory inventory : inventories) {
+        inventoryDao.addInventory(inventory);
+      }
     });
     
   }
