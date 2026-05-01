@@ -6,7 +6,7 @@ public class EquipmentDaoImpl implements EqipmentDao{
   
   
   @Override
-  public int addEquipment(int typeId, String description) {
+  public int addEquipment(int id, int typeId, int count) {
     
     // Get a connection to the database
     
@@ -26,7 +26,7 @@ public class EquipmentDaoImpl implements EqipmentDao{
   }
   
   @Override
-  public void updateEquipment(int typeId, String description) {
+  public void updateEquipment(int id, int typeId, int count) {
     
     // Get a connection to the database
     
@@ -43,7 +43,7 @@ public class EquipmentDaoImpl implements EqipmentDao{
   }
   
   @Override
-  public int deleteEquipment(int typeId) {
+  public int deleteEquipmentById(int id) {
     
     // Get a connection to the database
     
@@ -63,7 +63,7 @@ public class EquipmentDaoImpl implements EqipmentDao{
   }
   
   @Override
-  public Equipment retrieve(int id) {
+  public Equipment retrieveById(int id) {
     
     // Get a connection to the database
     
