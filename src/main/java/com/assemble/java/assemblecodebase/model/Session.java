@@ -1,20 +1,22 @@
 package com.assemble.java.assemblecodebase.model;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class Session {
   
-  int sessionId;
+  int id;
   String loginToken;
   int userId;
-  LocalDateTime lastUsed;
+  Timestamp lastUsed;
   
   public Session() {
   }
   
-  public Session(String loginToken, int userId) {
+  public Session(int sessionId, String loginToken, int userId, Timestamp lastUsed) {
+    setId(sessionId);
     setLoginToken(loginToken);
     setUserId(userId);
+    setLastUsed(lastUsed);
   }
   
   public String getLoginToken() {
@@ -33,8 +35,24 @@ public class Session {
     this.userId = userId;
   }
   
+  public Timestamp getLastUsed() {
+    return lastUsed;
+  }
+  
+  public void setLastUsed(Timestamp lastUsed) {
+    this.lastUsed = lastUsed;
+  }
+  
+  public int getId() {
+    return id;
+  }
+  
+  public void setId(int id) {
+    this.id = id;
+  }
+  
   @Override
   public String toString() {
-    return "Session [sessionId=" + sessionId + ", loginToken=" + loginToken + ", userId=" + userId + "]";
+    return "Session [sessionId=" + id + ", loginToken=" + loginToken + ", userId=" + userId + "]";
   }
 }
