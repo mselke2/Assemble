@@ -6,6 +6,6 @@ public interface ProductDao {
   
   int addProduct(Product product);
   boolean updateProduct(Product product);
-  int deleteProduct(Product product);
+  int deleteProductById(int id);
   Product retrieve(int id);
 }

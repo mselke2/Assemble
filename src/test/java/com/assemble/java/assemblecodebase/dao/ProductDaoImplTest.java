@@ -33,4 +33,17 @@ class ProductDaoImplTest {
       assertThrows(ProductDaoException.class, () -> productDao.updateProduct(product));
     });
   }
+  
+  @Test
+  void deleteProductById() {
+    
+    ProductDaoImpl productDao = new ProductDaoImpl();
+    
+    assertDoesNotThrow(() -> {
+      productDao.deleteProductById(5);
+      
+      assertThrows(ProductDaoException.class, () -> productDao.deleteProductById(5));
+    });
+    
+  }
 }
