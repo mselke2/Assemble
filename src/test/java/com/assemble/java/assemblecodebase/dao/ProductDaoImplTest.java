@@ -46,4 +46,20 @@ class ProductDaoImplTest {
     });
     
   }
+  
+  @Test
+  void retrieve() {
+    
+    ProductDaoImpl productDao = new ProductDaoImpl();
+    
+    assertDoesNotThrow(() -> {
+      Product product = productDao.retrieve(5);
+      assertEquals(5, product.getId());
+      assertEquals("test2", product.getDescription());
+      assertEquals(new Time(2, 0, 0), product.getDuration());
+      assertEquals(5, product.getTargetPersonnelCount());
+      System.out.println(product);
+      assertThrows(ProductDaoException.class, () -> productDao.retrieve(6));
+    });
+  }
 }

@@ -39,4 +39,9 @@ public class Equipment implements Serializable {
   public void setStatus(int status) {
     this.status = status;
   }
+  
+  @Override
+  public String toString() {
+    return "Equipment: [id=" + id + ", typeId=" + typeId + ", status=" + status + "]";
+  }
 }

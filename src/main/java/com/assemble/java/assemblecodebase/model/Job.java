@@ -110,4 +110,12 @@ public class Job implements Serializable {
   public void setEquipmentCounts(int[][] equipmentCounts) {
     this.equipmentCounts = equipmentCounts;
   }
+  
+  @Override
+  public String toString() {
+    return "Job [id=" + id + ", productId=" + productId + ", lineNumber=" +
+      lineNumber + ", startTime=" + startTime + ", projectedEndTime=" +
+      projectedEndTime + ", actualEndTime=" + actualEndTime +
+      ", personnelCount=" + personnelCount + "]";
+  }
 }

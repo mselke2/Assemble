@@ -125,18 +125,36 @@ public class ProductDaoImpl implements ProductDao {
   
   @Override
   public Product retrieve(int id) {
-    
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if a product exists with the
-      // passed in productID and execute it.
-    
-    // IF a product exists
-      // Move cursor to the result
-      // Create a new product object with the data from the result and return it.
-    
-    // ELSE
-      // Throw a ProductDaoException with the message "Product does not exist."
-    return null;
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      
+      // Prepare a select statement to see if a product exists
+      // with this description and execute it.
+      String mySqlSelect = "SELECT * FROM product WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
+      preparedStatement.setInt(1, id);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // IF a product exists
+      if (resultSet.isBeforeFirst()) {
+        
+        // Move cursor to the result
+        resultSet.next();
+        
+        // Create a new product object with the data from the result and return it.
+        return new Product(
+          resultSet.getInt("ID"),
+          resultSet.getString("Description"),
+          resultSet.getTime("Duration"),
+          resultSet.getInt("TargetPersonnelCount")
+        );
+        
+      } else  {
+        throw new ProductDaoException("Product does not exists");
+      }
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

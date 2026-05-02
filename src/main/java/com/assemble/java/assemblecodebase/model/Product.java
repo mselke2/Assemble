@@ -52,4 +52,10 @@ public class Product implements Serializable {
   public void setTargetPersonnelCount(int targetPersonnelCount) {
     this.targetPersonnelCount = targetPersonnelCount;
   }
+  
+  @Override
+  public String toString() {
+    return "Product [id=" + id + ", description=" + description + ", duration=" +  duration +
+      ", targetPersonnelCount=" + targetPersonnelCount + "]";
+  }
 }

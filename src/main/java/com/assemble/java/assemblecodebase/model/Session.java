@@ -32,4 +32,9 @@ public class Session {
   public void setUserId(int userId) {
     this.userId = userId;
   }
+  
+  @Override
+  public String toString() {
+    return "Session [sessionId=" + sessionId + ", loginToken=" + loginToken + ", userId=" + userId + "]";
+  }
 }
