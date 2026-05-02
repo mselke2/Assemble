@@ -46,19 +46,41 @@ public class ProductDaoImpl implements ProductDao {
   }
   
   @Override
-  public void updateProduct(Product product) {
-  
-    // Get a connection to the database
+  public boolean updateProduct(Product product) {
     
-    // Prepare a select statement to see if a product exists
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      // Prepare a select statement to see if a product exists
       // with this description and execute it.
-    
-    // IF a product exists
+      String mySqlSelect = "SELECT * FROM product WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
+      preparedStatement.setInt(1, product.getId());
+      ResultSet resultSet = preparedStatement.executeQuery();
+      // IF a product exists
       // Prepare an update statement to update this product in the database and execute it.
-    
-    // ELSE
+      if (resultSet.isBeforeFirst()) {
+        String mySqlUpdate = "UPDATE product SET Description = ?, Duration = ?, targetPersonnelCount = ? WHERE ID = ?;";
+        preparedStatement = connection.prepareStatement(mySqlUpdate);
+        preparedStatement.setString(1, product.getDescription());
+        preparedStatement.setTime(2, product.getDuration());
+        preparedStatement.setInt(3, product.getTargetPersonnelCount());
+        preparedStatement.setInt(4, product.getId());
+        preparedStatement.executeUpdate();
+        resultSet.close();
+        connection.close();
+        
+        return true;
+      } else {
+        throw new ProductDaoException("Product does not exists");
+      }
+      
+      // ELSE
       // Throw a ProductDaoException with the message "Product does not exist."
-    // ENDIF
+      // ENDIF
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   
   }
   

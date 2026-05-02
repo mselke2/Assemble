@@ -12,10 +12,25 @@ class ProductDaoImplTest {
   @Test
   void addProduct() {
     
-    Product product = new Product(3, "test", new Time(0), 3);
+    Product product = new Product(5, "test", new Time(1, 0, 0), 3);
     ProductDaoImpl productDao = new ProductDaoImpl();
     assertDoesNotThrow(() -> {
-      assertEquals(3, productDao.addProduct(product));
+      assertEquals(5, productDao.addProduct(product));
+      
+      assertThrows(ProductDaoException.class, () -> productDao.addProduct(product));
+    });
+  }
+  
+  @Test
+  void updateProduct() {
+    
+    Product product = new Product(5, "test2", new Time(2, 0, 0), 5);
+    ProductDaoImpl productDao = new ProductDaoImpl();
+    assertDoesNotThrow(() -> {
+      assertTrue(productDao.updateProduct(product));
+      
+      product.setId(6);
+      assertThrows(ProductDaoException.class, () -> productDao.updateProduct(product));
     });
   }
 }
