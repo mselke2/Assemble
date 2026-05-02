@@ -1,18 +1,20 @@
 package com.assemble.java.assemblecodebase.model;
 
 import java.io.Serializable;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalTime;
 
 public class Product implements Serializable {
   private int id;
   private String description;
-  private LocalTime duration;
+  private Time duration;
   private int targetPersonnelCount;
   
   public Product() {
   }
   
-  public Product(int id, String description, LocalTime duration, int targetPersonnelCount) {
+  public Product(int id, String description, Time duration, int targetPersonnelCount) {
     setId(id);
     setDescription(description);
     setDuration(duration);
@@ -35,11 +37,11 @@ public class Product implements Serializable {
     this.description = description;
   }
   
-  public LocalTime getDuration() {
+  public Time getDuration() {
     return duration;
   }
   
-  public void setDuration(LocalTime duration) {
+  public void setDuration(Time duration) {
     this.duration = duration;
   }
   
@@ -49,5 +51,11 @@ public class Product implements Serializable {
   
   public void setTargetPersonnelCount(int targetPersonnelCount) {
     this.targetPersonnelCount = targetPersonnelCount;
+  }
+  
+  @Override
+  public String toString() {
+    return "Product [id=" + id + ", description=" + description + ", duration=" +  duration +
+      ", targetPersonnelCount=" + targetPersonnelCount + "]";
   }
 }

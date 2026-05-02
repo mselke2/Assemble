@@ -77,4 +77,9 @@ public class User implements Serializable {
   public void setPasswordHash(String passwordHash) {
     this.passwordHash = passwordHash;
   }
+  
+  @Override
+  public String toString() {
+    return "User [id=" + id + ", username=" + username + ", permissionId=" + permissionId + ", firstName=" + firstName + ", lastName=" + lastName + "]";
+  }
 }
