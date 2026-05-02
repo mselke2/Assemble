@@ -1,26 +1,48 @@
 package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Product;
+import com.assemble.java.assemblecodebase.utility.MySQLUtility;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ProductDaoImpl implements ProductDao {
   
   @Override
   public int addProduct(Product product) {
-    
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if a product exists
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      
+      // Prepare a select statement to see if a product exists
       // with this description and execute it.
-    
-    // IF a product exists
+      String mySqlSelect = "SELECT * FROM product WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
+      preparedStatement.setInt(1, product.getId());
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // IF a product exists
       // Throw a ProductDaoException with the message "Product already exists."
-    
-    // ELSE
-      // Prepare an insert statement to add this product to the database and execute it.
-      // Prepare a select statement to get the newly created productID and execute it.
-      // Return the productID.
-    // ENDIF
-    return 0;
+      if (resultSet.isBeforeFirst()) {
+        throw new ProductDaoException("Product already exists");
+      }else {
+        // ELSE
+        // Prepare an insert statement to add this product to the database and execute it.
+        String mySqlInsert = "INSERT INTO product (ID, Description, Duration, TargetPersonnelCount) VALUES (?, ?, ?, ?);";
+        preparedStatement = connection.prepareStatement(mySqlInsert);
+        preparedStatement.setInt(1, product.getId());
+        preparedStatement.setString(2, product.getDescription());
+        preparedStatement.setTime(3, product.getDuration());
+        preparedStatement.setInt(4, product.getTargetPersonnelCount());
+        preparedStatement.executeUpdate();
+        // Return the productID.
+        return product.getId();
+      }
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   @Override

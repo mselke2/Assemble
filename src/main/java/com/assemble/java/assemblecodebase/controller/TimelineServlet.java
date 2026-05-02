@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.List;
@@ -40,8 +41,8 @@ public class TimelineServlet extends HttpServlet {
       // todo: this is sample data, pull the real data from the db
       request.setAttribute("jobs", jobList);
       request.setAttribute("productTypes", List.of(
-          new Product(1, "Car", LocalTime.of(5, 0), 5),
-          new Product(2, "Desk", LocalTime.of(1, 20), 2)
+          new Product(1, "Car", new Time(5, 0, 0), 4),
+          new Product(2, "Desk", new Time(1, 20, 0), 5)
       ));
 
       getServletContext().getRequestDispatcher("/scheduler.jsp").forward(request, response);
