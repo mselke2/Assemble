@@ -1,4 +1,4 @@
-package com.assemble.java.assemblecodebase.test;
+package com.assemble.java.assemblecodebase.dao;
 
 import org.junit.jupiter.api.Test;
 
