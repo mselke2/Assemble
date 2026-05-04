@@ -117,6 +117,8 @@ function updateActiveJobStyles() {
   $activeJobEntry.css("--end-time", convertTimeToFloat($endTimeInput.val()));
 
   $activeJobEntry.css("--lane", $lineNumInput.val())
+
+  $activeJobEntry.css("z-index", Math.floor(convertTimeToFloat($startTimeInput.val()) * 60));
 }
 
 function convertFloatToTime(hoursFloat) {
