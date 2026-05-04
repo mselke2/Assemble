@@ -30,7 +30,7 @@ public class EquipmentDaoImpl implements EqipmentDao{
         throw new EquipmentDaoException("Equipment already exists.");
       } else {
         // ELSE
-        // Prepare an insert statement to add this equipment to the database and execute it.
+        // Prepare an set statement to add this equipment to the database and execute it.
         String mySqlInsert = "INSERT INTO equipment (ID, TypeID, Status) VALUES (?, ?, ?);";
         // Prepare a select statement to get the newly created equipmentID and execute it.
         preparedStatement = connection.prepareStatement(mySqlInsert);

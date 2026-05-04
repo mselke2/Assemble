@@ -29,7 +29,7 @@ public class ProductDaoImpl implements ProductDao {
         throw new ProductDaoException("Product already exists");
       }else {
         // ELSE
-        // Prepare an insert statement to add this product to the database and execute it.
+        // Prepare an set statement to add this product to the database and execute it.
         String mySqlInsert = "INSERT INTO product (ID, Description, Duration, TargetPersonnelCount) VALUES (?, ?, ?, ?);";
         preparedStatement = connection.prepareStatement(mySqlInsert);
         preparedStatement.setInt(1, product.getId());

@@ -35,7 +35,7 @@ public class SessionDaoImpl implements SessionDao {
         preparedStatement1.setInt(3, userId);
         preparedStatement1.executeUpdate();
       } else {
-        // ELSE prepare an insert MySQL statement and execute it.
+        // ELSE prepare an set MySQL statement and execute it.
         String mySqlInsert = "INSERT INTO session (UserID, SessionID, LastUsed) VALUES (?, ?, ?);";
         PreparedStatement preparedStatement2 = connection.prepareStatement(mySqlInsert);
         preparedStatement2.setInt(1, userId);
