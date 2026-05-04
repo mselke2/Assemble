@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `equipment`;
 CREATE TABLE `equipment` (
   `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `TypeID` smallint unsigned NOT NULL,
-  `Status` varchar(50) DEFAULT NULL,
+  `Status` tinyint DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -36,7 +36,7 @@ CREATE TABLE `equipment` (
 
 LOCK TABLES `equipment` WRITE;
 /*!40000 ALTER TABLE `equipment` DISABLE KEYS */;
-INSERT INTO `equipment` VALUES (1,1,'0'),(2,1,'1'),(3,1,'1'),(4,1,'1'),(5,1,'1'),(6,1,'1'),(7,2,'1'),(8,2,'0'),(9,2,'1'),(10,2,'1'),(11,3,'1'),(12,3,'1'),(13,3,'0'),(14,3,'1'),(15,3,'1');
+INSERT INTO `equipment` VALUES (1,1,0),(2,1,1),(3,1,1),(4,1,1),(5,1,1),(6,1,1),(7,2,1),(8,2,0),(9,2,1),(10,2,1),(11,3,1),(12,3,1),(13,3,0),(14,3,1),(15,3,1);
 /*!40000 ALTER TABLE `equipment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -127,6 +127,7 @@ CREATE TABLE `job` (
   `ProjectedEndTime` datetime NOT NULL,
   `ActualEndTime` datetime DEFAULT NULL,
   `PersonnelCount` tinyint NOT NULL,
+  `Line` tinyint DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -185,6 +186,30 @@ CREATE TABLE `jobinventory` (
 LOCK TABLES `jobinventory` WRITE;
 /*!40000 ALTER TABLE `jobinventory` DISABLE KEYS */;
 /*!40000 ALTER TABLE `jobinventory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `personnel`
+--
+
+DROP TABLE IF EXISTS `personnel`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `personnel` (
+  `ID` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Date` date NOT NULL,
+  `Count` smallint DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `personnel`
+--
+
+LOCK TABLES `personnel` WRITE;
+/*!40000 ALTER TABLE `personnel` DISABLE KEYS */;
+/*!40000 ALTER TABLE `personnel` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -303,7 +328,7 @@ CREATE TABLE `user` (
   `LastName` varchar(50) DEFAULT NULL,
   `PasswordHash` char(64) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -312,6 +337,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'jSmith05',1,'John','Smith','e98140fc6c2f41e3200f2c0f9b6fc5afed07624dc4ed953c74712c30219c7be3'),(2,'sLantern9',1,'Sarah','Lantern','bc6efb88ceef075aec80c863f284e3b82f3ac5f25133e8359a5c581265b67361'),(3,'fRedd8',2,'Felix','Redd','d7bdf45a4f1041c979d474f2ccf429b0e87612741e855cd88a6c1f5e10bc8812'),(4,'mLord4',2,'Maxwell','Lord','fcb1c21514003f790189915d6bc1ae6c539916c6f0850203f82c0c3d3e0daf54'),(5,'lWater1',2,'Llyod','Water','204538bd3177ca77db8f3ebfe186b5f7592b25ea9e5ec44d352e79e68366fbaf'),(6,'viewUser',3,'','','29c0ab6722f19be6354ad9b9c32ba3bbdb495219dcb434885c3509ef88063909');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -394,8 +420,8 @@ BEGIN
     truncate product;
     truncate productequipment;
 	truncate productinventory;
-    truncate `session`;
-	-- truncate `user`;
+    truncate assemble.`session`;
+	truncate `user`;
     
    
 	INSERT INTO `equipmenttype` (`Description`)
@@ -461,7 +487,15 @@ BEGIN
 		(2, 2, 1),
 		(3, 1, 2),
 		(4, 3, 2);
-        
+	
+    INSERT INTO `user` (`Username`, `PermissionID`, `FirstName`, `LastName`, `PasswordHash`)
+    VALUES
+       ("jSmith05", 1, "John", "Smith", "e98140fc6c2f41e3200f2c0f9b6fc5afed07624dc4ed953c74712c30219c7be3"),
+       ("sLantern9", 1, "Sarah", "Lantern", "bc6efb88ceef075aec80c863f284e3b82f3ac5f25133e8359a5c581265b67361"),
+       ("fRedd8", 2, "Felix", "Redd", "d7bdf45a4f1041c979d474f2ccf429b0e87612741e855cd88a6c1f5e10bc8812"),
+       ("mLord4", 2, "Maxwell", "Lord", "fcb1c21514003f790189915d6bc1ae6c539916c6f0850203f82c0c3d3e0daf54"),
+       ("lWater1", 2, "Llyod", "Water", "204538bd3177ca77db8f3ebfe186b5f7592b25ea9e5ec44d352e79e68366fbaf"),
+       ("viewUser", 3, "", "", "29c0ab6722f19be6354ad9b9c32ba3bbdb495219dcb434885c3509ef88063909");
 	
     
     
@@ -483,4 +517,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-27 20:01:01
+-- Dump completed on 2026-05-04 14:19:14
