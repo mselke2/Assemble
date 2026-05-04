@@ -7,6 +7,7 @@ let $startTimeInput;
 let $endTimeInput;
 let $numMembersInput;
 let $lineNumInput;
+let $submitBtn;
 let $deleteBtn;
 
 let lastValidStartTime;
@@ -30,6 +31,51 @@ let addingJob = false;
 let validNewJobHover = true;
 
 let jobEntries = new Map();
+
+function validateChanges() {
+  if ($activeJobEntry == null) {
+    return;
+  }
+
+  let isValid = true
+
+  $(".invalid").removeClass("invalid");
+
+  let startTime = $startTimeInput.val();
+  let endTime = $endTimeInput.val();
+  let line = +$lineNumInput.val();
+
+  let inHoveredLane = jobEntries.entries().filter(entry => entry[1].lane === line).toArray();
+
+  for (let job of inHoveredLane) {
+    let [jobId, jobData] = job;
+
+    if (jobId === +$activeJobEntry.attr("job-id")
+        || $activeJobEntry.attr("id") === "create-job-ghost" && !addingJob) {
+      continue;
+    }
+
+    if (startTime >= jobData.startTime) {
+      if (startTime <= jobData.endTime) {
+        $(`[job-id="${jobId}"]`).addClass("invalid");
+        $activeJobEntry.addClass("invalid");
+        isValid = false;
+      }
+    } else if (endTime >= jobData.endTime) {
+      $(`[job-id="${jobId}"]`).addClass("invalid");
+      $activeJobEntry.addClass("invalid");
+      isValid = false;
+    }
+
+    if (endTime >= jobData.startTime && endTime <= jobData.endTime) {
+      $(`[job-id="${jobId}"]`).addClass("invalid");
+      $activeJobEntry.addClass("invalid");
+      isValid = false;
+    }
+  }
+
+  $submitBtn.attr("disabled", !isValid);
+}
 
 function updateLocalJobData(id, startTime, endTime, lane) {
   jobEntries.set(id, {
@@ -107,6 +153,7 @@ function cancelEdit() {
   }
 
   addingJob = false;
+  validateChanges();
   $activeJobEntry = null;
   updateGhostVisibility();
 
@@ -221,6 +268,7 @@ $(function() {
     lastValidStartTime = $startTimeInput.val();
 
     updateActiveJobStyles();
+    validateChanges();
   });
 
   $endTimeInput = $("#end-time").on("blur", function() {
@@ -232,6 +280,7 @@ $(function() {
     lastValidEndTime = $endTimeInput.val();
 
     updateActiveJobStyles();
+    validateChanges();
   });
 
   $numMembersInput = $("#num-members").on("change", function() {
@@ -246,9 +295,10 @@ $(function() {
     }
 
     updateActiveJobStyles();
+    validateChanges();
   });
 
-  $("#submit-btn").on("click", onSubmitClicked);
+  $submitBtn = $("#submit-btn").on("click", onSubmitClicked);
 
   $("#cancel-btn").on("click", cancelEdit);
 

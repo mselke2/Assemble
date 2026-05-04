@@ -64,6 +64,16 @@ body {
                 margin: .4em;
                 text-align: center;
               }
+
+              &.invalid::after {
+                content: "";
+                position: absolute;
+                border-radius: 5px;
+                pointer-events: none;
+                top: 0; left: 0; right: 0; bottom: 0;
+                box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.5);
+                z-index: 9999;
+              }
             }
 
             #create-job-ghost {
