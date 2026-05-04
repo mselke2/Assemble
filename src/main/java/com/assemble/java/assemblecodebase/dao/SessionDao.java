@@ -4,7 +4,7 @@ public interface SessionDao {
   
   String createSession(int userId);
   
-  int removeSession(String sessionId);
+  String removeSession(int userId);
   
   int retrieve(String sessionId);
   
