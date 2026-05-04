@@ -28,7 +28,7 @@ public class InventoryDaoImpl implements InventoryDao{
         throw new InventoryDaoException("Inventory already exists.");
       } else {
         // ELSE
-        // Prepare an insert statement to add this inventory to the database and execute it.
+        // Prepare an set statement to add this inventory to the database and execute it.
         String mySqlInsert = "INSERT INTO inventory (ID, TypeID, Count) VALUES (?, ?, ?);";
         PreparedStatement preparedStatementInsert = connection.prepareStatement(mySqlInsert);
         preparedStatementInsert.setInt(1, inventory.getId());

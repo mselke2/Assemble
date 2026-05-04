@@ -35,7 +35,7 @@ public class UserDaoImpl implements UserDao {
         
       } else {
         // ELSE
-        // Prepare an insert statement to add this user to the database and execute it.
+        // Prepare an set statement to add this user to the database and execute it.
         String mySqlInsert = "INSERT INTO user (username, permissionId, firstName, lastName, passwordHash) VALUES (?, ?, ?, ?, ?)";
         preparedStatement = conn.prepareStatement(mySqlInsert);
         

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/src/main/java/com/assemble/java/assemblecodebase/dao/PersonnelDaoImpl.java" value="0c68c0fb-d379-45ff-a03b-7b071b8b4545" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/assemble/java/assemblecodebase/dao/SessionDaoImpl.java" value="0c68c0fb-d379-45ff-a03b-7b071b8b4545" />
   </component>
 </project>
