@@ -57,6 +57,11 @@ body {
               background-color: orange;
               border-radius: 5px;
               container-type: size;
+              transition: filter 0.2s;
+
+              &:hover {
+                filter: brightness(110%);
+              }
 
               p {
                 font-size: min(36px, 50cqh);
