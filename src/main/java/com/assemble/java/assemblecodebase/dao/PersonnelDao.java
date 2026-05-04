@@ -4,6 +4,6 @@ import java.sql.Date;
 
 public interface PersonnelDao {
   void set(Date date, int count);
-  void retrieve(Date date);
+  int retrieve(Date date);
   void delete(Date date);
 }
