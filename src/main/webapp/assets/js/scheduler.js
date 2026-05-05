@@ -255,7 +255,7 @@ $(function() {
   hourTickSpace = parseInt($timeline.css("--hour-tick-space"));
   laneWidth = parseInt($timeline.css("--lane-width"));
 
-  $newJobGhost = $("#create-job-ghost");
+  $newJobGhost = $("#create-job-ghost").hide();
 
   // onChange fires when the hour or minute fields are completed
   // individually, so if the user types in the hour and the browser
