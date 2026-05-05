@@ -39,6 +39,9 @@
                         <p>11:00pm</p>
                     </div>
                     <div id="timeline-lanes">
+                        <div id="create-job-ghost" class="job-entry">
+                            <div></div>
+                        </div>
                         <c:if test="${not empty jobs}">
                             <c:forEach var="job" items="${jobs}">
                                 <div class="job-entry" job-id="${job.id}" style="--start-time: ${job.startTime.getHours() + job.startTime.getMinutes() / 60}; --end-time: ${job.projectedEndTime.getHours() + job.projectedEndTime.getMinutes() / 60}; --lane: 1; background-color: orange;">
@@ -55,7 +58,8 @@
                 <div class="job-info">
                     <h1>Date: ${param.d.substring(4, 6)}/${param.d.substring(6)}/${param.d.substring(0, 4)}</h1>
                     <div id="job-form" hidden>
-                        <label for="job-id" class="info-left">JobId:</label>
+                        <p id="new-job-label" class="info-left">New Job</p>
+                        <label for="job-id" id="job-id-label" class="info-left">JobId:</label>
                         <p id="job-id">XX</p><br>
                         <label for="product-choice" class="info-left">Product:</label>
                         <select name="product-choice-id" id="product-choice">
@@ -74,7 +78,8 @@
                         <label for="line-num">Line #:</label>
                         <input type="number" min="1" name="line-num" id="line-num"><br>
                         <button id="cancel-btn">Cancel</button>
-                        <button id="submit-btn">Submit</button>
+                        <button id="submit-btn">Submit</button><br><br>
+                        <button id="delete-btn">Delete</button>
                     </div>
                 </div>
             </div>

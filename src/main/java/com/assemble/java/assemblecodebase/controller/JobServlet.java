@@ -44,6 +44,14 @@ public class JobServlet extends HttpServlet {
 
     // run addJob() and pass in the productId and startTime
 
+    int newJobId = 123;
+
+    response.setContentType("application/json");
+    response.getWriter().write("""
+        {
+          "jobId": %d
+        }
+        """.formatted(newJobId));
 
     // set response status to HttpServletResponse.SC_UNPROCESSABLE_CONTENT if any
     // fields are invalid (e.g. jobs are overlapping)
@@ -62,11 +70,11 @@ public class JobServlet extends HttpServlet {
     try (BufferedReader reader = request.getReader()) {
       Gson gson = new Gson();
 
-      var dataMap = new HashMap<String, String>();
+      var dataMap = new HashMap<String, Object>();
       dataMap = gson.fromJson(reader, dataMap.getClass());
 
       // get data like so:
-      int productId = Integer.parseInt(dataMap.get("productId"));
+      int productId = ((Double)dataMap.get("productId")).intValue();
 
       // do processing...
 

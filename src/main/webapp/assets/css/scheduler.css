@@ -20,8 +20,9 @@ body {
         overflow: auto;
 
         .timeline {
-          display: flex;
+          display: inline-flex;
           --hour-tick-space: 120px;
+          --lane-width: 100px;
 
           .timeline-ticks {
             background-image: url("../img/timeline-ticks.png");
@@ -40,27 +41,63 @@ body {
           }
 
           #timeline-lanes {
-            flex-grow: 1;
+            width: calc(10 * var(--lane-width));
             position: relative;
+            cursor: pointer;
 
             .job-entry {
               position: absolute;
 
-              width: 100px;
+              width: var(--lane-width);
               height: calc((var(--end-time) - var(--start-time)) * var(--hour-tick-space));
 
               top: calc(var(--start-time) * var(--hour-tick-space));
-              left: calc((var(--lane) - 1) * 100px);
+              left: calc((var(--lane) - 1) * var(--lane-width));
 
               background-color: orange;
               border-radius: 5px;
               container-type: size;
+              transition: filter 0.2s;
+
+              &:hover {
+                filter: brightness(110%);
+              }
 
               p {
                 font-size: min(36px, 50cqh);
                 color: white;
                 margin: .4em;
                 text-align: center;
+              }
+
+              &.invalid::after {
+                content: "";
+                position: absolute;
+                border-radius: 5px;
+                pointer-events: none;
+                top: 0; left: 0; right: 0; bottom: 0;
+                box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.5);
+                z-index: 9999;
+              }
+            }
+
+            #create-job-ghost {
+              display: flex;
+              pointer-events: none;
+
+              background-color: #e7e7e7;
+
+              justify-content: center;
+              align-items: center;
+
+              z-index: 1;
+
+              div {
+                background-image: url("../img/plus.png");
+                width: 30cqmin;
+                height: 30cqmin;
+                background-size: cover;
+                z-index: 2;
               }
             }
           }

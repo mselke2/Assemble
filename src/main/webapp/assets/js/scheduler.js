@@ -1,114 +1,421 @@
 let $jobForm;
+let $newJobLabel;
+let $jobIdLabel;
 let $jobIdDisplay;
 let $productChoiceInput;
 let $startTimeInput;
 let $endTimeInput;
 let $numMembersInput;
 let $lineNumInput;
-
-let originalStartTime;
-let originalEndTime;
-let originalLineNum;
+let $submitBtn;
+let $deleteBtn;
 
 let lastValidStartTime;
 let lastValidEndTime;
 
-let $activeJobEntry;
+let $timelineLanes;
+let $activeJobEntry = null;
+
+let hourTickSpace;
+let laneWidth;
+
+const subTickRatio = 1.0 / 6.0;
+
+let timelineLanesHovered = false;
+
+let $newJobGhost;
+let newJobStartTime;
+let newJobEndTime;
+let newJobLane;
+let addingJob = false;
+let editingJob = false;
+let validNewJobHover = true;
+
+let $timelineWrapper;
+let timelineMouseX = 0;
+let timelineMouseY = 0;
+
+let jobEntries = new Map();
+
+function updateGhostPosition() {
+  if (!timelineLanesHovered || addingJob) {
+    return;
+  }
+
+  let scrolledX = timelineMouseX + $timelineWrapper.scrollLeft();
+  let scrolledY = timelineMouseY + $timelineWrapper.scrollTop();
+
+  newJobLane = Math.floor(scrolledX / laneWidth) + 1;
+  let mouseHour = scrolledY / hourTickSpace;
+  let newJobStartTimeFloat = Math.floor(mouseHour / subTickRatio) * subTickRatio;
+  let newJobEndTimeFloat = Math.min(newJobStartTimeFloat + 1, 24);
+
+  newJobStartTime = convertFloatToTime(newJobStartTimeFloat);
+  newJobEndTime = convertFloatToTime(newJobEndTimeFloat);
+
+  let inHoveredLane = jobEntries.values().filter(entry => entry.lane === newJobLane).toArray();
+
+  for (let job of inHoveredLane) {
+    if (newJobStartTime >= job.startTime && newJobStartTime <= job.endTime) {
+      newJobStartTimeFloat = convertTimeToFloat(job.endTime) + 1.0 / 60;
+      newJobStartTime = convertFloatToTime(newJobStartTimeFloat);
+    }
+
+    if (newJobEndTime >= job.startTime && newJobEndTime <= job.endTime) {
+      newJobEndTimeFloat = convertTimeToFloat(job.startTime) - 1.0 / 60;
+      newJobEndTime = convertFloatToTime(newJobEndTimeFloat);
+    }
+  }
+
+  validNewJobHover = newJobStartTime < newJobEndTime;
+
+  updateGhostVisibility();
+  $newJobGhost.css({
+    "--start-time": convertTimeToFloat(newJobStartTime),
+    "--end-time": convertTimeToFloat(newJobEndTime),
+    "--lane": newJobLane
+  });
+}
+
+function validateChanges() {
+  if ($activeJobEntry == null) {
+    return;
+  }
+
+  let isValid = true
+
+  $(".invalid").removeClass("invalid");
+
+  let startTime = $startTimeInput.val();
+  let endTime = $endTimeInput.val();
+  let line = +$lineNumInput.val();
+
+  let inHoveredLane = jobEntries.entries().filter(entry => entry[1].lane === line).toArray();
+
+  for (let job of inHoveredLane) {
+    let [jobId, jobData] = job;
+
+    if (jobId === +$activeJobEntry.attr("job-id")
+        || $activeJobEntry.attr("id") === "create-job-ghost" && !addingJob) {
+      continue;
+    }
+
+    if (startTime >= jobData.startTime) {
+      if (startTime <= jobData.endTime) {
+        $(`[job-id="${jobId}"]`).addClass("invalid");
+        $activeJobEntry.addClass("invalid");
+        isValid = false;
+      }
+    } else if (endTime >= jobData.endTime) {
+      $(`[job-id="${jobId}"]`).addClass("invalid");
+      $activeJobEntry.addClass("invalid");
+      isValid = false;
+    }
+
+    if (endTime >= jobData.startTime && endTime <= jobData.endTime) {
+      $(`[job-id="${jobId}"]`).addClass("invalid");
+      $activeJobEntry.addClass("invalid");
+      isValid = false;
+    }
+  }
+
+  $submitBtn.attr("disabled", !isValid);
+}
+
+function updateLocalJobData(id, startTime, endTime, lane) {
+  jobEntries.set(id, {
+    startTime: startTime,
+    endTime: endTime,
+    lane: lane
+  });
+}
+
+function addJobEntry(id, startTime, endTime, lane) {
+  $activeJobEntry = $("<div></div>", {
+    class: "job-entry",
+    click: onJobEntryClicked,
+    "job-id": id
+  }).append($("<p></p>", {
+    text: id
+  })).appendTo($timelineLanes);
+
+  updateLocalJobData(id, startTime, endTime, lane);
+
+  updateActiveJobStyles();
+}
+
+function showForm() {
+  $jobIdLabel.toggle(!addingJob);
+  $jobIdDisplay.toggle(!addingJob);
+  $deleteBtn.toggle(!addingJob);
+
+  $newJobLabel.toggle(addingJob);
+
+  editingJob = true;
+
+  $jobForm.show();
+}
+
+function updateActiveJobStyles() {
+  // set styles for the job entry element based on the updated time
+  $activeJobEntry.css("--start-time", convertTimeToFloat($startTimeInput.val()));
+
+  // set styles for the job entry element based on the updated time
+  $activeJobEntry.css("--end-time", convertTimeToFloat($endTimeInput.val()));
+
+  $activeJobEntry.css("--lane", $lineNumInput.val())
+
+  $activeJobEntry.css("z-index", Math.floor(convertTimeToFloat($startTimeInput.val()) * 60));
+}
+
+function convertFloatToTime(hoursFloat) {
+  const hours = Math.floor(hoursFloat);
+  const minutes = Math.round((hoursFloat - hours) * 60);
+
+  // Format as HH:mm with leading zeros
+  const displayHours = hours.toString().padStart(2, '0');
+  const displayMinutes = minutes.toString().padStart(2, '0');
+
+  return `${displayHours}:${displayMinutes}`;
+}
+
+function convertTimeToFloat(timeString) {
+  let [hours, minutes] = timeString.split(':');
+  return +hours + minutes / 60;
+}
+
+function updateGhostVisibility() {
+  $newJobGhost.toggle(timelineLanesHovered && validNewJobHover && !editingJob || addingJob);
+}
+
+function cancelEdit() {
+  if ($activeJobEntry !== null && !addingJob) {
+    // reset info to original states and update styles
+
+    let jobInfo = jobEntries.get(+$activeJobEntry.attr("job-id"));
+
+    $startTimeInput.val(jobInfo.startTime);
+    $endTimeInput.val(jobInfo.endTime);
+    $lineNumInput.val(jobInfo.lineNum);
+
+    updateActiveJobStyles();
+  }
+
+  addingJob = false;
+  editingJob = false
+  validateChanges();
+  $activeJobEntry = null;
+  updateGhostVisibility();
+
+  // hide the form since the edit was canceled
+  $jobForm.hide();
+}
+
+function onSubmitClicked() {
+  let data = {
+    productId: +$productChoiceInput.val(),
+    startTime: $startTimeInput.val(),
+    projectedEndTime: $endTimeInput.val(),
+    numMembers: +$numMembersInput.val(),
+    lineNum: +$lineNumInput.val()
+  };
+
+  if (addingJob) {// perform PUT request with info from form
+    $.post("Job", data).done(responseData => {
+      addJobEntry(responseData["jobId"],
+        data.startTime,
+        data.projectedEndTime,
+        data.lineNum);
+
+      cancelEdit();
+    });
+  } else {
+    // perform PUT request with info from form
+    let id = +$jobIdDisplay.text();
+    $.ajax(`Job/${id}`, {
+      method: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify(data)
+    }).done(() => {
+      updateLocalJobData(id,
+        data.startTime,
+        data.projectedEndTime,
+        data.lineNum
+      );
+
+      cancelEdit();
+    });
+  }
+}
+
+function onJobEntryClicked(e) {
+  let $clickedJob = $(e.currentTarget);
+  // read the job id from the clicked element
+  let jobId = +$clickedJob.attr("job-id");
+
+  if (jobId === +$activeJobEntry?.attr("job-id")) {
+    return;
+  }
+
+  cancelEdit();
+  updateGhostVisibility();
+
+  $activeJobEntry = $clickedJob;
+
+  // perform a GET request for the job
+  $.getJSON(`Job/${jobId}`, data => {
+    // update GUI with data from GET
+    $jobIdDisplay.text(jobId);
+
+    $productChoiceInput.val(data["productId"]);
+
+    lastValidStartTime = data["startTime"];
+    $startTimeInput.val(lastValidStartTime);
+
+    lastValidEndTime = data["projectedEndTime"];
+    $endTimeInput.val(lastValidEndTime);
+
+    let lineNum = data["lineNum"];
+    $lineNumInput.val(lineNum);
+
+    updateLocalJobData(jobId,
+      lastValidStartTime,
+      lastValidEndTime,
+      lineNum);
+
+    $numMembersInput.val(data["numMembers"]);
+
+    updateActiveJobStyles();
+
+    // show the job form since we are now editing the clicked job
+    showForm();
+  });
+}
 
 $(function() {
   $jobForm = $("#job-form");
+  $newJobLabel = $("#new-job-label");
+  $jobIdLabel = $("#job-id-label");
   $jobIdDisplay = $("#job-id");
   $productChoiceInput = $("#product-choice");
-  $startTimeInput = $("#start-time");
-  $endTimeInput = $("#end-time");
-  $numMembersInput = $("#num-members");
-  $lineNumInput = $("#line-num");
+
+  let $timeline = $(".timeline");
+  hourTickSpace = parseInt($timeline.css("--hour-tick-space"));
+  laneWidth = parseInt($timeline.css("--lane-width"));
+
+  $newJobGhost = $("#create-job-ghost").hide();
 
   // onChange fires when the hour or minute fields are completed
   // individually, so if the user types in the hour and the browser
   // automatically proceeds to the minute field, onChange fires.
   // onBlur only fires when the input becomes unfocused.
-  $startTimeInput.on("blur", function() {
+  $startTimeInput = $("#start-time").on("blur", function() {
     // start time cant be equal to or after end time
     if ($startTimeInput.val() >= $endTimeInput.val()) {
       $startTimeInput.val(lastValidStartTime);
     }
 
     lastValidStartTime = $startTimeInput.val();
-    // set styles for the job entry element based on the updated time
-    let [hours, minutes] = lastValidStartTime.split(':');
-    $activeJobEntry.css("--start-time", +hours + minutes / 60);
+
+    updateActiveJobStyles();
+    validateChanges();
   });
 
-  $endTimeInput.on("blur", function() {
+  $endTimeInput = $("#end-time").on("blur", function() {
     // end time cant be equal to or before start time
     if ($startTimeInput.val() >= $endTimeInput.val()) {
       $endTimeInput.val(lastValidEndTime);
     }
 
     lastValidEndTime = $endTimeInput.val();
-    // set styles for the job entry element based on the updated time
-    let [hours, minutes] = lastValidEndTime.split(':');
-    $activeJobEntry.css("--end-time", +hours + minutes / 60);
+
+    updateActiveJobStyles();
+    validateChanges();
   });
 
-  $lineNumInput.on("change", function() {
-    $activeJobEntry.css("--lane", $lineNumInput.val())
+  $numMembersInput = $("#num-members").on("change", function() {
+    if ($numMembersInput.val() < 1) {
+      $numMembersInput.val(1);
+    }
   });
 
-  $("#submit-btn").on("click", function() {
-    // perform PUT request with info from form
-    $.ajax(`Job/${$activeJobEntry.attr("job-id")}`, {
-      method: "PUT",
-      contentType: "application/json",
-      data: JSON.stringify({
-        productId: $productChoiceInput.val(),
-        startTime: $startTimeInput.val(),
-        projectedEndTime: $endTimeInput.val(),
-        numMembers: $numMembersInput.val(),
-        lineNum: $lineNumInput.val()
-      })
-    });
+  $lineNumInput = $("#line-num").on("change", function() {
+    if ($lineNumInput.val() < 1) {
+      $lineNumInput.val(1);
+    }
+
+    updateActiveJobStyles();
+    validateChanges();
   });
 
-  $("#cancel-btn").on("click", function() {
-    // reset info to original states and use pre-existing event handlers to
-    // update styles
-    $startTimeInput.val(originalStartTime).trigger("blur");
-    $endTimeInput.val(originalEndTime).trigger("blur");
-    $lineNumInput.val(originalLineNum).trigger("change");
+  $submitBtn = $("#submit-btn").on("click", onSubmitClicked);
 
-    // hide the form since the edit was canceled
-    $jobForm.hide();
+  $("#cancel-btn").on("click", cancelEdit);
+
+  $(".job-entry").on("click", onJobEntryClicked)
+    .not("#create-job-ghost").each(function() {
+      // on page load, add job existing job entries into the map
+      let $this = $(this);
+      let id = +$this.attr("job-id");
+
+      updateLocalJobData(id,
+        convertFloatToTime(+$this.css("--start-time")),
+        convertFloatToTime(+$this.css("--end-time")),
+        +$this.css("--lane"));
   })
 
-  $(".job-entry").on("click", function(e) {
-    // read the job id from the clicked element
-    $activeJobEntry = $(e.currentTarget);
-    let jobId = $activeJobEntry.attr("job-id");
+  $timelineLanes = $("#timeline-lanes").on("mouseover", function(e) {
+    if (e.target === this) {
+      timelineLanesHovered = true;
+      updateGhostVisibility();
+    }
+  }).on("mousemove", function(e) {
+    timelineMouseX = e.pageX - $timelineLanes.position().left - $timelineWrapper.scrollLeft();
+    timelineMouseY = e.pageY - $timelineLanes.position().top - $timelineWrapper.scrollTop();
 
-    // perform a GET request for the job
-    $.getJSON(`Job/${jobId}`, data => {
-      // update GUI with data from GET
-      $jobIdDisplay.text(jobId);
+    updateGhostPosition();
+  }).on("mouseout", function(e) {
+    if (e.target === this) {
+      timelineLanesHovered = false;
+      updateGhostVisibility()
+    }
+  }).on("click", function(e) {
+    if (e.target === this && validNewJobHover) {
+      cancelEdit();
 
-      $productChoiceInput.val(data["productId"]);
+      $activeJobEntry = $newJobGhost;
+      addingJob = true;
 
-      lastValidStartTime = data["startTime"];
-      originalStartTime = lastValidStartTime;
+      $productChoiceInput[0].selectedIndex = 0;
+
+      lastValidStartTime = newJobStartTime;
       $startTimeInput.val(lastValidStartTime);
 
-      lastValidEndTime = data["projectedEndTime"];
-      originalEndTime = lastValidEndTime;
+      lastValidEndTime = newJobEndTime;
       $endTimeInput.val(lastValidEndTime);
 
-      $numMembersInput.val(data["numMembers"]);
+      $numMembersInput.val(1);
 
-      originalLineNum = data["lineNum"];
-      $lineNumInput.val(originalLineNum);
+      $lineNumInput.val(newJobLane);
 
       // show the job form since we are now editing the clicked job
-      $jobForm.show();
-    });
+      showForm();
+    }
   });
+
+  $timelineWrapper = $(".timeline-wrapper").on("scroll", updateGhostPosition);
+
+  $deleteBtn = $("#delete-btn").on("click", function() {
+    let jobId = +$activeJobEntry.attr("job-id");
+    $.ajax(`$Job/${jobId}`, {
+      method: "DELETE"
+    });
+
+    let $tmp = $activeJobEntry;
+
+    cancelEdit();
+
+    jobEntries.delete(jobId);
+    $tmp.remove();
+  })
 });
