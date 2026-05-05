@@ -129,7 +129,7 @@ CREATE TABLE `job` (
   `PersonnelCount` tinyint NOT NULL,
   `Line` tinyint DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,6 +138,7 @@ CREATE TABLE `job` (
 
 LOCK TABLES `job` WRITE;
 /*!40000 ALTER TABLE `job` DISABLE KEYS */;
+INSERT INTO `job` VALUES (1,1,'2026-05-03 05:00:00','2026-05-03 05:30:00','2026-05-03 05:30:00',1,1),(2,3,'2026-05-03 05:15:00','2026-05-03 07:00:00','2026-05-03 07:00:00',2,2),(3,1,'2026-05-03 05:35:00','2026-05-03 06:05:00','2026-05-03 06:10:00',1,1),(4,2,'2026-05-04 05:00:00','2026-05-04 06:00:00','2026-05-04 06:03:00',1,1),(5,2,'2026-05-04 06:05:00','2026-05-04 07:05:00','2026-05-04 07:05:00',1,1),(6,3,'2026-05-04 05:30:00','2026-05-04 07:05:00','2026-05-04 07:10:00',2,2),(7,4,'2026-05-05 05:00:00','2026-05-05 06:30:00','2026-05-05 06:33:00',2,1),(8,4,'2026-05-05 06:35:00','2026-05-05 08:05:00','2026-05-05 08:08:00',2,1),(9,4,'2026-05-05 08:10:00','2026-05-05 09:40:00',NULL,2,1),(10,2,'2026-05-06 06:00:00','2026-05-06 07:00:00',NULL,1,1),(11,4,'2026-05-06 11:00:00','2026-05-06 12:30:00',NULL,2,2),(12,1,'2026-05-06 16:00:00','2026-05-06 16:30:00',NULL,1,1),(13,1,'2026-05-07 06:00:00','2026-05-07 06:30:00',NULL,1,1),(14,1,'2026-05-07 11:00:00','2026-05-07 11:30:00',NULL,1,1),(15,1,'2026-05-07 16:00:00','2026-05-07 16:30:00',NULL,1,1);
 /*!40000 ALTER TABLE `job` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -161,6 +162,7 @@ CREATE TABLE `jobequipment` (
 
 LOCK TABLES `jobequipment` WRITE;
 /*!40000 ALTER TABLE `jobequipment` DISABLE KEYS */;
+INSERT INTO `jobequipment` VALUES (1,1),(1,9),(2,3),(2,13),(3,1),(3,9),(4,1),(4,8),(5,1),(5,8),(6,3),(6,13),(7,4),(7,11),(8,4),(8,11),(9,4),(9,11),(10,6),(10,7),(11,5),(11,11),(12,5),(12,9),(13,2),(13,10),(14,2),(14,10),(15,2),(15,10);
 /*!40000 ALTER TABLE `jobequipment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -185,6 +187,7 @@ CREATE TABLE `jobinventory` (
 
 LOCK TABLES `jobinventory` WRITE;
 /*!40000 ALTER TABLE `jobinventory` DISABLE KEYS */;
+INSERT INTO `jobinventory` VALUES (1,3,1),(2,3,2),(3,3,1),(4,5,1),(5,5,1),(6,3,2),(7,6,2),(8,6,2),(9,6,2),(10,5,1),(11,6,2),(12,1,1),(13,2,1),(14,2,1),(15,2,1);
 /*!40000 ALTER TABLE `jobinventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -200,7 +203,7 @@ CREATE TABLE `personnel` (
   `Date` date NOT NULL,
   `Count` smallint DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,6 +212,7 @@ CREATE TABLE `personnel` (
 
 LOCK TABLES `personnel` WRITE;
 /*!40000 ALTER TABLE `personnel` DISABLE KEYS */;
+INSERT INTO `personnel` VALUES (1,'2026-05-03',5),(2,'2026-05-04',6),(3,'2026-05-05',4),(4,'2026-05-06',7),(5,'2026-05-07',6);
 /*!40000 ALTER TABLE `personnel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -409,6 +413,9 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `GenData_BasicData`()
 BEGIN
+	
+	DECLARE currentDate DATE;
+	
 	-- truncate tables
 	truncate equipment;
     truncate equipmenttype;
@@ -417,6 +424,7 @@ BEGIN
     truncate job;
 	truncate jobequipment;
     truncate jobinventory;
+    truncate personnel;
     truncate product;
     truncate productequipment;
 	truncate productinventory;
@@ -431,20 +439,21 @@ BEGIN
         ("rod mold");
 	INSERT INTO `equipment` (`TypeID`, `Status`) 
     VALUES
-		(1, "0"),
-        (1, "1"),
-        (1, "1"),
-        (1, "1"),
-        (1, "1"),
-        (1, "1"),
-        (2, "1"), (2, "0"),
-        (2, "1"),
-        (2, "1"),
-        (3, "1"),
-        (3, "1"),
-        (3, "0"),
-        (3, "1"),
-        (3, "1");
+		(1, 0),
+        (1, 1),
+        (1, 1),
+        (1, 1),
+        (1, 1),
+        (1, 1),
+        (2, 1), 
+        (2, 0),
+        (2, 1),
+        (2, 1),
+        (3, 1),
+        (3, 1),
+        (3, 0),
+        (3, 1),
+        (3, 1);
 	INSERT INTO `inventorytype` (`Description`)
 	VALUES 
 		("Steel"),
@@ -497,9 +506,103 @@ BEGIN
        ("lWater1", 2, "Llyod", "Water", "204538bd3177ca77db8f3ebfe186b5f7592b25ea9e5ec44d352e79e68366fbaf"),
        ("viewUser", 3, "", "", "29c0ab6722f19be6354ad9b9c32ba3bbdb495219dcb434885c3509ef88063909");
 	
+    SET currentDate = CURRENT_DATE();
+    INSERT INTO `personnel` (`Date`, `Count`)
+	VALUES
+    (DATE_ADD(currentDate, INTERVAL -2 DAY), 5),
+    (DATE_ADD(currentDate, INTERVAL -1 DAY), 6),
+    (currentDate, 4),
+    (DATE_ADD(currentDate, INTERVAL 1 DAY), 7),
+    (DATE_ADD(currentDate, INTERVAL 2 DAY), 6);
     
+    INSERT INTO `job` (`ProductID`, `StartTime`, `ProjectedEndTime`, `ActualEndTime`, `PersonnelCount`, `Line`)
+    VALUES
+    -- Day -2 [DONE]
+    (1, TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:30:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:30:00"),  1, 1),
+    (3, TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:15:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "7:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "7:00:00"),  2, 2),
+    (1, TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:35:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "6:05:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "6:10:00"),  1, 1),
     
-
+    -- Day -1 [DONE]
+    (2, TIMESTAMP(DATE_ADD(currentDate, INTERVAL -1 DAY), "5:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -1 DAY), "6:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -1 DAY), "6:03:00"),  1, 1),
+    (2, TIMESTAMP(DATE_ADD(currentDate, INTERVAL -1 DAY), "6:05:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -1 DAY), "7:05:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -1 DAY), "7:05:00"),  1, 1),
+    (3, TIMESTAMP(DATE_ADD(currentDate, INTERVAL -1 DAY), "5:30:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -1 DAY), "7:05:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -1 DAY), "7:10:00"),  2, 2),
+    
+    -- Day 0 [DONE]
+    (4, TIMESTAMP(DATE_ADD(currentDate, INTERVAL 0 DAY), "5:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 0 DAY), "6:30:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 0 DAY), "6:33:00"),  2, 1),
+    (4, TIMESTAMP(DATE_ADD(currentDate, INTERVAL 0 DAY), "6:35:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 0 DAY), "8:05:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 0 DAY), "8:08:00"),  2, 1),
+    (4, TIMESTAMP(DATE_ADD(currentDate, INTERVAL 0 DAY), "8:10:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 0 DAY), "9:40:00"), null,  2, 1),
+    -- Day 1
+    (2, TIMESTAMP(DATE_ADD(currentDate, INTERVAL 1 DAY), "6:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 1 DAY), "7:00:00"), null,  1, 1),
+    (4, TIMESTAMP(DATE_ADD(currentDate, INTERVAL 1 DAY), "11:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 1 DAY), "12:30:00"), null,  2, 2),
+    (1, TIMESTAMP(DATE_ADD(currentDate, INTERVAL 1 DAY), "16:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 1 DAY), "16:30:00"), null,  1, 1),
+    -- Day 2
+    (1, TIMESTAMP(DATE_ADD(currentDate, INTERVAL 2 DAY), "6:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 2 DAY), "6:30:00"), null,  1, 1),
+    (1, TIMESTAMP(DATE_ADD(currentDate, INTERVAL 2 DAY), "11:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 2 DAY), "11:30:00"), null,  1, 1),
+    (1, TIMESTAMP(DATE_ADD(currentDate, INTERVAL 2 DAY), "16:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL 2 DAY), "16:30:00"), null,  1, 1)
+    ;
+    
+    INSERT INTO `jobequipment` (`JobID`, `EquipmentID`)
+    VALUES
+    -- DAY -2 [DONE]
+    (1, 1),
+    (1, 9),
+    (2, 3),
+    (2, 13),
+    (3, 1),
+    (3, 9),
+    -- DAY -1 [DONE]
+    (4, 1),
+    (4, 8),
+    (5, 1),
+    (5, 8),
+    (6, 3),
+    (6, 13),
+    -- DAY 0
+    (7, 4),
+    (7, 11),
+    (8, 4),
+    (8, 11),
+    (9, 4),
+    (9, 11),
+    -- DAY 1
+    (10, 6),
+    (10, 7),
+    (11, 5),
+    (11, 11),
+    (12, 5),
+    (12, 9),
+    -- DAY 2
+	(13, 2),
+    (13, 10),
+    (14, 2),
+    (14, 10),
+    (15, 2),
+    (15, 10)
+    ;
+    INSERT INTO `jobinventory` (`JobID`, `InventoryID`, `InventoryUsedCount`) 
+    VALUES
+    -- DAY -2 [DONE]
+    (1, 3, 1),
+    (2, 3, 2),
+    (3, 3, 1),
+    -- DAY -1 [DONE]
+    (4, 5, 1),
+    (5, 5, 1),
+    (6, 3, 2),
+    -- DAY 0
+    (7, 6, 2),
+    (8, 6, 2),
+    (9, 6, 2),
+    -- DAY 1
+    (10, 5, 1),
+    (11, 6, 2),
+    (12, 1, 1),
+    -- DAY 2
+    (13, 2, 1),
+    (14, 2, 1),
+    (15, 2, 1)
+    ;
+		
 
 END ;;
 DELIMITER ;
@@ -517,4 +620,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-04 14:19:14
+-- Dump completed on 2026-05-05 18:16:12
