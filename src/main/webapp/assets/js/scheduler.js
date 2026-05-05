@@ -28,6 +28,7 @@ let newJobStartTime;
 let newJobEndTime;
 let newJobLane;
 let addingJob = false;
+let editingJob = false;
 let validNewJobHover = true;
 
 let $timelineWrapper;
@@ -150,6 +151,8 @@ function showForm() {
 
   $newJobLabel.toggle(addingJob);
 
+  editingJob = true;
+
   $jobForm.show();
 }
 
@@ -182,7 +185,7 @@ function convertTimeToFloat(timeString) {
 }
 
 function updateGhostVisibility() {
-  $newJobGhost.toggle((timelineLanesHovered && validNewJobHover) || addingJob);
+  $newJobGhost.toggle(timelineLanesHovered && validNewJobHover && !editingJob || addingJob);
 }
 
 function cancelEdit() {
@@ -199,6 +202,7 @@ function cancelEdit() {
   }
 
   addingJob = false;
+  editingJob = false
   validateChanges();
   $activeJobEntry = null;
   updateGhostVisibility();
