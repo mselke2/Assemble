@@ -30,7 +30,51 @@ let newJobLane;
 let addingJob = false;
 let validNewJobHover = true;
 
+let $timelineWrapper;
+let timelineMouseX = 0;
+let timelineMouseY = 0;
+
 let jobEntries = new Map();
+
+function updateGhostPosition() {
+  if (!timelineLanesHovered || addingJob) {
+    return;
+  }
+
+  let scrolledX = timelineMouseX + $timelineWrapper.scrollLeft();
+  let scrolledY = timelineMouseY + $timelineWrapper.scrollTop();
+
+  newJobLane = Math.floor(scrolledX / laneWidth) + 1;
+  let mouseHour = scrolledY / hourTickSpace;
+  let newJobStartTimeFloat = Math.floor(mouseHour / subTickRatio) * subTickRatio;
+  let newJobEndTimeFloat = Math.min(newJobStartTimeFloat + 1, 24);
+
+  newJobStartTime = convertFloatToTime(newJobStartTimeFloat);
+  newJobEndTime = convertFloatToTime(newJobEndTimeFloat);
+
+  let inHoveredLane = jobEntries.values().filter(entry => entry.lane === newJobLane).toArray();
+
+  for (let job of inHoveredLane) {
+    if (newJobStartTime >= job.startTime && newJobStartTime <= job.endTime) {
+      newJobStartTimeFloat = convertTimeToFloat(job.endTime) + 1.0 / 60;
+      newJobStartTime = convertFloatToTime(newJobStartTimeFloat);
+    }
+
+    if (newJobEndTime >= job.startTime && newJobEndTime <= job.endTime) {
+      newJobEndTimeFloat = convertTimeToFloat(job.startTime) - 1.0 / 60;
+      newJobEndTime = convertFloatToTime(newJobEndTimeFloat);
+    }
+  }
+
+  validNewJobHover = newJobStartTime < newJobEndTime;
+
+  updateGhostVisibility();
+  $newJobGhost.css({
+    "--start-time": convertTimeToFloat(newJobStartTime),
+    "--end-time": convertTimeToFloat(newJobEndTime),
+    "--lane": newJobLane
+  });
+}
 
 function validateChanges() {
   if ($activeJobEntry == null) {
@@ -322,38 +366,10 @@ $(function() {
       updateGhostVisibility();
     }
   }).on("mousemove", function(e) {
-    if (timelineLanesHovered && !addingJob) {
-      let mouseHour = e.offsetY / hourTickSpace;
-      newJobLane = Math.floor(e.offsetX / laneWidth) + 1;
-      let newJobStartTimeFloat = Math.floor(mouseHour / subTickRatio) * subTickRatio;
-      let newJobEndTimeFloat = Math.min(newJobStartTimeFloat + 1, 24);
+    timelineMouseX = e.pageX - $timelineLanes.position().left - $timelineWrapper.scrollLeft();
+    timelineMouseY = e.pageY - $timelineLanes.position().top - $timelineWrapper.scrollTop();
 
-      newJobStartTime = convertFloatToTime(newJobStartTimeFloat);
-      newJobEndTime = convertFloatToTime(newJobEndTimeFloat);
-
-      let inHoveredLane = jobEntries.values().filter(entry => entry.lane === newJobLane).toArray();
-
-      for (let job of inHoveredLane) {
-        if (newJobStartTime >= job.startTime && newJobStartTime <= job.endTime) {
-          newJobStartTimeFloat = convertTimeToFloat(job.endTime) + 1.0 / 60;
-          newJobStartTime = convertFloatToTime(newJobStartTimeFloat);
-        }
-
-        if (newJobEndTime >= job.startTime && newJobEndTime <= job.endTime) {
-          newJobEndTimeFloat = convertTimeToFloat(job.startTime) - 1.0 / 60;
-          newJobEndTime = convertFloatToTime(newJobEndTimeFloat);
-        }
-      }
-
-      validNewJobHover = newJobStartTime < newJobEndTime;
-
-      updateGhostVisibility();
-      $newJobGhost.css({
-        "--start-time": convertTimeToFloat(newJobStartTime),
-        "--end-time": convertTimeToFloat(newJobEndTime),
-        "--lane": newJobLane
-      });
-    }
+    updateGhostPosition();
   }).on("mouseout", function(e) {
     if (e.target === this) {
       timelineLanesHovered = false;
@@ -382,6 +398,8 @@ $(function() {
       showForm();
     }
   });
+
+  $timelineWrapper = $(".timeline-wrapper").on("scroll", updateGhostPosition);
 
   $deleteBtn = $("#delete-btn").on("click", function() {
     let jobId = +$activeJobEntry.attr("job-id");
