@@ -322,6 +322,43 @@ public class JobDaoImpl implements JobDao {
       } else {
         
         // ELSE
+        
+        // Check to see if we have personnel for the start date of the job
+        int personnelAvailableCount;
+        int personnelRequiredCount;
+        
+        // Get personnel available for date of job
+        String mySqlPersonnelAvailable = "SELECT * FROM personnel WHERE Date = ?;";
+        PreparedStatement preparedStatementPersonnel =  connection.prepareStatement(mySqlPersonnelAvailable);
+        preparedStatementPersonnel.setTimestamp(1, startTime);
+        ResultSet resultsPersonnelAvailable = preparedStatementPersonnel.executeQuery();
+        
+        if (resultsPersonnelAvailable.isBeforeFirst()) {
+          resultsPersonnelAvailable.next();
+          personnelAvailableCount = resultsPersonnelAvailable.getInt("Count");
+        } else {
+          throw new JobDaoException("No personnel data for date.");
+        }
+        
+        // Get personnel required for product produced by job
+        String mySqlPersonnelRequired = "SELECT * FROM product WHERE ID = ?;";
+        preparedStatementPersonnel= connection.prepareStatement(mySqlPersonnelRequired);
+        preparedStatement.setInt(1, job.getProductId());
+        ResultSet resultsPersonnelRequired = preparedStatementPersonnel.executeQuery();
+        
+        if (resultsPersonnelRequired.isBeforeFirst()) {
+          resultsPersonnelRequired.next();
+          personnelRequiredCount = resultsPersonnelRequired.getInt("TargetPersonnelCount");
+        } else {
+          throw new JobDaoException("No personnel data for product.");
+        }
+        
+        // If there aren't enough personnel, add to the prerequisitesError.
+        if (personnelRequiredCount > personnelAvailableCount) {
+          prerequisitesError += "You need " + abs(personnelAvailableCount - personnelRequiredCount) + " more personnel to schedule this job.";
+        }
+        
+        
         // Check to see if inventory and equipment are available for job.
         // Prepare select statements to get the InventoryTypeIDs and EquipmentTypeIDs for the requested
         // job.
