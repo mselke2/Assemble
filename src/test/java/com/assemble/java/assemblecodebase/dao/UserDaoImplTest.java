@@ -69,4 +69,42 @@ class UserDaoImplTest {
     });
     
   }
+  
+  @Test
+  void deleteUser() {
+    
+    UserDaoImpl userDao = new UserDaoImpl();
+    assertDoesNotThrow(() -> {
+      
+      userDao.deleteUser(1);
+      userDao.deleteUser(2);
+      userDao.deleteUser(3);
+      userDao.deleteUser(4);
+      userDao.deleteUser(5);
+      userDao.deleteUser(6);
+      
+      assertThrows(Exception.class, () -> userDao.deleteUser(7));
+    });
+  }
+  
+  @Test
+  void retrieve() {
+    UserDaoImpl userDao = new UserDaoImpl();
+    String password = "passwordUpdated";
+    assertDoesNotThrow(() -> {
+      assertEquals(1, userDao.retrieve("Test1", password));
+      assertEquals(2, userDao.retrieve("Test2", password));
+      assertEquals(3, userDao.retrieve("Test3", password));
+      assertEquals(4, userDao.retrieve("Test4", password));
+      assertEquals(5, userDao.retrieve("Test5", password));
+      assertEquals(6, userDao.retrieve("Test6", password));
+      
+      assertThrows(Exception.class, () -> userDao.retrieve("Test1", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieve("Test2", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieve("Test3", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieve("Test4", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieve("Test5", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieve("Test6", "wrong"));
+    });
+  }
 }
