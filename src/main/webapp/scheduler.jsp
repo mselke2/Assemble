@@ -40,7 +40,7 @@
                     </div>
                     <div id="timeline-lanes">
                         <div id="create-job-ghost" class="job-entry">
-                            <p>+</p>
+                            <div></div>
                         </div>
                         <c:if test="${not empty jobs}">
                             <c:forEach var="job" items="${jobs}">

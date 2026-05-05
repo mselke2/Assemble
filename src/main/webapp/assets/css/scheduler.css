@@ -82,16 +82,22 @@ body {
             }
 
             #create-job-ghost {
-              display: none;
+              display: flex;
               pointer-events: none;
 
-              background: none;
-              box-shadow: 0 0 10px 5px rgba(9, 93, 0, 0.5);
+              background-color: #e7e7e7;
+
+              justify-content: center;
+              align-items: center;
 
               z-index: 1;
 
-              p {
-                color: black;
+              div {
+                background-image: url("../img/plus.png");
+                width: 30cqmin;
+                height: 30cqmin;
+                background-size: cover;
+                z-index: 2;
               }
             }
           }
