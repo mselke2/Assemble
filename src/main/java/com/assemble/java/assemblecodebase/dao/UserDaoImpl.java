@@ -7,6 +7,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDaoImpl implements UserDao {
   
@@ -130,38 +131,78 @@ public class UserDaoImpl implements UserDao {
   
   @Override
   public void deleteUser(int userId) {
-    
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if a user exists
+
+    try {
+      Connection conn = MySQLUtility.createConnection();
+
+      // Get a connection to the database
+
+      // Prepare a select statement to see if a user exists
       // with this userId and execute it.
-    
-    // IF a user exists
-      // Prepare a delete statement to delete this user from the database and execute it.
-    
-    // ELSE
-      // Throw a UserDaoException with the message "User does not exist."
-    // ENDIF
+      String mySqlSelectExists = "SELECT * FROM user WHERE ID = ?";
+      PreparedStatement preparedStatement = conn.prepareStatement(mySqlSelectExists);
+      preparedStatement.setInt(1, userId);
+      ResultSet results = preparedStatement.executeQuery();
+
+      // IF a user exists
+      if (results.isBeforeFirst()) {
+        // Prepare a delete statement to delete this user from the database and execute it.
+        String mySqlDelete = "DELETE FROM user WHERE ID = ?";
+        preparedStatement = conn.prepareStatement(mySqlDelete);
+        preparedStatement.setInt(1, userId);
+        preparedStatement.executeUpdate();
+      } else {
+        // ELSE
+        // Throw a UserDaoException with the message "User does not exist."
+        throw new UserDaoException("User does not exist.");
+      }
+      // ENDIF
+      preparedStatement.close();
+      conn.close();
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new UserDaoException(e.getMessage());
+    }
   }
   
   @Override
   public int retrieve(String username, String password) {
-    
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if a user exists with this username and execute it
-    
-    // IF a user exists
-      // Salt the password with the userID
-      // Re-hash the password with the new salt.
-      // IF the hashed password matches the password in the database
-        // Return the userID
-      // ELSE
-        // Throw a UserDaoException with the message "Incorrect password."
-      // ENDIF
-    // ELSE
-      // Throw a UserDaoException with the message "User does not exist."
-    // ENDIF
-    return 0;
+
+    try {
+      Connection conn = MySQLUtility.createConnection();
+
+      // Get a connection to the database
+
+      // Prepare a select statement to see if a user exists with this username and execute it
+      String mySqlSelectExists = "SELECT * FROM user WHERE username = ?";
+      PreparedStatement preparedStatement = conn.prepareStatement(mySqlSelectExists);
+      preparedStatement.setString(1, username);
+      ResultSet results = preparedStatement.executeQuery();
+
+      // IF a user exists
+      if (results.isBeforeFirst()) {
+        results.next();
+        // Salt the password with the userID
+        int id = results.getInt("ID");
+        String passwordIn =  password + id;
+        // Re-hash the password with the new salt.
+        passwordIn = DigestUtils.sha256Hex(passwordIn);
+        // IF the hashed password matches the password in the database
+        if(passwordIn.equals(results.getString("passwordHash"))) {
+          return id;
+        } else {
+          // ELSE
+          // Throw a UserDaoException with the message "Incorrect password."
+          throw new UserDaoException("Username or password does not match.");
+        }
+        // ENDIF
+      } else {
+        // ELSE
+        // Throw a UserDaoException with the message "User does not exist."
+        // ENDIF
+        throw new UserDaoException("Username or password does not match.");
+      }
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new UserDaoException(e.getMessage());
+    }
   }
 }
