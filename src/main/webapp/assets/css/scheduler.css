@@ -20,7 +20,7 @@ body {
         overflow: auto;
 
         .timeline {
-          display: flex;
+          display: inline-flex;
           --hour-tick-space: 120px;
           --lane-width: 100px;
 
@@ -41,7 +41,7 @@ body {
           }
 
           #timeline-lanes {
-            flex-grow: 1;
+            width: calc(10 * var(--lane-width));
             position: relative;
             cursor: pointer;
 
