@@ -17,7 +17,7 @@ class JobDaoImplTest {
   @Test
   void addJob() {
     
-    Job job = new Job(3, 5, new Timestamp(2026-1900, 0, 1, 12, 0, 0, 0));
+    Job job = new Job(3, 1, new Timestamp(2026-1900, 0, 1, 12, 0, 0, 0));
     
     ProductDaoImpl productDao = new ProductDaoImpl();
     JobDaoImpl jobDao = new JobDaoImpl();

@@ -75,9 +75,7 @@ public class Job implements Serializable {
   public void setProjectedEndTime(Timestamp startTime, int duration) {
     Calendar cal =  Calendar.getInstance();
     cal.setTime(startTime);
-    System.out.println("Start time: " + startTime);
     cal.add(Calendar.MINUTE, duration);
-    System.out.println("Projected end time: " + new Timestamp(cal.getTime().getTime()));
     this.projectedEndTime = new Timestamp(cal.getTime().getTime());
   }
   

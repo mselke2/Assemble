@@ -327,8 +327,6 @@ public class JobDaoImpl implements JobDao {
     
     Timestamp startTime = job.getStartTime();
     Timestamp projectedEndTime = job.getProjectedEndTime();
-    System.out.println(startTime);
-    System.out.println(projectedEndTime);
     
     try {
       // Get a connection to the database

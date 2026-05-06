@@ -53,10 +53,10 @@ class ProductDaoImplTest {
     ProductDaoImpl productDao = new ProductDaoImpl();
     
     assertDoesNotThrow(() -> {
-      Product product = productDao.retrieve(5);
-      assertEquals(5, product.getId());
-      assertEquals("test2", product.getDescription());
-      assertEquals(2, product.getMinutesDuration());
+      Product product = productDao.retrieve(3);
+      assertEquals(3, product.getId());
+      assertEquals("steel rod", product.getDescription());
+      assertEquals(120, product.getMinutesDuration());
       assertEquals(5, product.getTargetPersonnelCount());
       System.out.println(product);
       assertThrows(ProductDaoException.class, () -> productDao.retrieve(6));
