@@ -9,8 +9,12 @@
 <div class="panel">
     <h1>Add Account</h1>
     <form action="User" method="post">
+        <label for="fName">First Name</label>
+        <input type="text" name="fName" id="fName" pattern="^[a-zA-Z]{1,50}$" required>
+        <label for="lName">Last Name</label>
+        <input type="text" name="lName" id="lName" pattern="^[a-zA-Z]{1,50}$" required>
         <label for="username">Username</label>
-        <input type="text" name="username" id="username" minlength="3" maxlength="50" required>
+        <input type="text" name="username" id="username" pattern="^[a-zA-Z0-9]{3,50}$" required>
         <label for="password">Password</label>
         <input type="password" name="password" id="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$" required>
         <div id="password-requirements">
