@@ -10,8 +10,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
 
@@ -19,6 +17,8 @@ import java.io.IOException;
 public class UserServlet extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // TODO: Ensure user has the authority to create users.
+
     String username;
     int permissionId;
     String fName;
@@ -79,6 +79,8 @@ public class UserServlet extends HttpServlet {
   }
 
   public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // TODO: Ensure user has the authority to delete users
+
     try{
       int userId = Integer.parseInt(request.getPathInfo().substring(1));
       UserDao userDao = new UserDaoImpl();
