@@ -1,11 +1,17 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
+import com.assemble.java.assemblecodebase.dao.UserDao;
+import com.assemble.java.assemblecodebase.dao.UserDaoException;
+import com.assemble.java.assemblecodebase.dao.UserDaoImpl;
+import com.assemble.java.assemblecodebase.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
 
@@ -13,25 +19,63 @@ import java.io.IOException;
 public class UserServlet extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    // Get username, password, confirmed password,
-    // first name, last name and permission level from client
-    // !!! GUI design doc doesn't include first/last names,
-    // and they are not included in the page at this time --Adam
+    String username;
+    int permissionId;
+    String fName;
+    String lName;
+    String password;
 
-    // Make sure all fields are filled in
+    response.setContentType("text/plain");
 
-    // Make sure password and confirmed password match
+    try {
+      UserDao dao = new UserDaoImpl();
 
-    // Create a UserDAO object to handle User data
+      username = request.getParameter("username");
+      if (username == null
+          || !(username = username.toLowerCase()).matches("^[a-z0-9]{3,50}$"))
+        throw new RuntimeException("Invalid Username");
 
-    // Create a User object and initialize with sanitized parameters from client
+      var permissions = dao.retrievePermissions();
 
-    // Run addUser() and pass in the User object.
+      try {
+        permissionId =  Integer.parseInt(request.getParameter("type"));
+      } catch (NumberFormatException e) {
+        throw new RuntimeException("Invalid Permission Id");
+      }
+      if (permissions.stream().noneMatch(p -> permissionId == p.getId()))
+        throw new RuntimeException("Invalid Permission Id");
 
-    // set response status to HttpServletResponse.SC_UNPROCESSABLE_CONTENT if any
-    // fields are invalid (e.g. passwords do not match)
-    // response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);
-    // getServletContext().getRequestDispatcher("<<<page that user should be redirected to after creating account>>>").forward(request, response);
+      fName = request.getParameter("fName");
+      if (fName == null
+          || !(fName = fName.toLowerCase()).matches("^[a-zA-Z]{1,50}$"))
+        throw new RuntimeException("Invalid First Name");
+
+      lName = request.getParameter("lName");
+      if (lName == null
+          || !(lName = lName.toLowerCase()).matches("^[a-zA-Z]{1,50}$"))
+        throw new RuntimeException("Invalid Last Name");
+
+      password = request.getParameter("password");
+      if (password == null
+          || !password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$"))
+        throw new RuntimeException("Invalid Password");
+
+      if (!password.equals(request.getParameter("password-repeat")))
+        throw new RuntimeException("Passwords Do Not Match");
+
+      User user = new User(username, permissionId, fName, lName, password);
+      dao.addUser(user);
+    } catch (UserDaoException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      response.getWriter().write(e.getMessage());
+      return;
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);
+      response.getWriter().write(e.getMessage());
+      return;
+    }
+
+    response.getWriter().write("User added successfully.");
   }
 
   public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
