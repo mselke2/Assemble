@@ -47,6 +47,10 @@ body {
         opacity: 1;
       }
     }
+
+    #message {
+      text-align: center;
+    }
   }
 }
 
