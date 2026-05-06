@@ -26,7 +26,9 @@ CREATE TABLE `equipment` (
   `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `TypeID` smallint unsigned NOT NULL,
   `Status` tinyint DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `equipment_typeID_idx` (`TypeID`),
+  CONSTRAINT `equipment_TypeID` FOREIGN KEY (`TypeID`) REFERENCES `equipmenttype` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -75,7 +77,9 @@ CREATE TABLE `inventory` (
   `ID` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `TypeID` smallint unsigned NOT NULL,
   `Count` mediumint unsigned NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `inventory_typeId_idx` (`TypeID`),
+  CONSTRAINT `inventory_TypeID` FOREIGN KEY (`TypeID`) REFERENCES `inventorytype` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -128,7 +132,9 @@ CREATE TABLE `job` (
   `ActualEndTime` datetime DEFAULT NULL,
   `PersonnelCount` tinyint NOT NULL,
   `Line` tinyint DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `job_productId_idx` (`ProductID`),
+  CONSTRAINT `job_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -138,7 +144,7 @@ CREATE TABLE `job` (
 
 LOCK TABLES `job` WRITE;
 /*!40000 ALTER TABLE `job` DISABLE KEYS */;
-INSERT INTO `job` VALUES (1,1,'2026-05-03 05:00:00','2026-05-03 05:30:00','2026-05-03 05:30:00',1,1),(2,3,'2026-05-03 05:15:00','2026-05-03 07:00:00','2026-05-03 07:00:00',2,2),(3,1,'2026-05-03 05:35:00','2026-05-03 06:05:00','2026-05-03 06:10:00',1,1),(4,2,'2026-05-04 05:00:00','2026-05-04 06:00:00','2026-05-04 06:03:00',1,1),(5,2,'2026-05-04 06:05:00','2026-05-04 07:05:00','2026-05-04 07:05:00',1,1),(6,3,'2026-05-04 05:30:00','2026-05-04 07:05:00','2026-05-04 07:10:00',2,2),(7,4,'2026-05-05 05:00:00','2026-05-05 06:30:00','2026-05-05 06:33:00',2,1),(8,4,'2026-05-05 06:35:00','2026-05-05 08:05:00','2026-05-05 08:08:00',2,1),(9,4,'2026-05-05 08:10:00','2026-05-05 09:40:00',NULL,2,1),(10,2,'2026-05-06 06:00:00','2026-05-06 07:00:00',NULL,1,1),(11,4,'2026-05-06 11:00:00','2026-05-06 12:30:00',NULL,2,2),(12,1,'2026-05-06 16:00:00','2026-05-06 16:30:00',NULL,1,1),(13,1,'2026-05-07 06:00:00','2026-05-07 06:30:00',NULL,1,1),(14,1,'2026-05-07 11:00:00','2026-05-07 11:30:00',NULL,1,1),(15,1,'2026-05-07 16:00:00','2026-05-07 16:30:00',NULL,1,1);
+INSERT INTO `job` VALUES (1,1,'2026-05-04 05:00:00','2026-05-04 05:30:00','2026-05-04 05:30:00',1,1),(2,3,'2026-05-04 05:15:00','2026-05-04 07:00:00','2026-05-04 07:00:00',2,2),(3,1,'2026-05-04 05:35:00','2026-05-04 06:05:00','2026-05-04 06:10:00',1,1),(4,2,'2026-05-05 05:00:00','2026-05-05 06:00:00','2026-05-05 06:03:00',1,1),(5,2,'2026-05-05 06:05:00','2026-05-05 07:05:00','2026-05-05 07:05:00',1,1),(6,3,'2026-05-05 05:30:00','2026-05-05 07:05:00','2026-05-05 07:10:00',2,2),(7,4,'2026-05-06 05:00:00','2026-05-06 06:30:00','2026-05-06 06:33:00',2,1),(8,4,'2026-05-06 06:35:00','2026-05-06 08:05:00','2026-05-06 08:08:00',2,1),(9,4,'2026-05-06 08:10:00','2026-05-06 09:40:00',NULL,2,1),(10,2,'2026-05-07 06:00:00','2026-05-07 07:00:00',NULL,1,1),(11,4,'2026-05-07 11:00:00','2026-05-07 12:30:00',NULL,2,2),(12,1,'2026-05-07 16:00:00','2026-05-07 16:30:00',NULL,1,1),(13,1,'2026-05-08 06:00:00','2026-05-08 06:30:00',NULL,1,1),(14,1,'2026-05-08 11:00:00','2026-05-08 11:30:00',NULL,1,1),(15,1,'2026-05-08 16:00:00','2026-05-08 16:30:00',NULL,1,1);
 /*!40000 ALTER TABLE `job` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,7 +158,10 @@ DROP TABLE IF EXISTS `jobequipment`;
 CREATE TABLE `jobequipment` (
   `JobID` mediumint unsigned NOT NULL,
   `EquipmentID` smallint unsigned NOT NULL,
-  PRIMARY KEY (`JobID`,`EquipmentID`)
+  PRIMARY KEY (`JobID`,`EquipmentID`),
+  KEY `jobequipment_EquipmentID_idx` (`EquipmentID`),
+  CONSTRAINT `jobequipment_EquipmentID` FOREIGN KEY (`EquipmentID`) REFERENCES `equipment` (`ID`),
+  CONSTRAINT `jobequipment_JobID` FOREIGN KEY (`JobID`) REFERENCES `job` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -162,7 +171,7 @@ CREATE TABLE `jobequipment` (
 
 LOCK TABLES `jobequipment` WRITE;
 /*!40000 ALTER TABLE `jobequipment` DISABLE KEYS */;
-INSERT INTO `jobequipment` VALUES (1,1),(1,9),(2,3),(2,13),(3,1),(3,9),(4,1),(4,8),(5,1),(5,8),(6,3),(6,13),(7,4),(7,11),(8,4),(8,11),(9,4),(9,11),(10,6),(10,7),(11,5),(11,11),(12,5),(12,9),(13,2),(13,10),(14,2),(14,10),(15,2),(15,10);
+INSERT INTO `jobequipment` VALUES (1,1),(3,1),(4,1),(5,1),(13,2),(14,2),(15,2),(2,3),(6,3),(7,4),(8,4),(9,4),(11,5),(12,5),(10,6),(10,7),(4,8),(5,8),(1,9),(3,9),(12,9),(13,10),(14,10),(15,10),(7,11),(8,11),(9,11),(11,11),(2,13),(6,13);
 /*!40000 ALTER TABLE `jobequipment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -177,7 +186,10 @@ CREATE TABLE `jobinventory` (
   `JobID` mediumint unsigned NOT NULL,
   `InventoryID` mediumint unsigned NOT NULL,
   `InventoryUsedCount` tinyint unsigned NOT NULL,
-  PRIMARY KEY (`JobID`,`InventoryID`)
+  PRIMARY KEY (`JobID`,`InventoryID`),
+  KEY `jobinventory_InventoryID_idx` (`InventoryID`),
+  CONSTRAINT `jobinventory_InventoryID` FOREIGN KEY (`InventoryID`) REFERENCES `inventory` (`ID`),
+  CONSTRAINT `jobinventory_JobID` FOREIGN KEY (`JobID`) REFERENCES `job` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -212,7 +224,7 @@ CREATE TABLE `personnel` (
 
 LOCK TABLES `personnel` WRITE;
 /*!40000 ALTER TABLE `personnel` DISABLE KEYS */;
-INSERT INTO `personnel` VALUES (1,'2026-05-03',5),(2,'2026-05-04',6),(3,'2026-05-05',4),(4,'2026-05-06',7),(5,'2026-05-07',6);
+INSERT INTO `personnel` VALUES (1,'2026-05-04',5),(2,'2026-05-05',6),(3,'2026-05-06',4),(4,'2026-05-07',7),(5,'2026-05-08',6);
 /*!40000 ALTER TABLE `personnel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -226,7 +238,7 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `Description` varchar(50) NOT NULL,
-  `Duration` time NOT NULL,
+  `Duration` smallint NOT NULL,
   `TargetPersonnelCount` tinyint unsigned NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -238,7 +250,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'steel button','00:30:00',1),(2,'brass button','01:00:00',1),(3,'steel rod','01:45:00',2),(4,'copper rod','01:30:00',2);
+INSERT INTO `product` VALUES (1,'steel button',30,1),(2,'brass button',60,1),(3,'steel rod',105,2),(4,'copper rod',90,2);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,7 +265,10 @@ CREATE TABLE `productequipment` (
   `ProductID` smallint unsigned NOT NULL,
   `EquipmentTypeID` smallint unsigned NOT NULL,
   `RequiredEquipmentTypeCount` tinyint unsigned DEFAULT NULL,
-  PRIMARY KEY (`ProductID`,`EquipmentTypeID`)
+  PRIMARY KEY (`ProductID`,`EquipmentTypeID`),
+  KEY `productequipment_EquipmentTypeID_idx` (`EquipmentTypeID`),
+  CONSTRAINT `productequipment_EquipmentTypeID` FOREIGN KEY (`EquipmentTypeID`) REFERENCES `equipmenttype` (`ID`),
+  CONSTRAINT `productequipment_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -278,7 +293,10 @@ CREATE TABLE `productinventory` (
   `ProductID` smallint unsigned NOT NULL,
   `InventoryTypeID` smallint unsigned NOT NULL,
   `RequiredInventoryCount` tinyint unsigned NOT NULL,
-  PRIMARY KEY (`ProductID`,`InventoryTypeID`)
+  PRIMARY KEY (`ProductID`,`InventoryTypeID`),
+  KEY `productinventory_InventoryID_idx` (`InventoryTypeID`),
+  CONSTRAINT `productinventory_InventoryID` FOREIGN KEY (`InventoryTypeID`) REFERENCES `inventorytype` (`ID`),
+  CONSTRAINT `productinventory_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -304,7 +322,9 @@ CREATE TABLE `session` (
   `LoginToken` char(64) NOT NULL,
   `UserID` smallint unsigned NOT NULL,
   `LastUsed` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `session_UserID_idx` (`UserID`),
+  CONSTRAINT `session_UserID` FOREIGN KEY (`UserID`) REFERENCES `user` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -331,7 +351,9 @@ CREATE TABLE `user` (
   `FirstName` varchar(50) DEFAULT NULL,
   `LastName` varchar(50) DEFAULT NULL,
   `PasswordHash` char(64) NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `user_PermissionID_idx` (`PermissionID`),
+  CONSTRAINT `user_PermissionID` FOREIGN KEY (`PermissionID`) REFERENCES `userpermission` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -341,7 +363,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'jSmith05',1,'John','Smith','e98140fc6c2f41e3200f2c0f9b6fc5afed07624dc4ed953c74712c30219c7be3'),(2,'sLantern9',1,'Sarah','Lantern','bc6efb88ceef075aec80c863f284e3b82f3ac5f25133e8359a5c581265b67361'),(3,'fRedd8',2,'Felix','Redd','d7bdf45a4f1041c979d474f2ccf429b0e87612741e855cd88a6c1f5e10bc8812'),(4,'mLord4',2,'Maxwell','Lord','fcb1c21514003f790189915d6bc1ae6c539916c6f0850203f82c0c3d3e0daf54'),(5,'lWater1',2,'Llyod','Water','204538bd3177ca77db8f3ebfe186b5f7592b25ea9e5ec44d352e79e68366fbaf'),(6,'viewUser',3,'','','29c0ab6722f19be6354ad9b9c32ba3bbdb495219dcb434885c3509ef88063909');
+INSERT INTO `user` VALUES (1,'jSmith05',1,'John','Smith','0b14d501a594442a01c6859541bcb3e8164d183d32937b851835442f69d5c94e'),(2,'sLantern9',1,'Sarah','Lantern','6cf615d5bcaac778352a8f1f3360d23f02f34ec182e259897fd6ce485d7870d4'),(3,'fRedd8',2,'Felix','Redd','5906ac361a137e2d286465cd6588ebb5ac3f5ae955001100bc41577c3d751764'),(4,'mLord4',2,'Maxwell','Lord','b97873a40f73abedd8d685a7cd5e5f85e4a9cfb83eac26886640a0813850122b'),(5,'lWater1',2,'Llyod','Water','8b2c86ea9cf2ea4eb517fd1e06b74f399e7fec0fef92e3b482a6cf2e2b092023'),(6,'viewUser',3,'','','598a1a400c1dfdf36974e69d7e1bc98593f2e15015eed8e9b7e47a83b31693d5');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -384,17 +406,24 @@ UNLOCK TABLES;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ClearTables`()
 BEGIN
-	truncate equipment;
-    truncate equipmenttype;
-    truncate inventory;
-    truncate inventorytype;
-    truncate job;
-	truncate jobequipment;
-    truncate jobinventory;
-    truncate product;
-    truncate productequipment;
+	 -- Disable foreign key enforcement
+	SET FOREIGN_KEY_CHECKS = 0;
+	-- truncate tables
+	truncate productequipment;
 	truncate productinventory;
+    truncate jobequipment;
+    truncate jobinventory;
+    truncate job;
+    truncate product;
+    truncate equipmenttype;
+    truncate inventorytype;
+	truncate equipment;
+    truncate inventory;
+    truncate personnel;
     truncate assemble.`session`;
+	truncate `user`;
+    -- Re-enable foreign key enforcement
+	SET FOREIGN_KEY_CHECKS = 1;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -416,21 +445,30 @@ BEGIN
 	
 	DECLARE currentDate DATE;
 	
+    -- Disable foreign key enforcement
+	SET FOREIGN_KEY_CHECKS = 0;
+    
 	-- truncate tables
-	truncate equipment;
-    truncate equipmenttype;
-    truncate inventory;
-    truncate inventorytype;
-    truncate job;
-	truncate jobequipment;
-    truncate jobinventory;
-    truncate personnel;
-    truncate product;
-    truncate productequipment;
+    
+    
+	truncate productequipment;
 	truncate productinventory;
+    
+    
+    truncate jobequipment;
+    truncate jobinventory;
+    truncate job;
+    truncate product;
+    truncate equipmenttype;
+    truncate inventorytype;
+	truncate equipment;
+    truncate inventory;
+    
+    truncate personnel;
     truncate assemble.`session`;
 	truncate `user`;
-    
+    -- Re-enable foreign key enforcement
+	SET FOREIGN_KEY_CHECKS = 1;
    
 	INSERT INTO `equipmenttype` (`Description`)
 	VALUES 
@@ -472,10 +510,10 @@ BEGIN
     -- create 3 products
 	INSERT INTO `product` (`Description`, `Duration`, `TargetPersonnelCount`)
     VALUES
-		("steel button", "0:30:00", 1),
-		("brass button", "1:00:00", 1),
-		("steel rod", "1:45:00", 2),
-		("copper rod", "1:30:00", 2);
+		("steel button", 30, 1),
+		("brass button", 60, 1),
+		("steel rod", 105, 2),
+		("copper rod", 90, 2);
         
 	-- Create productequipment
 	INSERT INTO `productequipment` (`ProductID`, `EquipmentTypeID`, `RequiredEquipmentTypeCount`)
@@ -499,12 +537,12 @@ BEGIN
 	
     INSERT INTO `user` (`Username`, `PermissionID`, `FirstName`, `LastName`, `PasswordHash`)
     VALUES
-       ("jSmith05", 1, "John", "Smith", "e98140fc6c2f41e3200f2c0f9b6fc5afed07624dc4ed953c74712c30219c7be3"),
-       ("sLantern9", 1, "Sarah", "Lantern", "bc6efb88ceef075aec80c863f284e3b82f3ac5f25133e8359a5c581265b67361"),
-       ("fRedd8", 2, "Felix", "Redd", "d7bdf45a4f1041c979d474f2ccf429b0e87612741e855cd88a6c1f5e10bc8812"),
-       ("mLord4", 2, "Maxwell", "Lord", "fcb1c21514003f790189915d6bc1ae6c539916c6f0850203f82c0c3d3e0daf54"),
-       ("lWater1", 2, "Llyod", "Water", "204538bd3177ca77db8f3ebfe186b5f7592b25ea9e5ec44d352e79e68366fbaf"),
-       ("viewUser", 3, "", "", "29c0ab6722f19be6354ad9b9c32ba3bbdb495219dcb434885c3509ef88063909");
+       ("jSmith05", 1, "John", "Smith", "0b14d501a594442a01c6859541bcb3e8164d183d32937b851835442f69d5c94e"),
+       ("sLantern9", 1, "Sarah", "Lantern", "6cf615d5bcaac778352a8f1f3360d23f02f34ec182e259897fd6ce485d7870d4"),
+       ("fRedd8", 2, "Felix", "Redd", "5906ac361a137e2d286465cd6588ebb5ac3f5ae955001100bc41577c3d751764"),
+       ("mLord4", 2, "Maxwell", "Lord", "b97873a40f73abedd8d685a7cd5e5f85e4a9cfb83eac26886640a0813850122b"),
+       ("lWater1", 2, "Llyod", "Water", "8b2c86ea9cf2ea4eb517fd1e06b74f399e7fec0fef92e3b482a6cf2e2b092023"),
+       ("viewUser", 3, "", "", "598a1a400c1dfdf36974e69d7e1bc98593f2e15015eed8e9b7e47a83b31693d5");
 	
     SET currentDate = CURRENT_DATE();
     INSERT INTO `personnel` (`Date`, `Count`)
@@ -620,4 +658,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-05 18:16:12
+-- Dump completed on 2026-05-06 14:35:29
