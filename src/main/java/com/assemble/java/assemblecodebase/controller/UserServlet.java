@@ -79,16 +79,12 @@ public class UserServlet extends HttpServlet {
   }
 
   public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    // Get userId from the client
-
-    // Validate and sanitize userId
-
-    // Create a UserDAO object
-
-    // Run deleteUser() and pass in the userId
-
-    // Return success: true if successful and success: false if not.
-
+    try{
+      int userId = Integer.parseInt(request.getPathInfo().substring(1));
+      UserDao userDao = new UserDaoImpl();
+      userDao.deleteUser(userId);
+    } catch (NumberFormatException | UserDaoException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
   }
 }
