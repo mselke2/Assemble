@@ -9,7 +9,7 @@
 <body>
 <div class="panel">
     <h1>Add Account</h1>
-    <form action="User" method="post">
+    <form>
         <label for="fName">First Name</label>
         <input type="text" name="fName" id="fName" pattern="^[a-zA-Z]{1,50}$" required>
         <label for="lName">Last Name</label>
@@ -39,6 +39,7 @@
         </select>
         <input type="submit" name="submit" value="Submit">
     </form>
+    <p id="message"></p>
 </div>
 <script src="assets/js/add-account.js"></script>
 </body>
