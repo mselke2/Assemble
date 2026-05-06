@@ -4,6 +4,8 @@ import com.assemble.java.assemblecodebase.model.Job;
 import org.junit.jupiter.api.Test;
 import java.sql.Timestamp;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class JobDaoImplTest {
   
   @Test
@@ -41,5 +43,14 @@ class JobDaoImplTest {
   
   @Test
   void retrieve() {
+    JobDaoImpl jobDao = new JobDaoImpl();
+    
+    assertDoesNotThrow(() -> {
+      
+      assertTrue(jobDao.retrieve(1) instanceof Job);
+      
+      assertThrows(Exception.class, () -> jobDao.retrieve(-1));
+    });
   }
+  
 }

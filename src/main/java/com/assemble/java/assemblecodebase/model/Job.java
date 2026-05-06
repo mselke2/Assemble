@@ -79,6 +79,10 @@ public class Job implements Serializable {
     this.projectedEndTime = new Timestamp(cal.getTime().getTime());
   }
   
+  public void setProjectedEndTime(Timestamp startTime) {
+    this.projectedEndTime = startTime;
+  }
+  
   public Timestamp getActualEndTime() {
     return actualEndTime;
   }

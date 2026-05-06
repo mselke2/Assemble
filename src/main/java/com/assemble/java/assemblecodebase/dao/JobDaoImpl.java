@@ -136,19 +136,40 @@ public class JobDaoImpl implements JobDao {
   @Override
   public Job retrieve(int id) {
     
-    // Get a connection to the database
-    
-    // Prepare a select statement to see if a job exists with this jobID and execute it.
-    
-    // If a job exists
-      // Move cursor to the result
-      // Create a new job object and set its fields with the values from the result set
-      // Return the job object.
-    
-    // ELSE
-      // Throw a JobDaoException with the message "Job does not exist."
-    
-    return null;
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      
+      // Prepare a select statement to see if a job exists with this jobID and execute it.
+      String mySqlSelect = "SELECT * FROM Job WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
+      preparedStatement.setInt(1, id);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // If a job exists
+      if (resultSet.isBeforeFirst()) {
+        // Move cursor to the result
+        resultSet.next();
+        // Create a new job object and set its fields with the values from the result set
+        Job job = new Job();
+        job.setId(resultSet.getInt("ID"));
+        job.setProductId(resultSet.getInt("ProductID"));
+        job.setLineNumber(resultSet.getInt("LineNumber"));
+        job.setStartTime(resultSet.getTimestamp("StartTime"));
+        job.setProjectedEndTime(resultSet.getTimestamp("ProjectedEndTime"));
+        job.setPersonnelCount(resultSet.getInt("PersonnelCount"));
+        job.setActualEndTime(resultSet.getTimestamp("ActualEndTime"));
+        
+        // Return the job object.
+        return job;
+      } else {
+        // ELSE
+        // Throw a JobDaoException with the message "Job does not exist."
+        throw new JobDaoException("Job does not exist.");
+      }
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new JobDaoException("Failure retrieving job." + e.getMessage());
+    }
   }
   
   public Job[] retrieveForDate(LocalDate date) {

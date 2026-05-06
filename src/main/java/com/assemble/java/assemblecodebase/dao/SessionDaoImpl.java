@@ -2,7 +2,6 @@ package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.utility.LoginToken;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
-import com.oracle.wls.shaded.org.apache.xml.utils.res.XResources_it;
 
 import java.sql.*;
 
@@ -35,7 +34,7 @@ public class SessionDaoImpl implements SessionDao {
         preparedStatement1.setInt(3, userId);
         preparedStatement1.executeUpdate();
       } else {
-        // ELSE prepare an set MySQL statement and execute it.
+        // ELSE prepare a set MySQL statement and execute it.
         String mySqlInsert = "INSERT INTO session (UserID, SessionID, LastUsed) VALUES (?, ?, ?);";
         PreparedStatement preparedStatement2 = connection.prepareStatement(mySqlInsert);
         preparedStatement2.setInt(1, userId);
