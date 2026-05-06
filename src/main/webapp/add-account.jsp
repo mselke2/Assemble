@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,8 +31,11 @@
         <input type="password" name="password-repeat" id="password-repeat" required>
         <label for="type">Editor/Viewer</label>
         <select id="type" name="type" required>
-            <option>Editor</option>
-            <option>Viewer</option>
+            <c:if test="${not empty userPermissionTypes}">
+                <c:forEach var="permissionType" items="${userPermissionTypes}">
+                    <option value="${permissionType.id}">${permissionType.description}</option>
+                </c:forEach>
+            </c:if>
         </select>
         <input type="submit" name="submit" value="Submit">
     </form>
