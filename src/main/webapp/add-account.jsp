@@ -37,7 +37,7 @@
                 </c:forEach>
             </c:if>
         </select>
-        <input type="submit" name="submit" value="Submit">
+        <input type="submit" name="submit" id="submit" value="Submit">
     </form>
     <p id="message"></p>
 </div>
