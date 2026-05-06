@@ -1,6 +1,9 @@
 package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.User;
+import com.assemble.java.assemblecodebase.model.UserPermission;
+
+import java.util.List;
 
 public interface UserDao {
   
@@ -8,4 +11,5 @@ public interface UserDao {
   void updateUser(User user, String oldPassword);
   void deleteUser(int userId);
   int retrieve(String username, String password);
+  List<UserPermission> retrievePermissions();
 }
