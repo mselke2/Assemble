@@ -11,8 +11,11 @@ $(function() {
     }
   })
 
+  let $submitBtn = $("#submit");
+
   $("form").on("submit", function(e) {
     e.preventDefault();
+    $submitBtn.prop("disabled", true);
 
     if (this.reportValidity()) {
       let formData = $(this).serialize();
@@ -22,6 +25,8 @@ $(function() {
       }).fail(r => {
         $message.text(r.responseText);
         $message.css("color", "red");
+      }).always(() => {
+        $submitBtn.prop("disabled", false);
       })
     }
   })
