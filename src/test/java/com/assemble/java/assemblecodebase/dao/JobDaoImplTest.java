@@ -2,6 +2,7 @@ package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Job;
 import org.junit.jupiter.api.Test;
+import java.sql.Timestamp;
 
 class JobDaoImplTest {
   
@@ -16,7 +17,17 @@ class JobDaoImplTest {
   @Test
   void addJob() {
     
-    Job job = new Job();
+    Job job = new Job(3, 5, new Timestamp(2026-1900, 0, 1, 12, 0, 0, 0));
+    
+    ProductDaoImpl productDao = new ProductDaoImpl();
+    JobDaoImpl jobDao = new JobDaoImpl();
+    
+    
+    job.setProjectedEndTime(job.getStartTime(), productDao.retrieve(job.getProductId()).getMinutesDuration());
+    job.setPersonnelCount(productDao.retrieve(job.getProductId()).getTargetPersonnelCount());
+    
+    jobDao.addJob(job);
+    
     
   }
   
