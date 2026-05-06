@@ -548,4 +548,20 @@ public class JobDaoImpl implements JobDao {
     }
     return true;
   }
+  
+  public int[][] getInventoryCounts() {
+    return inventoryCounts;
+  }
+  
+  public void setInventoryCounts(int[][] inventoryCounts) {
+    this.inventoryCounts = inventoryCounts;
+  }
+  
+  public int[][] getEquipmentCounts() {
+    return equipmentCounts;
+  }
+  
+  public void setEquipmentCounts(int[][] equipmentCounts) {
+    this.equipmentCounts = equipmentCounts;
+  }
 }
