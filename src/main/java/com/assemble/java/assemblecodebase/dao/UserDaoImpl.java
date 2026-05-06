@@ -31,8 +31,8 @@ public class UserDaoImpl implements UserDao {
       
       // IF a user exists for this username
       if (results.isBeforeFirst()) {
-        // Throw a UserDaoException with the message "User already exists."
-        throw new UserDaoException("User already exists");
+        // Throw a UserDaoException with the message "A user with that username already exists."
+        throw new UserDaoException("A user with that username already exists.");
         
       } else {
         // ELSE
