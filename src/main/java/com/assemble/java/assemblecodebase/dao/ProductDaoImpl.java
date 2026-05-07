@@ -3,10 +3,9 @@ package com.assemble.java.assemblecodebase.dao;
 import com.assemble.java.assemblecodebase.model.Product;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDaoImpl implements ProductDao {
   
@@ -156,5 +155,36 @@ public class ProductDaoImpl implements ProductDao {
     } catch (SQLException | ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public List<Product> retrieveAll() {
+    // Create a Job array
+    List<Product> products = new ArrayList<>();
+
+    // Get a connection to the database
+    try {
+      Connection connection = MySQLUtility.createConnection();
+      // Prepare a select statement to see what jobs exist for the date
+      // passed in date and execute it.
+      String mySqlSelectAll = "SELECT * FROM product ORDER BY Description";
+      Statement statement = connection.createStatement();
+      ResultSet resultSet = statement.executeQuery(mySqlSelectAll);
+
+      // Use a loop to move the cursor through the results and create a new job object for each result and add it to the array.
+      while(resultSet.next()) {
+        Product product = new Product(resultSet.getInt("ID"),
+            resultSet.getString("Description"),
+            resultSet.getInt("MinutesDuration"),
+            resultSet.getInt("TargetPersonnelCount"));
+        products.add(product);
+      }
+
+      connection.close();
+      statement.close();
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new JobDaoException(e.getMessage());
+    }
+
+    return products;
   }
 }
