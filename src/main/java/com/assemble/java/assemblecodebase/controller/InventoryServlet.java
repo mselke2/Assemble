@@ -1,6 +1,9 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
+import com.assemble.java.assemblecodebase.dao.InventoryDao;
+import com.assemble.java.assemblecodebase.dao.InventoryDaoException;
+import com.assemble.java.assemblecodebase.dao.InventoryDaoImpl;
 import com.assemble.java.assemblecodebase.model.Inventory;
 import com.assemble.java.assemblecodebase.model.InventoryType;
 import jakarta.servlet.ServletException;
@@ -10,26 +13,28 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "InventoryServlet", value = "/Inventory/*")
 public class InventoryServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    InventoryDao inventoryDao = new InventoryDaoImpl();
 
-    // todo: this is sample data, pull the real data from the db
-    request.setAttribute("inventory", List.of(
-        new Inventory(1, 2, 3),
-        new Inventory(2, 5, 7),
-        new Inventory(3, 74, 3)
-    ));
-    request.setAttribute("inventoryTypes", List.of(
-        new InventoryType(0, "Rivet"),
-        new InventoryType(1, "Washer"),
-        new InventoryType(2, "Screw")
-    ));
+    List<Inventory> inventory = new ArrayList<>();
+    List<InventoryType> types = new ArrayList<>();
+
+    try {
+      inventory = inventoryDao.retrieveAll();
+      types = inventoryDao.retrieveTypes();
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    }
+
+    request.setAttribute("inventory", inventory);
+    request.setAttribute("inventoryTypes", types);
     getServletContext().getRequestDispatcher("/inventory-manager.jsp").forward(request, response);
-
   }
 
   @Override
@@ -70,7 +75,12 @@ public class InventoryServlet extends HttpServlet {
 
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    try{
+      int inventoryId = Integer.parseInt(request.getPathInfo().substring(1));
+      InventoryDao inventoryDao = new InventoryDaoImpl();
+      inventoryDao.deleteInventoryById(inventoryId);
+    } catch (NumberFormatException | InventoryDaoException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
   }
-
 }
