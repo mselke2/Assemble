@@ -700,12 +700,110 @@ public class JobDaoImpl implements JobDao {
     }
   }
   
-  public int calculateCommittedEquipmentCount(Timestamp jobTime) {
+  public void fillCommittedEquipmentCount(Timestamp startTime) {
+    // This method fills the current instance's equipmentCounts array's
+    // 3rd row index with the committed number of equipment at a given time
+    // for each TypeID stored in the first row index of the equipmentCounts array.
     
+    int[] typeIDs;
     
-    
-    
-    return 0;
+    try {
+      // Get a connection
+      Connection connection = MySQLUtility.createConnection();
+      
+      // Prepare a query to select jobs at the time of the passed in job
+      String mySqlSelect = "SELECT * FROM Job WHERE StartTime <= ? AND ProjectedEndTime >= ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+      preparedStatement.setTimestamp(1, startTime);
+      preparedStatement.setTimestamp(2, startTime);
+      // Execute the query
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // If there's data
+      if (resultSet.isBeforeFirst()) {
+        
+        // Capture how many jobs we have to look at
+        resultSet.last();
+        int records = resultSet.getRow();
+        resultSet.beforeFirst();
+        
+        // We need to figure out how much equipment is committed for each
+        // TypeID stored in this DAOs equipmentCounts array at the time of the job.
+        
+        // Start a loop to step through jobs at the start time.
+        for(int j = 0 ; j < records; j++) {
+          // Advance the cursor.
+          resultSet.next();
+          
+          // Figure out which equipmentTypeIDs are used by this job and store them
+          // in the typeIDs array.
+          
+          // Prepare a select statement to retrieve all the typeIDs in this job's product.
+          String mySqlEquipmentTypeIds = "SELECT * FROM ProductEquipment WHERE ProductID = ?;";
+          PreparedStatement equipmentTypeIdStatement = connection.prepareStatement(mySqlEquipmentTypeIds, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+          equipmentTypeIdStatement.setInt(1, resultSet.getInt("ProductID"));
+          ResultSet equipmentTypeIdResults = equipmentTypeIdStatement.executeQuery();
+          
+          if (equipmentTypeIdResults.isBeforeFirst()) {
+            equipmentTypeIdResults.last();
+            
+            // Initialize the typeIDs array with the number of different equipment types used by this job.
+            typeIDs = new int[equipmentTypeIdResults.getRow()];
+            equipmentTypeIdResults.beforeFirst();
+            
+            // Step through the typeIDs array and fill it with IDs from the result set.
+            for (int k = 0; k < typeIDs.length; k++) {
+              
+              equipmentTypeIdResults.next();
+              // Store the ID
+              typeIDs[k] = equipmentTypeIdResults.getInt("EquipmentTypeID");
+              
+            }
+            
+            // Start a loop to step through TypeIDs stored in the equipmentCounts array.
+            // We need to see if this job uses the current TypeID, and if so, add that count to
+            // row index 3 of the equipmentCounts array.
+            for (int i = 0; i < equipmentCounts[0].length; i++) {
+              // Compare the current typeID in equipmentCounts to
+              // each typeID in typeIDs. If there's a match,
+              // add the required number
+              // to row index 3 of the equipmentCounts array.
+              
+              for (int l = 0; l < typeIDs.length; l++) {
+                
+                // There's a match
+                if (typeIDs[l] == equipmentCounts[0][i]) {
+                  
+                  // Prepare a select statement to get the required count for this typeID for the current job in the loop.
+                  String mySqlEquipmentRequired = "SELECT * FROM ProductEquipment WHERE EquipmentTypeID = ? AND ProductID = ?;";
+                  PreparedStatement equipmentRequiredStatement = connection.prepareStatement(mySqlEquipmentRequired);
+                  equipmentRequiredStatement.setInt(1, typeIDs[l]);
+                  equipmentRequiredStatement.setInt(2, resultSet.getInt("ProductID"));
+                  ResultSet equipmentRequiredResults = equipmentRequiredStatement.executeQuery();
+                  
+                  // If there's data.
+                  if (equipmentRequiredResults.isBeforeFirst()) {
+                    equipmentRequiredResults.next();
+                    // Add this TypeIDs required count for this job's product to the
+                    // total commited count.
+                    equipmentCounts[3][i] += equipmentRequiredResults.getInt("RequiredEquipmentTypeCount");
+                    
+                  } else {
+                    throw new JobDaoException("Equipment Required Count Error");
+                  }
+                }
+              }
+            }
+          } else  {
+            throw new JobDaoException("Equipment Type ID Error");
+          }
+        }
+      } else {
+        throw new  JobDaoException("Equipment Committed Calculation Error");
+      }
+    } catch (ClassNotFoundException | SQLException e) {
+      throw new JobDaoException(e.getMessage());
+    }
   }
   
   public int calculateCommittedPersonnelCount(Timestamp jobTime) {

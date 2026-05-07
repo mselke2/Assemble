@@ -77,7 +77,24 @@ class JobDaoImplTest {
   }
   
   @Test
-  void calculateCommittedEquipmentCount() {
+  void fillCommittedEquipmentCount() {
+    
+    JobDaoImpl jobDao = new JobDaoImpl();
+    assertDoesNotThrow(() -> {
+      
+      Job job = new Job(3, 6, new Timestamp(2026-1900, 0, 1, 14, 0, 0, 0));
+      job.setProjectedEndTime(new  Timestamp(2026-1900, 0, 1, 16, 0, 0, 0));
+      
+      jobDao.addJob(job);
+      jobDao.fillCommittedEquipmentCount(new Timestamp(2026-1900, 0, 1, 15, 0, 0, 0));
+      
+      int[][] equipmentCounts = jobDao.getEquipmentCounts();
+      
+      for (int i = 0; i < equipmentCounts[3].length; i++) {
+        System.out.println(equipmentCounts[0][i] + ", " + equipmentCounts[3][i]);
+      }
+      
+    });
   }
   
   @Test
