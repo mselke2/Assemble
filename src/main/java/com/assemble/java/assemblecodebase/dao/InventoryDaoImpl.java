@@ -1,10 +1,13 @@
 package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Inventory;
+import com.assemble.java.assemblecodebase.model.InventoryType;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 import com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InventoryDaoImpl implements InventoryDao{
   
@@ -156,5 +159,58 @@ public class InventoryDaoImpl implements InventoryDao{
     } catch (SQLException | ClassNotFoundException e) {
       throw new InventoryDaoException(e.getMessage());
     }
+  }
+
+  @Override
+  public List<InventoryType> retrieveTypes() {
+    List<InventoryType> types = new ArrayList<>();
+
+    try {
+      Connection conn = MySQLUtility.createConnection();
+
+      String mySqlSelectAll = "SELECT * FROM inventorytype";
+      Statement statement = conn.createStatement();
+      ResultSet result = statement.executeQuery(mySqlSelectAll);
+      while (result.next()) {
+        InventoryType type = new InventoryType();
+        type.setId(result.getInt("ID"));
+        type.setDescription(result.getString("Description"));
+        types.add(type);
+      }
+
+      statement.close();
+      conn.close();
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new InventoryDaoException(e.getMessage());
+    }
+
+    return types;
+  }
+
+  @Override
+  public List<Inventory> retrieveAll() {
+    List<Inventory> inventoryList = new ArrayList<>();
+
+    try {
+      Connection conn = MySQLUtility.createConnection();
+
+      String mySqlSelectAll = "SELECT * FROM inventory";
+      Statement statement = conn.createStatement();
+      ResultSet result = statement.executeQuery(mySqlSelectAll);
+      while (result.next()) {
+        Inventory inventory = new Inventory();
+        inventory.setId(result.getInt("ID"));
+        inventory.setTypeId(result.getInt("TypeID"));
+        inventory.setCount(result.getInt("Count"));
+        inventoryList.add(inventory);
+      }
+
+      statement.close();
+      conn.close();
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new InventoryDaoException(e.getMessage());
+    }
+
+    return inventoryList;
   }
 }
