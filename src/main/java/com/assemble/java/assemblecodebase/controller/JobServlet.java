@@ -16,18 +16,12 @@ import java.util.HashMap;
 public class JobServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    response.setContentType("application/json");
-    // TODO: this is sample JSON data, replace with info from DB
-    response.getWriter().write("""
-        {
-          "jobId": 67,
-          "productId": 1,
-          "startTime": "03:00",
-          "projectedEndTime": "05:45",
-          "numMembers": 20,
-          "lineNum": 1
-        }
-        """);
+    String path = request.getPathInfo();
+    if (path == null || path.isEmpty() || path.equals("/")) {
+      getQueried(request, response);
+    } else {
+      getById(request, response);
+    }
   }
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -103,5 +97,38 @@ public class JobServlet extends HttpServlet {
     // Set success to true or false depending on status of delete operation
 
     // Send the response back to the client
+  }
+
+  // get list filtered by query parameters
+  private void getQueried(HttpServletRequest request, HttpServletResponse response) {
+    try {
+      response.setContentType("application/json");
+      response.getWriter().write("""
+          [
+            {
+              "productName": "car"
+            }
+          ]""");
+    } catch (IOException e) {
+
+    }
+  }
+
+  private void getById(HttpServletRequest request, HttpServletResponse response) {
+    response.setContentType("application/json");
+    try {
+      response.getWriter().write("""
+          {
+            "jobId": 67,
+            "productId": 1,
+            "startTime": "03:00",
+            "projectedEndTime": "05:45",
+            "numMembers": 20,
+            "lineNum": 1
+          }
+          """);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
