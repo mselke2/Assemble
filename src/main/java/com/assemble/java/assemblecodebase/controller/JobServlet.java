@@ -123,27 +123,8 @@ public class JobServlet extends HttpServlet {
       List<Job> jobs = jobDao.retrieveForDate(LocalDate.of(year, month, day));
 
       JsonArray jobsJson = new JsonArray();
-      for (Job job : jobs) {
-        JsonObject jobData = new JsonObject();
-        jobData.addProperty("jobId", job.getId());
-
-        jobData.addProperty("productId", job.getProductId());
-
-        jobData.addProperty("productName", job.getProductName());
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        String startTimeString = formatter.format(job.getStartTime().toLocalDateTime());
-        jobData.addProperty("startTime", startTimeString);
-
-        String endTimeString = formatter.format(job.getProjectedEndTime().toLocalDateTime());
-        jobData.addProperty("projectedEndTime", endTimeString);
-
-        jobData.addProperty("numMembers", job.getPersonnelCount());
-
-        jobData.addProperty("lineNum", job.getLineNumber());
-
-        jobsJson.add(jobData);
-      }
+      for (Job job : jobs)
+        jobsJson.add(buildJobJson(job));
 
       response.setContentType("application/json");
       response.getWriter().write(jobsJson.toString());
@@ -156,21 +137,38 @@ public class JobServlet extends HttpServlet {
     }
   }
 
-  private void getById(HttpServletRequest request, HttpServletResponse response) {
+  private void getById(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
     try {
-      response.getWriter().write("""
-          {
-            "jobId": 67,
-            "productId": 1,
-            "startTime": "03:00",
-            "projectedEndTime": "05:45",
-            "numMembers": 20,
-            "lineNum": 1
-          }
-          """);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+      int jobId = Integer.parseInt(request.getPathInfo().substring(1));
+      JobDao jobDao = new JobDaoImpl();
+      Job job = jobDao.retrieve(jobId);
+
+      response.getWriter().write(buildJobJson(job).toString());
+    } catch (NumberFormatException | JobDaoException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
+  }
+
+  private JsonObject buildJobJson(Job job) {
+    JsonObject jobJson = new JsonObject();
+    jobJson.addProperty("jobId", job.getId());
+
+    jobJson.addProperty("productId", job.getProductId());
+
+    jobJson.addProperty("productName", job.getProductName());
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+    String startTimeString = formatter.format(job.getStartTime().toLocalDateTime());
+    jobJson.addProperty("startTime", startTimeString);
+
+    String endTimeString = formatter.format(job.getProjectedEndTime().toLocalDateTime());
+    jobJson.addProperty("projectedEndTime", endTimeString);
+
+    jobJson.addProperty("numMembers", job.getPersonnelCount());
+
+    jobJson.addProperty("lineNum", job.getLineNumber());
+
+    return jobJson;
   }
 }
