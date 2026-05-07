@@ -1,7 +1,13 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
+import com.assemble.java.assemblecodebase.dao.JobDao;
+import com.assemble.java.assemblecodebase.dao.JobDaoException;
+import com.assemble.java.assemblecodebase.dao.JobDaoImpl;
+import com.assemble.java.assemblecodebase.model.Job;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,7 +16,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 
 @WebServlet(name = "JobServlet", value = "/Job/*")
 public class JobServlet extends HttpServlet {
@@ -100,17 +109,50 @@ public class JobServlet extends HttpServlet {
   }
 
   // get list filtered by query parameters
-  private void getQueried(HttpServletRequest request, HttpServletResponse response) {
+  private void getQueried(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
-      response.setContentType("application/json");
-      response.getWriter().write("""
-          [
-            {
-              "productName": "car"
-            }
-          ]""");
-    } catch (IOException e) {
+      String dateString = request.getParameter("d");
+      if (dateString == null || !dateString.matches("^\\d{8}$")) {
+        throw new RuntimeException("Invalid date parameter.");
+      }
+      int year = Integer.parseInt(dateString.substring(0, 4));
+      int month = Integer.parseInt(dateString.substring(4, 6));
+      int day = Integer.parseInt(dateString.substring(6));
 
+      JobDao jobDao = new JobDaoImpl();
+      List<Job> jobs = jobDao.retrieveForDate(LocalDate.of(year, month, day));
+
+      JsonArray jobsJson = new JsonArray();
+      for (Job job : jobs) {
+        JsonObject jobData = new JsonObject();
+        jobData.addProperty("jobId", job.getId());
+
+        jobData.addProperty("productId", job.getProductId());
+
+        jobData.addProperty("productName", job.getProductName());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String startTimeString = formatter.format(job.getStartTime().toLocalDateTime());
+        jobData.addProperty("startTime", startTimeString);
+
+        String endTimeString = formatter.format(job.getProjectedEndTime().toLocalDateTime());
+        jobData.addProperty("projectedEndTime", endTimeString);
+
+        jobData.addProperty("numMembers", job.getPersonnelCount());
+
+        jobData.addProperty("lineNum", job.getLineNumber());
+
+        jobsJson.add(jobData);
+      }
+
+      response.setContentType("application/json");
+      response.getWriter().write(jobsJson.toString());
+    } catch (JobDaoException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);
+      response.getWriter().write(e.getMessage());
     }
   }
 
