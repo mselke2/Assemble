@@ -6,6 +6,8 @@ import com.assemble.java.assemblecodebase.dao.InventoryDaoException;
 import com.assemble.java.assemblecodebase.dao.InventoryDaoImpl;
 import com.assemble.java.assemblecodebase.model.Inventory;
 import com.assemble.java.assemblecodebase.model.InventoryType;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -39,7 +41,34 @@ public class InventoryServlet extends HttpServlet {
 
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try {
+      int id = Integer.parseInt(request.getPathInfo().substring(1));
+      InventoryDao inventoryDao = new InventoryDaoImpl();
+      Inventory inventory = inventoryDao.retrieveById(id);
 
+      Gson gson = new Gson();
+      JsonObject json = gson.fromJson(request.getReader(), JsonObject.class);
+
+      String actionString = json.get("action").getAsString();
+      if (actionString.equals("add"))
+        inventory.setCount(inventory.getCount() + 1);
+      else if (actionString.equals("remove"))
+        inventory.setCount(inventory.getCount() - 1);
+      else {
+        throw new IllegalArgumentException("Invalid action: " + actionString);
+      }
+
+      if (inventory.getCount() > 0)
+        inventoryDao.updateInventory(inventory);
+      else
+        inventoryDao.deleteInventoryById(id);
+    } catch (IllegalArgumentException e) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      response.getWriter().write(e.getMessage());
+    }
   }
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
