@@ -30,6 +30,14 @@ public class Job implements Serializable {
   
   public Job() {
   }
+
+  public Job(int productId, int lineNumber, Timestamp startTime, int personnelCount) {
+    setProductId(productId);
+    setLineNumber(lineNumber);
+    setStartTime(startTime);
+    setProjectedEndTime(startTime);
+    setPersonnelCount(personnelCount);
+  }
   
   public Job(int productId, int lineNumber, Timestamp startTime) {
     setProductId(productId);

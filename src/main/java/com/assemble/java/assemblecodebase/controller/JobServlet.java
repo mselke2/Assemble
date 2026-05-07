@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -34,31 +35,62 @@ public class JobServlet extends HttpServlet {
   }
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    // get data like this:
-    int productId = Integer.parseInt(request.getParameter("productId"));
+    int productId;
+    Timestamp startTime;
+    Timestamp projectedEndTime;
+    int numMembers;
+    int lineNum;
 
-    // Get productID from client as an int
+    try {
+      JobDao dao = new JobDaoImpl();
 
-    // Get startTime from the client as a LocalDateTime
+      try {
+        productId =  Integer.parseInt(request.getParameter("productId"));
+      } catch (NumberFormatException e) {
+        throw new RuntimeException("Invalid Product Id");
+      }
 
-    // Validate and sanitize the productID and startTime
+      try {
+        startTime = Timestamp.valueOf(request.getParameter("startTime"));
+      } catch (RuntimeException e) {
+        throw new RuntimeException("Invalid Start Time");
+      }
 
-    // Create a JobDao object
+      try {
+        projectedEndTime = Timestamp.valueOf(request.getParameter("projectedEndTime"));
+      } catch (RuntimeException e) {
+        throw new RuntimeException("Invalid End Time");
+      }
 
-    // run addJob() and pass in the productId and startTime
+      try {
+        numMembers =  Integer.parseInt(request.getParameter("numMembers"));
+      } catch (NumberFormatException e) {
+        throw new RuntimeException("Invalid Personnel Count");
+      }
 
-    int newJobId = 123;
+      try {
+        lineNum =  Integer.parseInt(request.getParameter("lineNum"));
+      } catch (NumberFormatException e) {
+        throw new RuntimeException("Invalid Line Number");
+      }
 
-    response.setContentType("application/json");
-    response.getWriter().write("""
-        {
-          "jobId": %d
-        }
-        """.formatted(newJobId));
+      Job job = new Job(productId, lineNum, startTime, numMembers);
+      job.setProjectedEndTime(projectedEndTime);
+      int newId = dao.addJob(job);
 
-    // set response status to HttpServletResponse.SC_UNPROCESSABLE_CONTENT if any
-    // fields are invalid (e.g. jobs are overlapping)
-    // response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);    getServletContext().getRequestDispatcher("").forward(request, response);
+      response.setContentType("application/json");
+      response.getWriter().write("{ \"jobId\": %d }".formatted(newId));
+    } catch (JobDaoException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);
+
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    }
   }
 
   @Override
