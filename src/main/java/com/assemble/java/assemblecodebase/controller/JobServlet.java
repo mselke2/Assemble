@@ -14,12 +14,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 
 @WebServlet(name = "JobServlet", value = "/Job/*")
@@ -95,27 +93,27 @@ public class JobServlet extends HttpServlet {
 
   @Override
   protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try{
+      Job job = new Job();
+      job.setId(Integer.parseInt(request.getPathInfo().substring(1)));
 
-    // getPathInfo returns the url path after the servlet mapping
-    // if the request is to "/Jobs/7"
-    // getPathInfo will return "/7"
-    // we then have to strip the first slash and parse it to an int
-    int jobId = Integer.parseInt(request.getPathInfo().substring(1));
-
-    try (BufferedReader reader = request.getReader()) {
       Gson gson = new Gson();
+      JsonObject json = gson.fromJson(request.getReader(), JsonObject.class);
 
-      var dataMap = new HashMap<String, Object>();
-      dataMap = gson.fromJson(reader, dataMap.getClass());
+      job.setProductId(json.get("productId").getAsInt());
 
-      // get data like so:
-      int productId = ((Double)dataMap.get("productId")).intValue();
+      job.setStartTime(Timestamp.valueOf(json.get("startTime").getAsString()));
 
-      // do processing...
+      job.setProjectedEndTime(Timestamp.valueOf(json.get("projectedEndTime").getAsString()));
 
-      response.setStatus(HttpServletResponse.SC_OK);
-    } catch (Exception e) {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      job.setLineNumber(json.get("lineNum").getAsInt());
+
+      JobDao jobDao = new JobDaoImpl();
+      jobDao.updateJob(job);
+    } catch (NumberFormatException | JobDaoException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -166,7 +164,7 @@ public class JobServlet extends HttpServlet {
       Job job = jobDao.retrieve(jobId);
 
       response.getWriter().write(buildJobJson(job).toString());
-    } catch (NumberFormatException | JobDaoException e) {
+    } catch (RuntimeException e) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
   }
