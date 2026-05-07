@@ -56,8 +56,9 @@
         <div class="right-panel">
             <div class="job-info-wrapper">
                 <div class="job-info">
-                    <h1>Date: ${param.d.substring(4, 6)}/${param.d.substring(6)}/${param.d.substring(0, 4)}</h1>
+                    <h1>Date: <span id="date-display"></span></h1>
                     <div id="job-form" hidden>
+                        <input type="hidden" name="date" id="date" value="${param.d.substring(0, 4)}-${param.d.substring(4, 6)}-${param.d.substring(6)}">
                         <p id="new-job-label" class="info-left">New Job</p>
                         <label for="job-id" id="job-id-label" class="info-left">JobId:</label>
                         <p id="job-id">XX</p><br>

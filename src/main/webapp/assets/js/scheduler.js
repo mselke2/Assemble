@@ -1,4 +1,5 @@
 let $jobForm;
+let $dateInput;
 let $newJobLabel;
 let $jobIdLabel;
 let $jobIdDisplay;
@@ -214,8 +215,8 @@ function cancelEdit() {
 function onSubmitClicked() {
   let data = {
     productId: +$productChoiceInput.val(),
-    startTime: $startTimeInput.val(),
-    projectedEndTime: $endTimeInput.val(),
+    startTime: `${$dateInput.val()} ${$startTimeInput.val()}:00`,
+    projectedEndTime: `${$dateInput.val()} ${$endTimeInput.val()}:00`,
     numMembers: +$numMembersInput.val(),
     lineNum: +$lineNumInput.val()
   };
@@ -294,6 +295,7 @@ function onJobEntryClicked(e) {
 
 $(function() {
   $jobForm = $("#job-form");
+  $dateInput = $("#date");
   $newJobLabel = $("#new-job-label");
   $jobIdLabel = $("#job-id-label");
   $jobIdDisplay = $("#job-id");
@@ -304,6 +306,9 @@ $(function() {
   laneWidth = parseInt($timeline.css("--lane-width"));
 
   $newJobGhost = $("#create-job-ghost").hide();
+
+  let dateText = `${$dateInput.val().substring(5, 7)}/${$dateInput.val().substring(8)}/${$dateInput.val().substring(0, 4)}`;
+  $("#date-display").text(dateText)
 
   // onChange fires when the hour or minute fields are completed
   // individually, so if the user types in the hour and the browser
