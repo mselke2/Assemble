@@ -1,13 +1,13 @@
 package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.User;
+import com.assemble.java.assemblecodebase.model.UserPermission;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDaoImpl implements UserDao {
   
@@ -31,8 +31,8 @@ public class UserDaoImpl implements UserDao {
       
       // IF a user exists for this username
       if (results.isBeforeFirst()) {
-        // Throw a UserDaoException with the message "User already exists."
-        throw new UserDaoException("User already exists");
+        // Throw a UserDaoException with the message "A user with that username already exists."
+        throw new UserDaoException("A user with that username already exists.");
         
       } else {
         // ELSE
@@ -204,5 +204,31 @@ public class UserDaoImpl implements UserDao {
     } catch (SQLException | ClassNotFoundException e) {
       throw new UserDaoException(e.getMessage());
     }
+  }
+
+  @Override
+  public List<UserPermission> retrievePermissions() {
+    List<UserPermission> permissions = new ArrayList<>();
+
+    try {
+      Connection conn = MySQLUtility.createConnection();
+
+      String mySqlSelectAll = "SELECT * FROM userpermission";
+      Statement statement = conn.createStatement();
+      ResultSet result = statement.executeQuery(mySqlSelectAll);
+      while (result.next()) {
+        UserPermission perm = new UserPermission();
+        perm.setId(result.getInt("ID"));
+        perm.setDescription(result.getString("Description"));
+        permissions.add(perm);
+      }
+
+      statement.close();
+      conn.close();
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new UserDaoException(e.getMessage());
+    }
+
+    return permissions;
   }
 }
