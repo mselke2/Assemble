@@ -10,8 +10,8 @@
 <div class="panel">
     <h1>Inventory</h1>
     <form action="Inventory" method="post" class="new-entry-bar">
-        <label for="inventory-type-id">Inventory Type</label>
-        <select name="inventory-type-id" id="inventory-type">
+        <label for="inventory-type">Inventory Type</label>
+        <select name="inventoryTypeId" id="inventory-type">
             <c:if test="${not empty inventoryTypes}">
                 <c:forEach var="inventoryType" items="${inventoryTypes}">
                     <option value="${inventoryType.id}">${inventoryType.description}</option>

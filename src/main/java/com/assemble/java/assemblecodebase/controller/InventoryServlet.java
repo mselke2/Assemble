@@ -72,34 +72,32 @@ public class InventoryServlet extends HttpServlet {
   }
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    int typeId;
+    int count;
 
-    // Get username from client
+    try {
+      try {
+        typeId =  Integer.parseInt(request.getParameter("inventoryTypeId"));
+      } catch (NumberFormatException e) {
+        throw new RuntimeException("Invalid Inventory Type Id");
+      }
 
-    // Get password from client
+      InventoryDao dao = new InventoryDaoImpl();
+      Inventory inventory = new Inventory(typeId, 1);
+      dao.addInventory(inventory);
+    } catch (InventoryDaoException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
-    // Validate and sanitize username and password.
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);
 
-    // Create UserDAO object
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    }
 
-    // Run retrieve() and pass in username and password
-
-    // IF retrieve() returns a positive integer (a userID),
-      // Create a SessionDao object
-      // run createSession() and pass in the userId returned from retrieve()
-
-      // IF createSession returns a String
-        // Create a cookie with the name "loginToken" and the value of the String returned from createSession()
-        // Set the max age of the cookie to 24 hours
-        // Add the cookie to the response
-        // Return success: true as JSON
-
-      // ELSE return success: false with error message from exception.
-      // ENDIF
-
-    // ELSE return success: false as JSON with an error message back to the client.
-    // ENDIF
-//    getServletContext().getRequestDispatcher("").forward(request, response);
-
+    doGet(request, response);
   }
 
   @Override
