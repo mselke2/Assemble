@@ -88,24 +88,13 @@ public class JobServlet extends HttpServlet {
   }
 
   public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    // getPathInfo returns the url path after the servlet mapping
-    // if the request is to "/Jobs/7"
-    // getPathInfo will return "/7"
-    // we then have to strip the first slash and parse it to an int
-    int jobId = Integer.parseInt(request.getPathInfo().substring(1));
-
-    // Get the JobId from the client
-
-    // Create JobDao Object
-
-    // Run the deleteJob method in JobDao Object and pass the JobId to it
-
-    // Set response to JSON
-
-    // Set success to true or false depending on status of delete operation
-
-    // Send the response back to the client
+    try{
+      int jobId = Integer.parseInt(request.getPathInfo().substring(1));
+      JobDao jobDao = new JobDaoImpl();
+      jobDao.deleteJob(jobId);
+    } catch (NumberFormatException | JobDaoException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
   }
 
   // get list filtered by query parameters
