@@ -99,5 +99,15 @@ class JobDaoImplTest {
   
   @Test
   void calculateCommittedPersonnelCount() {
+    
+    JobDaoImpl jobDao = new JobDaoImpl();
+    assertDoesNotThrow(() -> {
+      
+      int count = jobDao.calculateCommittedPersonnelCount(new Timestamp(2026-1900, 0, 1, 19, 0, 0, 0));
+      assertEquals(10, count);
+      
+      System.out.println(count);
+      
+    });
   }
 }

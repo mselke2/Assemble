@@ -806,11 +806,33 @@ public class JobDaoImpl implements JobDao {
     }
   }
   
-  public int calculateCommittedPersonnelCount(Timestamp jobTime) {
+  public int calculateCommittedPersonnelCount(Timestamp startTime) {
     
+    String mySqlSelect = "SELECT * FROM job WHERE StartTime <= ? AND ProjectedEndTime >= ?;";
     
-    
-    
+    try {
+      Connection connection = MySQLUtility.createConnection();
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+      preparedStatement.setTimestamp(1, startTime);
+      preparedStatement.setTimestamp(2, startTime);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      if (resultSet.isBeforeFirst()) {
+        resultSet.last();
+        int records = resultSet.getRow();
+        resultSet.beforeFirst();
+        
+        int personnelCount = 0;
+        for(int j = 0 ; j < records; j++) {
+          resultSet.next();
+          personnelCount += resultSet.getInt("PersonnelCount");
+        }
+        return personnelCount;
+      }
+      
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new JobDaoException(e.getMessage());
+    }
     return 0;
   }
 }
