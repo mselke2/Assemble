@@ -372,28 +372,30 @@ public class JobDaoImpl implements JobDao {
       } else {
         
         // ELSE
-        
-        // TODO Change to calculating committed personnel at that time.
         // Check to see if we have personnel for the start date of the job
+        
         int personnelAvailableCount;
-        int personnelRequiredCount;
         
-        // Get personnel available for date of job
+        int personnelCommittedCount = calculateCommittedPersonnelCount(startTime);
+        
+        
         String mySqlPersonnelAvailable = "SELECT * FROM personnel WHERE Date = ?;";
-        PreparedStatement preparedStatementPersonnel =  connection.prepareStatement(mySqlPersonnelAvailable);
+        PreparedStatement preparedStatementPersonnel = connection.prepareStatement(mySqlPersonnelAvailable);
         preparedStatementPersonnel.setDate(1, new Date(startTime.getTime()));
-        ResultSet resultsPersonnelAvailable = preparedStatementPersonnel.executeQuery();
+        ResultSet resultSetPersonnel = preparedStatementPersonnel.executeQuery();
         
-        if (resultsPersonnelAvailable.isBeforeFirst()) {
-          resultsPersonnelAvailable.next();
-          personnelAvailableCount = resultsPersonnelAvailable.getInt("Count");
+        if (resultSetPersonnel.isBeforeFirst()) {
+          resultSetPersonnel.next();
+          personnelAvailableCount = resultSetPersonnel.getInt("Count");
         } else {
-          throw new JobDaoException("No personnel data for date.");
+          throw new JobDaoException("Personnel data does not exist at that time.");
         }
         
         // Get personnel required for product produced by job
+        int personnelRequiredCount;
+        
         String mySqlPersonnelRequired = "SELECT * FROM product WHERE ID = ?;";
-        preparedStatementPersonnel= connection.prepareStatement(mySqlPersonnelRequired);
+        preparedStatementPersonnel = connection.prepareStatement(mySqlPersonnelRequired);
         preparedStatementPersonnel.setInt(1, job.getProductId());
         ResultSet resultsPersonnelRequired = preparedStatementPersonnel.executeQuery();
         
@@ -404,9 +406,11 @@ public class JobDaoImpl implements JobDao {
           throw new JobDaoException("No personnel data for product.");
         }
         
+        int personnelAvailablePrime = personnelAvailableCount - personnelCommittedCount;
+        
         // If there aren't enough personnel, add to the prerequisitesError.
-        if (personnelRequiredCount > personnelAvailableCount) {
-          prerequisitesError += "You need " + abs(personnelAvailableCount - personnelRequiredCount) + " more personnel to schedule this job. ";
+        if (personnelRequiredCount > personnelAvailablePrime) {
+          prerequisitesError += "You need " + abs(personnelAvailablePrime - personnelRequiredCount) + " more personnel to schedule this job. ";
         }
         
         // Check to see if inventory and equipment are available for job.
@@ -471,6 +475,9 @@ public class JobDaoImpl implements JobDao {
         
         // TODO change to calculating committed inventory counts at time of job
         
+        // Fill the 3rd row with committed inventory counts
+        fillCommittedInventoryCounts(startTime);
+        
         // Fill in the inventoryCounts array with a rotating SQL statement
         // searching for counts by TypeIDs
         for (int i = 0; i < inventoryCounts[0].length; i++) {
@@ -499,7 +506,12 @@ public class JobDaoImpl implements JobDao {
             throw new JobDaoException("Inventory Available Count Error");
           }
           
-          inventoryCounts[4][i] = inventoryCounts[2][i] - inventoryCounts[1][i];
+          
+          // Calculate what is available after subtracting commitment.
+          int availablePrime = inventoryCounts[2][i] - inventoryCounts[3][i];
+          
+          // Calculate the difference
+          inventoryCounts[4][i] = availablePrime - inventoryCounts[1][i];
           
           if (inventoryCounts[4][i] < 0) {
             prerequisitesError += String.format("You need %d more of Inventory Type ID: %d. ", abs(inventoryCounts[4][i]), inventoryCounts[0][i]);
@@ -509,11 +521,14 @@ public class JobDaoImpl implements JobDao {
         
         //TODO Change to checking for commited equipment counts aat time of job
         
+        // Fill the 3rd row with committed equipment counts
+        fillCommittedEquipmentCount(startTime);
+        
         // Fill in the equipmentCounts array with a rotating SQL statement
         // searching for counts by TypeIDs
         for(int i = 0; i < equipmentCounts[0].length; i++) {
           PreparedStatement equipmentRequiredStatement = connection.prepareStatement(mySqlEquipmentRequired);
-          equipmentRequiredStatement.setInt(1, equipmentCounts[0][i]);
+          equipmentRequiredStatement.setInt(1, job.getProductId());
           
           ResultSet equipmentRequiredResults = equipmentRequiredStatement.executeQuery();
           
@@ -536,7 +551,13 @@ public class JobDaoImpl implements JobDao {
             throw new JobDaoException("Equipment Available Count Error");
           }
           
-          equipmentCounts[4][i] = equipmentCounts[2][i] - equipmentCounts[1][i];
+          
+          
+          // Calculate what is available after subtracting commitment.
+          int availablePrime = equipmentCounts[2][i] - equipmentCounts[3][i];
+          
+          // Calculate the difference
+          equipmentCounts[4][i] = availablePrime - equipmentCounts[1][i];
           
           if (equipmentCounts[4][i] < 0) {
             prerequisitesError += String.format("You need %d more of Equipment Type ID: %d. ", abs(equipmentCounts[4][i]), equipmentCounts[0][i]);
@@ -693,7 +714,10 @@ public class JobDaoImpl implements JobDao {
           }
         }
       } else {
-        throw new  JobDaoException("Inventory Committed Calculation Error");
+        // Fill the row with 0s
+        for (int i = 0; i < inventoryCounts[0].length; i++) {
+          inventoryCounts[3][i] = 0;
+        }
       }
     } catch (ClassNotFoundException | SQLException e) {
       throw new JobDaoException(e.getMessage());
@@ -786,6 +810,7 @@ public class JobDaoImpl implements JobDao {
                     equipmentRequiredResults.next();
                     // Add this TypeIDs required count for this job's product to the
                     // total commited count.
+                    System.out.println(equipmentRequiredResults.getInt("RequiredEquipmentTypeCount"));
                     equipmentCounts[3][i] += equipmentRequiredResults.getInt("RequiredEquipmentTypeCount");
                     
                   } else {
@@ -799,7 +824,10 @@ public class JobDaoImpl implements JobDao {
           }
         }
       } else {
-        throw new  JobDaoException("Equipment Committed Calculation Error");
+        // Fill the row with 0s
+        for (int i = 0; i < equipmentCounts[0].length; i++) {
+          equipmentCounts[3][i] = 0;
+        }
       }
     } catch (ClassNotFoundException | SQLException e) {
       throw new JobDaoException(e.getMessage());
