@@ -412,7 +412,7 @@ $(function() {
 
   $deleteBtn = $("#delete-btn").on("click", function() {
     let jobId = +$activeJobEntry.attr("job-id");
-    $.ajax(`$Job/${jobId}`, {
+    $.ajax(`Job/${jobId}`, {
       method: "DELETE"
     });
 
