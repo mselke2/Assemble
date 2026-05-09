@@ -82,11 +82,10 @@ public class JobDaoImpl implements JobDao {
   }
   
   @Override
-  public void updateJob(int id, Job job) {
-    
+  public void updateJob(Job job) {
+    int id = job.getId();
     deleteJob(id);
     addJob(job);
-    
   }
   
   @Override

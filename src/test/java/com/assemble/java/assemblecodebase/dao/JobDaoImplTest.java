@@ -54,9 +54,10 @@ class JobDaoImplTest {
     
     assertDoesNotThrow(() -> {
       Job job =  new Job(3, 1, new Timestamp(2026-1900, 0, 1, 20, 0, 0, 0));
+      job.setId(1);
       job.setProjectedEndTime(job.getStartTime(), productDao.retrieve(job.getProductId()).getMinutesDuration());
       job.setPersonnelCount(productDao.retrieve(job.getProductId()).getTargetPersonnelCount());
-      jobDao.updateJob(1, job);
+      jobDao.updateJob(job);
     });
   }
   
