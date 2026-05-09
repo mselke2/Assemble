@@ -1,8 +1,11 @@
 package com.assemble.java.assemblecodebase.dao;
 
+import com.assemble.java.assemblecodebase.model.Personnel;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PersonnelDaoImpl implements PersonnelDao {
   @Override
@@ -79,5 +82,32 @@ public class PersonnelDaoImpl implements PersonnelDao {
     } catch (SQLException | ClassNotFoundException e) {
       throw new PersonnelDaoException("Failed to delete personnel record for date " + date);
     }
+  }
+
+  @Override
+  public List<Personnel> retrieveAll() {
+    List<Personnel> personnelList = new ArrayList<>();
+
+    try {
+      Connection conn = MySQLUtility.createConnection();
+
+      String mySqlSelectAll = "SELECT * FROM personnel";
+      Statement statement = conn.createStatement();
+      ResultSet result = statement.executeQuery(mySqlSelectAll);
+      while (result.next()) {
+        Personnel personnel = new Personnel();
+        personnel.setId(result.getInt("ID"));
+        personnel.setDate(result.getDate("date"));
+        personnel.setCount(result.getInt("Count"));
+        personnelList.add(personnel);
+      }
+
+      statement.close();
+      conn.close();
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new PersonnelDaoException(e.getMessage());
+    }
+
+    return personnelList;
   }
 }
