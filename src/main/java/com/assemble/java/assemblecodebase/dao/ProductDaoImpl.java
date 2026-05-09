@@ -30,11 +30,11 @@ public class ProductDaoImpl implements ProductDao {
       }else {
         // ELSE
         // Prepare an set statement to add this product to the database and execute it.
-        String mySqlInsert = "INSERT INTO product (ID, Description, Duration, TargetPersonnelCount) VALUES (?, ?, ?, ?);";
+        String mySqlInsert = "INSERT INTO product (ID, Description, MinutesDuration, TargetPersonnelCount) VALUES (?, ?, ?, ?);";
         preparedStatement = connection.prepareStatement(mySqlInsert);
         preparedStatement.setInt(1, product.getId());
         preparedStatement.setString(2, product.getDescription());
-        preparedStatement.setTime(3, product.getDuration());
+        preparedStatement.setInt(3, product.getMinutesDuration());
         preparedStatement.setInt(4, product.getTargetPersonnelCount());
         preparedStatement.executeUpdate();
         // Return the productID.
@@ -60,10 +60,10 @@ public class ProductDaoImpl implements ProductDao {
       // IF a product exists
       // Prepare an update statement to update this product in the database and execute it.
       if (resultSet.isBeforeFirst()) {
-        String mySqlUpdate = "UPDATE product SET Description = ?, Duration = ?, targetPersonnelCount = ? WHERE ID = ?;";
+        String mySqlUpdate = "UPDATE product SET Description = ?, MinutesDuration = ?, targetPersonnelCount = ? WHERE ID = ?;";
         preparedStatement = connection.prepareStatement(mySqlUpdate);
         preparedStatement.setString(1, product.getDescription());
-        preparedStatement.setTime(2, product.getDuration());
+        preparedStatement.setInt(2, product.getMinutesDuration());
         preparedStatement.setInt(3, product.getTargetPersonnelCount());
         preparedStatement.setInt(4, product.getId());
         preparedStatement.executeUpdate();
@@ -146,7 +146,7 @@ public class ProductDaoImpl implements ProductDao {
         return new Product(
           resultSet.getInt("ID"),
           resultSet.getString("Description"),
-          resultSet.getTime("Duration"),
+          resultSet.getInt("MinutesDuration"),
           resultSet.getInt("TargetPersonnelCount")
         );
         

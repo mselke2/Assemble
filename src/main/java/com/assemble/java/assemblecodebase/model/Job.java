@@ -2,7 +2,7 @@ package com.assemble.java.assemblecodebase.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.Calendar;
 
 public class Job implements Serializable {
   private int id = -1;
@@ -30,13 +30,10 @@ public class Job implements Serializable {
   public Job() {
   }
   
-  public Job(int id, int productId, int lineNumber, Timestamp startTime, int personnelCount) {
-    setId(id);
+  public Job(int productId, int lineNumber, Timestamp startTime) {
     setProductId(productId);
     setLineNumber(lineNumber);
     setStartTime(startTime);
-    setProjectedEndTime(startTime);
-    setPersonnelCount(personnelCount);
   }
   
   public int getId() {
@@ -75,8 +72,15 @@ public class Job implements Serializable {
     return projectedEndTime;
   }
   
-  public void setProjectedEndTime(Timestamp projectedEndTime) {
-    this.projectedEndTime = projectedEndTime;
+  public void setProjectedEndTime(Timestamp startTime, int duration) {
+    Calendar cal =  Calendar.getInstance();
+    cal.setTime(startTime);
+    cal.add(Calendar.MINUTE, duration);
+    this.projectedEndTime = new Timestamp(cal.getTime().getTime());
+  }
+  
+  public void setProjectedEndTime(Timestamp startTime) {
+    this.projectedEndTime = startTime;
   }
   
   public Timestamp getActualEndTime() {

@@ -12,7 +12,7 @@ class ProductDaoImplTest {
   @Test
   void addProduct() {
     
-    Product product = new Product(5, "test", new Time(1, 0, 0), 3);
+    Product product = new Product(5, "test", 60, 3);
     ProductDaoImpl productDao = new ProductDaoImpl();
     assertDoesNotThrow(() -> {
       assertEquals(5, productDao.addProduct(product));
@@ -24,7 +24,7 @@ class ProductDaoImplTest {
   @Test
   void updateProduct() {
     
-    Product product = new Product(5, "test2", new Time(2, 0, 0), 5);
+    Product product = new Product(5, "test2", 60*2, 5);
     ProductDaoImpl productDao = new ProductDaoImpl();
     assertDoesNotThrow(() -> {
       assertTrue(productDao.updateProduct(product));
@@ -53,10 +53,10 @@ class ProductDaoImplTest {
     ProductDaoImpl productDao = new ProductDaoImpl();
     
     assertDoesNotThrow(() -> {
-      Product product = productDao.retrieve(5);
-      assertEquals(5, product.getId());
-      assertEquals("test2", product.getDescription());
-      assertEquals(new Time(2, 0, 0), product.getDuration());
+      Product product = productDao.retrieve(3);
+      assertEquals(3, product.getId());
+      assertEquals("steel rod", product.getDescription());
+      assertEquals(120, product.getMinutesDuration());
       assertEquals(5, product.getTargetPersonnelCount());
       System.out.println(product);
       assertThrows(ProductDaoException.class, () -> productDao.retrieve(6));
