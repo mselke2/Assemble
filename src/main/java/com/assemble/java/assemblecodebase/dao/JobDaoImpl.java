@@ -2,7 +2,11 @@ package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Job;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
+
 import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Math.abs;
 
@@ -78,11 +82,10 @@ public class JobDaoImpl implements JobDao {
   }
   
   @Override
-  public void updateJob(int id, Job job) {
-    
+  public void updateJob(Job job) {
+    int id = job.getId();
     deleteJob(id);
     addJob(job);
-    
   }
   
   @Override
@@ -164,54 +167,39 @@ public class JobDaoImpl implements JobDao {
     }
   }
   
-  public Job[] retrieveForDate(Date date) {
-    
+  public List<Job> retrieveForDate(LocalDate date) {
+    // Create a Job array
+    List<Job> jobs = new ArrayList<>();
+
     // Get a connection to the database
     try {
       Connection connection = MySQLUtility.createConnection();
-      // Prepare a select statement to see what jobs exist for the
+      // Prepare a select statement to see what jobs exist for the date
       // passed in date and execute it.
-      String mySqlSelectExists = "SELECT * FROM job WHERE DATE(StartTime) = ?;";
-      String mySqlSelectProductDuration = "SELECT MinutesDuration FROM product WHERE ID = ?;";
-      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectExists, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-      preparedStatement.setDate(1, date);
+      String mySqlSelectExists = "SELECT job.*, product.Description as ProductDescription FROM job LEFT JOIN product ON job.ProductID = product.ID WHERE DATE(StartTime) = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectExists);
+      preparedStatement.setDate(1, Date.valueOf(date));
       ResultSet resultSet;
       resultSet = preparedStatement.executeQuery();
-      
-      // IF jobs exist
-      if (resultSet.isBeforeFirst()) {
-        resultSet.last();
-        int rows = resultSet.getRow();
-        resultSet.beforeFirst();
-        
-        // Create a Job array
-        Job[] jobs  = new Job[rows];
-        
-        // Use a loop to move the cursor through the results and create a new job object for each result and add it to the array.
-        for (int i = 0; i < rows; i++) {
-          resultSet.next();
-          
-          Job job = new Job(resultSet.getInt("ProductID"), resultSet.getInt("LineNumber"), resultSet.getTimestamp("StartTime"));
-          job.setId(resultSet.getInt("ID"));
-          job.setStartTime(resultSet.getTimestamp("StartTime"));
-          job.setProjectedEndTime(resultSet.getTimestamp("ProjectedEndTime"));
-          job.setPersonnelCount(resultSet.getInt("PersonnelCount"));
-          jobs[i] = job;
-        }
-        
-        // Return the array of jobs.
-        return jobs;
-      } else {
-        throw new JobDaoException("No jobs exist for this date.");
+
+      // Use a loop to create a new job object for each result and add it to the array.
+      while(resultSet.next()) {
+        Job job = new Job(resultSet.getInt("ProductID"), resultSet.getInt("LineNumber"), resultSet.getTimestamp("StartTime"),resultSet.getInt("PersonnelCount"));
+        job.setId(resultSet.getInt("ID"));
+        job.setProjectedEndTime(resultSet.getTimestamp("ProjectedEndTime"));
+        job.setActualEndTime(resultSet.getTimestamp("ActualEndTime"));
+        job.setProductName(resultSet.getString("ProductDescription"));
+
+        jobs.add(job);
       }
-      
-      
-      // ELSE
-      // Return an empty array or null.
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage());
+
+      connection.close();
+      preparedStatement.close();
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new JobDaoException(e.getMessage());
     }
-    
+
+    return jobs;
   }
   
   // Utility functions

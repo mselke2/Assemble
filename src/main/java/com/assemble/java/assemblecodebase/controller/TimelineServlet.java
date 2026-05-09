@@ -1,7 +1,7 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
-import com.assemble.java.assemblecodebase.dao.ProductDaoImpl;
+import com.assemble.java.assemblecodebase.dao.*;
 import com.assemble.java.assemblecodebase.model.Job;
 import com.assemble.java.assemblecodebase.model.Product;
 import jakarta.servlet.ServletException;
@@ -9,43 +9,41 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 @WebServlet(name = "TimelineServlet", value = "/Timeline")
 public class TimelineServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try {
+      String dateString = request.getParameter("d");
+      if (dateString == null || !dateString.matches("^\\d{8}$")) {
+        throw new IllegalArgumentException("Invalid date parameter.");
+      }
+      int year = Integer.parseInt(dateString.substring(0, 4));
+      int month = Integer.parseInt(dateString.substring(4, 6));
+      int day = Integer.parseInt(dateString.substring(6));
 
-    if (Objects.equals(request.getParameter("format"), "json")) {
-      response.setContentType("application/json");
-      // todo: this is sample data, pull the actual data from the db
-      response.getWriter().write("""
-          [
-            {
-              "productName": "car"
-            }
-          ]""");
-      response.getWriter().flush();
-    } else {
-      Timestamp startTime = new Timestamp(2026, 5, 3, 3, 0, 0, 0);
-      Timestamp projectedEndTime = new Timestamp(2026, 5, 3, 5, 45, 0, 0);
-      Job job1 = new Job(1, 1, startTime);
-      ProductDaoImpl productDao = new ProductDaoImpl();
-      job1.setProjectedEndTime(startTime, productDao.retrieve(job1.getProductId()).getMinutesDuration());
-      job1.setPersonnelCount(productDao.retrieve(job1.getProductId()).getTargetPersonnelCount());
-      List<Job> jobList = List.of(job1);
+      JobDao jobDao = new JobDaoImpl();
+      List<Job> jobs = jobDao.retrieveForDate(LocalDate.of(year, month, day));
 
-      // todo: this is sample data, pull the real data from the db
-      request.setAttribute("jobs", jobList);
-      request.setAttribute("productTypes", List.of(
-          new Product(1, "Car", 60*5, 4),
-          new Product(2, "Desk", 80, 5)
-      ));
+      request.setAttribute("jobs", jobs);
+
+      ProductDao productDao = new ProductDaoImpl();
+      List<Product> products = productDao.retrieveAll();
+
+      request.setAttribute("productTypes", products);
 
       getServletContext().getRequestDispatcher("/scheduler.jsp").forward(request, response);
+    } catch (IllegalArgumentException e) {
+      response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);
+      response.getWriter().write(e.getMessage());
+    } catch (JobDaoException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      response.getWriter().write(e.getMessage());
     }
   }
 }

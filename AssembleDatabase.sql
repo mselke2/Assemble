@@ -131,7 +131,7 @@ CREATE TABLE `job` (
   `ProjectedEndTime` datetime NOT NULL,
   `ActualEndTime` datetime DEFAULT NULL,
   `PersonnelCount` tinyint NOT NULL,
-  `Line` tinyint DEFAULT NULL,
+  `LineNumber` tinyint NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `job_productId_idx` (`ProductID`),
   CONSTRAINT `job_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`)
@@ -238,7 +238,7 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `Description` varchar(50) NOT NULL,
-  `Duration` smallint NOT NULL,
+  `MinutesDuration` smallint unsigned NOT NULL,
   `TargetPersonnelCount` tinyint unsigned NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -7,6 +7,7 @@ import java.util.Calendar;
 public class Job implements Serializable {
   private int id = -1;
   private int productId;
+  private String productName;
   private int lineNumber;
   private Timestamp startTime;
   private Timestamp projectedEndTime;
@@ -28,6 +29,14 @@ public class Job implements Serializable {
   private int[][] equipmentCounts;
   
   public Job() {
+  }
+
+  public Job(int productId, int lineNumber, Timestamp startTime, int personnelCount) {
+    setProductId(productId);
+    setLineNumber(lineNumber);
+    setStartTime(startTime);
+    setProjectedEndTime(startTime);
+    setPersonnelCount(personnelCount);
   }
   
   public Job(int productId, int lineNumber, Timestamp startTime) {
@@ -114,7 +123,15 @@ public class Job implements Serializable {
   public void setEquipmentCounts(int[][] equipmentCounts) {
     this.equipmentCounts = equipmentCounts;
   }
-  
+
+  public String getProductName() {
+    return productName;
+  }
+
+  public void setProductName(String productName) {
+    this.productName = productName;
+  }
+
   @Override
   public String toString() {
     return "Job [id=" + id + ", productId=" + productId + ", lineNumber=" +

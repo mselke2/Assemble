@@ -55,9 +55,8 @@ function populateCalendar() {
 
     // query for jobs scheduled for that day, and add the requests to
     // the XHRs array
-    dateBoxXHRs.push($.getJSON("Timeline", {
-      d: dateString,
-      format: "json"
+    dateBoxXHRs.push($.getJSON("Job", {
+      d: dateString
     }, data => {
       // for each job scheduled that day...
       for (let job of data) {

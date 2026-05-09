@@ -3,8 +3,9 @@ package com.assemble.java.assemblecodebase.dao;
 import com.assemble.java.assemblecodebase.model.Job;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,10 +17,10 @@ class JobDaoImplTest {
     JobDaoImpl jobDaoImpl = new JobDaoImpl();
     
     assertDoesNotThrow(() -> {
-      Job[] jobs = jobDaoImpl.retrieveForDate(new Date(2026-1900, 0, 1));
+      List<Job> jobs = jobDaoImpl.retrieveForDate(LocalDate.of(2026, 1, 1));
       
-      for  (int i = 0; i < jobs.length; i++) {
-        System.out.println(jobs[i].getId() + ", " + jobs[i].getProductId() + ", " + jobs[i].getStartTime());
+      for (int i = 0; i < jobs.size(); i++) {
+        System.out.println(jobs.get(i).getId() + ", " + jobs.get(i).getProductId() + ", " + jobs.get(i).getStartTime());
       }
     });
   }
@@ -53,9 +54,10 @@ class JobDaoImplTest {
     
     assertDoesNotThrow(() -> {
       Job job =  new Job(3, 1, new Timestamp(2026-1900, 0, 1, 20, 0, 0, 0));
+      job.setId(1);
       job.setProjectedEndTime(job.getStartTime(), productDao.retrieve(job.getProductId()).getMinutesDuration());
       job.setPersonnelCount(productDao.retrieve(job.getProductId()).getTargetPersonnelCount());
-      jobDao.updateJob(1, job);
+      jobDao.updateJob(job);
     });
   }
   
