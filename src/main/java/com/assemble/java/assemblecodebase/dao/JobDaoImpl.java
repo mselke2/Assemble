@@ -230,7 +230,7 @@ public class JobDaoImpl implements JobDao {
   
   // Utility functions
   
-  private boolean subtractInventory() {
+  public boolean subtractInventory() {
     
     try {
       // Get a connection to the database
@@ -296,7 +296,7 @@ public class JobDaoImpl implements JobDao {
     return true;
   }
   
-  private boolean replaceInventory(int productId) {
+  public boolean replaceInventory(int productId) {
     try {
       
       // See which InventoryIDs are required for this product
@@ -329,7 +329,7 @@ public class JobDaoImpl implements JobDao {
     return true;
   }
   
-  private boolean checkPrerequisites(Job job) {
+  public boolean checkPrerequisites(Job job) {
     
     Timestamp startTime = job.getStartTime();
     Timestamp projectedEndTime = job.getProjectedEndTime();
@@ -560,7 +560,7 @@ public class JobDaoImpl implements JobDao {
     return true;
   }
   
-  private static boolean releasePrerequisites(Job job) {
+  public static boolean releasePrerequisites(Job job) {
     
     try {
       // Get a connection to the database
@@ -579,7 +579,7 @@ public class JobDaoImpl implements JobDao {
     return true;
   }
   
-  private void fillCommittedInventoryCounts(Timestamp startTime) {
+  public void fillCommittedInventoryCounts(Timestamp startTime) {
     // This method fills the current instance's inventoryCounts array's
     // 3rd row index with the committed number of inventory at a given time
     // for each TypeID stored in the first row index of the inventoryCounts array.
@@ -688,7 +688,7 @@ public class JobDaoImpl implements JobDao {
     }
   }
   
-  private void fillCommittedEquipmentCount(Timestamp startTime) {
+  public void fillCommittedEquipmentCount(Timestamp startTime) {
     // This method fills the current instance's equipmentCounts array's
     // 3rd row index with the committed number of equipment at a given time
     // for each TypeID stored in the first row index of the equipmentCounts array.
@@ -798,7 +798,7 @@ public class JobDaoImpl implements JobDao {
     }
   }
   
-  private int calculateCommittedPersonnelCount(Timestamp startTime) {
+  public int calculateCommittedPersonnelCount(Timestamp startTime) {
     
     String mySqlSelect = "SELECT * FROM job WHERE StartTime <= ? AND ProjectedEndTime >= ?;";
     
