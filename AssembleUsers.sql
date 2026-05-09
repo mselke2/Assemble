@@ -17,6 +17,7 @@ GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.jobinventory TO 'AssembleEditor
 GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.product TO 'AssembleEditor'@'%';
 GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.productequipment TO 'AssembleEditor'@'%';
 GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.productinventory TO 'AssembleEditor'@'%';
+GRANT SELECT, INSERT, DELETE, UPDATE ON assemble.personnel TO 'AssembleEditor'@'%'; 
 
 CREATE USER 'AssembleViewer'@'%' IDENTIFIED BY '10l7DN&?c`8D';
 GRANT USAGE ON assemble.* TO 'AssembleViewer'@'%';
@@ -30,3 +31,4 @@ GRANT SELECT ON assemble.jobinventory TO 'AssembleViewer'@'%';
 GRANT SELECT ON assemble.product TO 'AssembleViewer'@'%';
 GRANT SELECT ON assemble.productequipment TO 'AssembleViewer'@'%';
 GRANT SELECT ON assemble.productinventory TO 'AssembleViewer'@'%';
+GRANT SELECT ON assemble.personnel TO 'AssembleViewer'@'%';
