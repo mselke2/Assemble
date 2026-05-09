@@ -1,0 +1,68 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Product</title>
+    <link rel="stylesheet" href="assets/css/resource-manager.css">
+    <link rel="stylesheet" href="assets/css/product.css">
+</head>
+<body>
+<div class="panel">
+    <h1>Product</h1>
+    <form action="Product" method="post" class="new-entry-bar">
+
+        <label for="id" class="productLabel">ID</label>
+        <input type="text" id="id" name="id" class="productInput"><br>
+
+        <label for="description" class="productLabel">Description</label>
+        <input type="text" class="productInput" name="description" id="description"><br>
+
+        <label for="duration" class="productLabel">Duration (Minutes)</label>
+        <input type="text" name="duration" class="productInput" id="duration"><br>
+
+        <label for="personnel-count" class="productLabel">Personnel Count</label>
+        <input type="text" name="personnel-count" class="productInput" id="personnel-count"><br><br>
+
+        <input class="submit" type="submit" name="submit" value="Submit">
+
+    </form>
+
+    <br><br>
+
+    <table>
+        <tr>
+            <th></th>
+            <th class="header">ID</th>
+            <th class="header">Description</th>
+            <th class="header">Duration (Minutes)</th>
+            <th class="header">Personnel Count (Target)</th>
+            <th></th>
+        </tr>
+
+        <c:if test="${not empty product}">
+            <c:forEach var="product" items="${product}">
+                <tr resource-id="${scheduledPersonnel.id}">
+
+                    <td>
+                        <button class="count-control add">+</button>
+                        <button class="count-control remove">-</button>
+                    </td>
+
+                    <td>${product.id}</td>
+
+                    <td>${product.description}</td>
+
+                    <td>${product.minutesDuration}</td>
+
+                    <td class="resource-count">${product.targetPersonnelCount}</td>
+
+                    <td>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+            </c:forEach>
+        </c:if>
+    </table>
+</div>
+</body>
+</html>
