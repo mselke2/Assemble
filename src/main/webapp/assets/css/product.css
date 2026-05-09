@@ -21,6 +21,10 @@ body {
             .header {
                 border: 1px solid black;
             }
+
+            .data {
+                border: 1px solid black;
+            }
         }
 
     }

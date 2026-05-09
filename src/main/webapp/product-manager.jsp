@@ -48,13 +48,13 @@
                         <button class="count-control remove">-</button>
                     </td>
 
-                    <td>${product.id}</td>
+                    <td class="data">${product.id}</td>
 
-                    <td>${product.description}</td>
+                    <td class="data">${product.description}</td>
 
-                    <td>${product.minutesDuration}</td>
+                    <td class="data">${product.minutesDuration}</td>
 
-                    <td class="resource-count">${product.targetPersonnelCount}</td>
+                    <td class="resource-count data">${product.targetPersonnelCount}</td>
 
                     <td>
                         <button class="delete-btn">Delete</button>
@@ -64,5 +64,7 @@
         </c:if>
     </table>
 </div>
+<script src="assets/js/resource-manager.js"></script>
+<script src="assets/js/product-manager.js"></script>
 </body>
 </html>
