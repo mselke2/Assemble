@@ -85,7 +85,7 @@ public class JobDaoImpl implements JobDao {
         }
         
         connection.close();
-//        updatePrerequisites(new Date(job.getStartTime().getTime()), job.getPersonnelCount());
+        updateInventory();
         
       } catch (Exception e) {
         throw new JobDaoException(e.getMessage());
@@ -230,33 +230,14 @@ public class JobDaoImpl implements JobDao {
     
   }
   
-  public boolean updatePrerequisites(Date date, int personnelCount) {
+  public boolean updateInventory() {
     
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
       
       String mySqlUpdateInventory = "UPDATE Inventory SET Count = ? WHERE ID = ?;";
-      String mySqlUpdateEquipment = "UPDATE Equipment SET Status = 0 WHERE ID = ?;";
-      String mySqlSelectEquipment = "SELECT * FROM Equipment WHERE TypeID = ?;";
       String mySqlSelectInventory = "SELECT * FROM Inventory WHERE TypeID = ?;";
-      String mySqlSelectPersonnelCount = "SELECT * FROM personnel WHERE Date = ?;";
-      String mySqlUpdatePersonnelCount = "UPDATE personnel SET Count = ? WHERE Date = ?;";
-      
-      // Update Personnel
-      PreparedStatement preparedStatementPersonnel = connection.prepareStatement(mySqlSelectPersonnelCount);
-      preparedStatementPersonnel.setDate(1, date);
-      ResultSet resultSetPersonnel = preparedStatementPersonnel.executeQuery();
-      if (resultSetPersonnel.isBeforeFirst()) {
-        resultSetPersonnel.next();
-        preparedStatementPersonnel =  connection.prepareStatement(mySqlUpdatePersonnelCount);
-        preparedStatementPersonnel.setInt(1, resultSetPersonnel.getInt("Count") - personnelCount);
-        preparedStatementPersonnel.setDate(2, date);
-        preparedStatementPersonnel.executeUpdate();
-      }else {
-        throw new JobDaoException("Error updating personnel count.");
-      }
-      
       
       // Update inventory.
       // iterate through each required TypeID
@@ -308,36 +289,6 @@ public class JobDaoImpl implements JobDao {
         }
       }
       
-      // Update equipment.
-      // Iterate through each required TypeID
-      for (int i = 0; i < equipmentCounts[0].length; i++) {
-        // Select all equipment of the specified TypeID
-        PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectEquipment);
-        preparedStatement.setInt(1, equipmentCounts[0][i]);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        int equipmentRequired = equipmentCounts[1][i];
-        
-        
-        if (resultSet.isBeforeFirst()) {
-          
-          // Step through equipment of the required type
-          while (resultSet.next() && equipmentRequired > 0) {
-            // Select the next piece of equipment
-            PreparedStatement preparedUpdateStatement = connection.prepareStatement(mySqlUpdateEquipment);
-            // If it's available.
-            if(resultSet.getInt("Status") == 1) {
-              // Set it to not available
-              preparedUpdateStatement.setInt(1, resultSet.getInt("ID"));
-              preparedUpdateStatement.executeUpdate();
-              preparedUpdateStatement.close();
-              // Update equipment required.
-              equipmentRequired -= 1;
-            }
-          }
-        } else {
-          throw new JobDaoException("Error updating equipment.");
-        }
-      }
     } catch (SQLException | ClassNotFoundException e) {
       throw new JobDaoException("Error updating prerequisites" + e.getMessage());
     }
@@ -473,8 +424,6 @@ public class JobDaoImpl implements JobDao {
         String mySqlInventoryAvailable = "SELECT TypeID, SUM(`Count`) AS `Count` FROM Inventory WHERE TypeID = ? GROUP BY TypeID;";
         String mySqlEquipmentAvailable = "SELECT TypeID, SUM(Status) AS `Count` FROM Equipment WHERE TypeID = ? GROUP BY TypeID;";
         
-        // TODO change to calculating committed inventory counts at time of job
-        
         // Fill the 3rd row with committed inventory counts
         fillCommittedInventoryCounts(startTime);
         
@@ -518,8 +467,6 @@ public class JobDaoImpl implements JobDao {
           }
           
         }
-        
-        //TODO Change to checking for commited equipment counts aat time of job
         
         // Fill the 3rd row with committed equipment counts
         fillCommittedEquipmentCount(startTime);
