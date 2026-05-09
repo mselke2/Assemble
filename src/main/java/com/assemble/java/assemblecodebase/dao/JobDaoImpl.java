@@ -173,7 +173,7 @@ public class JobDaoImpl implements JobDao {
     }
   }
   
-  public Job[] retrieveForDate(LocalDate date) {
+  public Job[] retrieveForDate(Date date) {
     
     // Get a connection to the database
     try {
@@ -182,8 +182,8 @@ public class JobDaoImpl implements JobDao {
       // passed in date and execute it.
       String mySqlSelectExists = "SELECT * FROM job WHERE DATE(StartTime) = ?;";
       String mySqlSelectProductDuration = "SELECT MinutesDuration FROM product WHERE ID = ?;";
-      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectExists);
-      preparedStatement.setString(1, date.toString());
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectExists, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+      preparedStatement.setDate(1, date);
       ResultSet resultSet;
       resultSet = preparedStatement.executeQuery();
       
@@ -202,17 +202,24 @@ public class JobDaoImpl implements JobDao {
           
           // Get the MinutesDuration to calculate projected end time for the job.
           PreparedStatement preparedStatementDuration = connection.prepareStatement(mySqlSelectProductDuration);
-          preparedStatementDuration.setInt(1, resultSet.getInt("MinutesDuration"));
+          preparedStatementDuration.setInt(1, resultSet.getInt("ProductID"));
           ResultSet resultSetDuration = preparedStatementDuration.executeQuery();
-          // DAO to retrieve target personnel count
-          ProductDaoImpl productDao = new ProductDaoImpl();
-
-          Job job = new Job(resultSet.getInt("ProductID"), resultSet.getInt("LineNumber"), resultSet.getTimestamp("StartTime"));
-          job.setStartTime(resultSetDuration.getTimestamp("StartTime"));
-          job.setProjectedEndTime(job.getStartTime(), resultSetDuration.getInt("MinutesDuration"));
-          job.setPersonnelCount(productDao.retrieve(resultSet.getInt("ProductID")).getTargetPersonnelCount());
           
-          jobs[i] = job;
+          if (resultSetDuration.isBeforeFirst()) {
+            resultSetDuration.next();
+            
+            // DAO to retrieve target personnel count
+            ProductDaoImpl productDao = new ProductDaoImpl();
+            
+            Job job = new Job(resultSet.getInt("ProductID"), resultSet.getInt("LineNumber"), resultSet.getTimestamp("StartTime"));
+            job.setId(resultSet.getInt("ID"));
+            job.setStartTime(resultSet.getTimestamp("StartTime"));
+            job.setProjectedEndTime(job.getStartTime(), resultSetDuration.getInt("MinutesDuration"));
+            job.setPersonnelCount(productDao.retrieve(resultSet.getInt("ProductID")).getTargetPersonnelCount());
+            jobs[i] = job;
+          }
+          
+          
         }
         
         // Return the array of jobs.

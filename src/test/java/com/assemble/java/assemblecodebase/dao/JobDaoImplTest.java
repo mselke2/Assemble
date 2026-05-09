@@ -2,6 +2,8 @@ package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Job;
 import org.junit.jupiter.api.Test;
+
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,6 +12,16 @@ class JobDaoImplTest {
   
   @Test
   void retrieveForDate() {
+    
+    JobDaoImpl jobDaoImpl = new JobDaoImpl();
+    
+    assertDoesNotThrow(() -> {
+      Job[] jobs = jobDaoImpl.retrieveForDate(new Date(2026-1900, 0, 1));
+      
+      for  (int i = 0; i < jobs.length; i++) {
+        System.out.println(jobs[i].getId() + ", " + jobs[i].getProductId() + ", " + jobs[i].getStartTime());
+      }
+    });
   }
   
   @Test
@@ -19,7 +31,7 @@ class JobDaoImplTest {
   @Test
   void addJob() {
     
-    Job job = new Job(3, 1, new Timestamp(2026-1900, 0, 1, 15, 0, 0, 0));
+    Job job = new Job(3, 2, new Timestamp(2026-1900, 0, 1, 20, 0, 0, 0));
     
     ProductDaoImpl productDao = new ProductDaoImpl();
     JobDaoImpl jobDao = new JobDaoImpl();
