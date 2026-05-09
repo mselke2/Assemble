@@ -191,26 +191,12 @@ public class JobDaoImpl implements JobDao {
         for (int i = 0; i < rows; i++) {
           resultSet.next();
           
-          // Get the MinutesDuration to calculate projected end time for the job.
-          PreparedStatement preparedStatementDuration = connection.prepareStatement(mySqlSelectProductDuration);
-          preparedStatementDuration.setInt(1, resultSet.getInt("ProductID"));
-          ResultSet resultSetDuration = preparedStatementDuration.executeQuery();
-          
-          if (resultSetDuration.isBeforeFirst()) {
-            resultSetDuration.next();
-            
-            // DAO to retrieve target personnel count
-            ProductDaoImpl productDao = new ProductDaoImpl();
-            
-            Job job = new Job(resultSet.getInt("ProductID"), resultSet.getInt("LineNumber"), resultSet.getTimestamp("StartTime"));
-            job.setId(resultSet.getInt("ID"));
-            job.setStartTime(resultSet.getTimestamp("StartTime"));
-            job.setProjectedEndTime(job.getStartTime(), resultSetDuration.getInt("MinutesDuration"));
-            job.setPersonnelCount(productDao.retrieve(resultSet.getInt("ProductID")).getTargetPersonnelCount());
-            jobs[i] = job;
-          }
-          
-          
+          Job job = new Job(resultSet.getInt("ProductID"), resultSet.getInt("LineNumber"), resultSet.getTimestamp("StartTime"));
+          job.setId(resultSet.getInt("ID"));
+          job.setStartTime(resultSet.getTimestamp("StartTime"));
+          job.setProjectedEndTime(resultSet.getTimestamp("ProjectedEndTime"));
+          job.setPersonnelCount(resultSet.getInt("PersonnelCount"));
+          jobs[i] = job;
         }
         
         // Return the array of jobs.
