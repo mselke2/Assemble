@@ -3,7 +3,6 @@ package com.assemble.java.assemblecodebase.dao;
 import com.assemble.java.assemblecodebase.model.Job;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 import java.sql.*;
-import java.time.LocalDate;
 
 import static java.lang.Math.abs;
 
@@ -26,66 +25,46 @@ public class JobDaoImpl implements JobDao {
   private int[][] inventoryCounts;
   private int[][] equipmentCounts;
   
-  public String getPrerequisitesError() {
-    return prerequisitesError;
-  }
-  
+  // Main functions
   @Override
   public int addJob(Job job) {
     
-    int jobId = -1;
+    int jobId = 0;
     
     // Run checkPrerequisites(job)
     if(checkPrerequisites(job)){
     
       String mySqlInsert = "INSERT INTO Job (ProductID, LineNumber, StartTime, ProjectedEndTime, PersonnelCount) VALUES (?, ?, ?, ?, ?);";
-      String mySqlUpdate = "UPDATE Job SET ProductID = ?, LineNumber = ?, StartTime = ?, ProjectedEndTime = ?, PersonnelCount = ? WHERE ID = ?;";
       try {
         
         Connection connection = MySQLUtility.createConnection();
         
-        if (job.getId() != -1) {
-          PreparedStatement preparedStatement = connection.prepareStatement(mySqlUpdate);
-          
-          preparedStatement.setInt(1, job.getProductId());
-          preparedStatement.setInt(2, job.getLineNumber());
-          preparedStatement.setTimestamp(3, job.getStartTime());
-          preparedStatement.setTimestamp(4, job.getProjectedEndTime());
-          preparedStatement.setInt(5, job.getPersonnelCount());
-          preparedStatement.setInt(6, job.getId());
-          preparedStatement.executeUpdate();
-          
-          preparedStatement.close();
-          jobId = job.getId();
-          
-          
-        } else {
-          PreparedStatement preparedStatement = connection.prepareStatement(mySqlInsert);
-          
-          preparedStatement.setInt(1, job.getProductId());
-          preparedStatement.setInt(2, job.getLineNumber());
-          preparedStatement.setTimestamp(3, job.getStartTime());
-          preparedStatement.setTimestamp(4, job.getProjectedEndTime());
-          preparedStatement.setInt(5, job.getPersonnelCount());
-          preparedStatement.executeUpdate();
-          
-          preparedStatement.close();
-          
-          String mySqlSelectId = "SELECT ID FROM Job WHERE ProductID = ? AND LineNumber = ? AND StartTime = ?;";
-          preparedStatement = connection.prepareStatement(mySqlSelectId);
-          preparedStatement.setInt(1, job.getProductId());
-          preparedStatement.setInt(2, job.getLineNumber());
-          preparedStatement.setTimestamp(3, job.getStartTime());
-          ResultSet resultSet = preparedStatement.executeQuery();
-          
-          if(resultSet.isBeforeFirst()) {
-            resultSet.next();
-            jobId = resultSet.getInt("ID");
-          }
+        
+        PreparedStatement preparedStatement = connection.prepareStatement(mySqlInsert);
+        
+        preparedStatement.setInt(1, job.getProductId());
+        preparedStatement.setInt(2, job.getLineNumber());
+        preparedStatement.setTimestamp(3, job.getStartTime());
+        preparedStatement.setTimestamp(4, job.getProjectedEndTime());
+        preparedStatement.setInt(5, job.getPersonnelCount());
+        preparedStatement.executeUpdate();
+        
+        preparedStatement.close();
+        
+        String mySqlSelectId = "SELECT ID FROM Job WHERE ProductID = ? AND LineNumber = ? AND StartTime = ?;";
+        preparedStatement = connection.prepareStatement(mySqlSelectId);
+        preparedStatement.setInt(1, job.getProductId());
+        preparedStatement.setInt(2, job.getLineNumber());
+        preparedStatement.setTimestamp(3, job.getStartTime());
+        ResultSet resultSet = preparedStatement.executeQuery();
+        
+        if(resultSet.isBeforeFirst()) {
+          resultSet.next();
+          jobId = resultSet.getInt("ID");
         }
         
         connection.close();
-        updateInventory();
+        subtractInventory();
         
       } catch (Exception e) {
         throw new JobDaoException(e.getMessage());
@@ -98,40 +77,52 @@ public class JobDaoImpl implements JobDao {
     return jobId;
   }
   
-  // May not need this method ------------------------------
   @Override
-  public void updateJob(Job job) {
+  public void updateJob(int id, Job job) {
     
-    // Get a connection to the database
+    deleteJob(id);
+    addJob(job);
     
-    // Prepare a select statement to see if a job already exists
-      // with this productID and datetime range and execute it.
-    
-    // IF a job exists
-      // Run deleteJob(job) to delete existing job
-      // Run addJob(job) to add new job with updated information
-    
-    // ELSE
-      // Throw a JobDaoException with the message "Job does not exist."
   }
   
   @Override
   public int deleteJob(int id) {
     
-    // Get a connection to the database
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      
+      // Prepare a select statement to see if a job exists with this jobID and execute it.
+      String MySqlSelect = "SELECT * from  Job where ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySqlSelect);
+      preparedStatement.setInt(1, id);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      // If a job exists
+      if(resultSet.isBeforeFirst()) {
+        resultSet.next();
+        
+        // Prepare a delete statement to delete this job from the database and execute it.
+        String mySqlDelete = "DELETE FROM Job WHERE ID = ?;";
+        preparedStatement = connection.prepareStatement(mySqlDelete);
+        preparedStatement.setInt(1, id);
+        preparedStatement.executeUpdate();
+        
+        // Release inventory
+        replaceInventory(resultSet.getInt("ProductID"));
+        
+        // Return the jobID.
+        return id;
+      } else {
+        // ELSE
+        // Throw a JobDaoException with the message "Job does not exist."
+        throw new JobDaoException("Job does not exist.");
+      }
+      
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new JobDaoException("Error deleting job." + e.getMessage());
+    }
     
-    // Prepare a select statement to see if a job exists with this jobID and execute it.
-    
-    // If a job exists
-      // Store the jobID in a variable
-      // Run releasePrerequisites(job) to add inventory and equipment back to database
-      // Prepare a delete statement to delete this job from the database and execute it.
-      // Return the jobID.
-    
-    // ELSE
-      // Throw a JobDaoException with the message "Job does not exist."
-    
-    return 0;
   }
   
   @Override
@@ -237,7 +228,9 @@ public class JobDaoImpl implements JobDao {
     
   }
   
-  public boolean updateInventory() {
+  // Utility functions
+  
+  private boolean subtractInventory() {
     
     try {
       // Get a connection to the database
@@ -303,7 +296,40 @@ public class JobDaoImpl implements JobDao {
     return true;
   }
   
-  public boolean checkPrerequisites(Job job) {
+  private boolean replaceInventory(int productId) {
+    try {
+      
+      // See which InventoryIDs are required for this product
+      Connection connection = MySQLUtility.createConnection();
+      String mySqlSelect = "SELECT * FROM ProductInventory WHERE ProductID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+      preparedStatement.setInt(1, productId);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      
+      if (resultSet.isBeforeFirst()) {
+        resultSet.last();
+        int records = resultSet.getRow();
+        resultSet.beforeFirst();
+        
+        // Fill out array for required inventory counts
+        for (int i = 0; i < records; i++) {
+          resultSet.next();
+          
+          String mySqlInsert = "INSERT INTO inventory (TypeID, Count) VALUES (?, ?);";
+          preparedStatement = connection.prepareStatement(mySqlInsert);
+          preparedStatement.setInt(1, resultSet.getInt("InventoryTypeID"));
+          preparedStatement.setInt(2, resultSet.getInt("RequiredInventoryCount"));
+          preparedStatement.executeUpdate();
+          
+        }
+      }
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new JobDaoException("Error updating inventory" + e.getMessage());
+    }
+    return true;
+  }
+  
+  private boolean checkPrerequisites(Job job) {
     
     Timestamp startTime = job.getStartTime();
     Timestamp projectedEndTime = job.getProjectedEndTime();
@@ -534,7 +560,7 @@ public class JobDaoImpl implements JobDao {
     return true;
   }
   
-  public static boolean releasePrerequisites(Job job) {
+  private static boolean releasePrerequisites(Job job) {
     
     try {
       // Get a connection to the database
@@ -553,23 +579,7 @@ public class JobDaoImpl implements JobDao {
     return true;
   }
   
-  public int[][] getInventoryCounts() {
-    return inventoryCounts;
-  }
-  
-  public void setInventoryCounts(int[][] inventoryCounts) {
-    this.inventoryCounts = inventoryCounts;
-  }
-  
-  public int[][] getEquipmentCounts() {
-    return equipmentCounts;
-  }
-  
-  public void setEquipmentCounts(int[][] equipmentCounts) {
-    this.equipmentCounts = equipmentCounts;
-  }
-  
-  public void fillCommittedInventoryCounts(Timestamp startTime) {
+  private void fillCommittedInventoryCounts(Timestamp startTime) {
     // This method fills the current instance's inventoryCounts array's
     // 3rd row index with the committed number of inventory at a given time
     // for each TypeID stored in the first row index of the inventoryCounts array.
@@ -678,7 +688,7 @@ public class JobDaoImpl implements JobDao {
     }
   }
   
-  public void fillCommittedEquipmentCount(Timestamp startTime) {
+  private void fillCommittedEquipmentCount(Timestamp startTime) {
     // This method fills the current instance's equipmentCounts array's
     // 3rd row index with the committed number of equipment at a given time
     // for each TypeID stored in the first row index of the equipmentCounts array.
@@ -788,7 +798,7 @@ public class JobDaoImpl implements JobDao {
     }
   }
   
-  public int calculateCommittedPersonnelCount(Timestamp startTime) {
+  private int calculateCommittedPersonnelCount(Timestamp startTime) {
     
     String mySqlSelect = "SELECT * FROM job WHERE StartTime <= ? AND ProjectedEndTime >= ?;";
     
@@ -816,5 +826,25 @@ public class JobDaoImpl implements JobDao {
       throw new JobDaoException(e.getMessage());
     }
     return 0;
+  }
+  
+  public int[][] getInventoryCounts() {
+    return inventoryCounts;
+  }
+  
+  public void setInventoryCounts(int[][] inventoryCounts) {
+    this.inventoryCounts = inventoryCounts;
+  }
+  
+  public int[][] getEquipmentCounts() {
+    return equipmentCounts;
+  }
+  
+  public void setEquipmentCounts(int[][] equipmentCounts) {
+    this.equipmentCounts = equipmentCounts;
+  }
+  
+  public String getPrerequisitesError() {
+    return prerequisitesError;
   }
 }

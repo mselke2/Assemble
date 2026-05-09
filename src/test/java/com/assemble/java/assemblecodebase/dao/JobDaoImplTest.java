@@ -31,7 +31,7 @@ class JobDaoImplTest {
   @Test
   void addJob() {
     
-    Job job = new Job(3, 2, new Timestamp(2026-1900, 0, 1, 20, 0, 0, 0));
+    Job job = new Job(3, 1, new Timestamp(2026-1900, 0, 1, 14, 0, 0, 0));
     
     ProductDaoImpl productDao = new ProductDaoImpl();
     JobDaoImpl jobDao = new JobDaoImpl();
@@ -47,10 +47,25 @@ class JobDaoImplTest {
   
   @Test
   void updateJob() {
+    
+    JobDaoImpl jobDao = new JobDaoImpl();
+    ProductDaoImpl productDao = new ProductDaoImpl();
+    
+    assertDoesNotThrow(() -> {
+      Job job =  new Job(3, 1, new Timestamp(2026-1900, 0, 1, 20, 0, 0, 0));
+      job.setProjectedEndTime(job.getStartTime(), productDao.retrieve(job.getProductId()).getMinutesDuration());
+      job.setPersonnelCount(productDao.retrieve(job.getProductId()).getTargetPersonnelCount());
+      jobDao.updateJob(1, job);
+    });
   }
   
   @Test
   void deleteJob() {
+    JobDaoImpl jobDao = new JobDaoImpl();
+    
+    assertDoesNotThrow(() -> {
+      jobDao.deleteJob(1);
+    });
   }
   
   @Test
@@ -120,6 +135,15 @@ class JobDaoImplTest {
       
       System.out.println(count);
       
+    });
+  }
+  
+  @Test
+  void replaceInventory() {
+    
+    JobDaoImpl jobDao = new JobDaoImpl();
+    assertDoesNotThrow(() -> {
+      jobDao.replaceInventory(3);
     });
   }
 }
