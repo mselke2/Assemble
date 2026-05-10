@@ -38,13 +38,11 @@
             <th></th>
         </tr>
 
-        <c:if test="${not empty product}">
-            <c:forEach var="product" items="${product}">
-                <tr resource-id="${scheduledPersonnel.id}">
+        <c:if test="${not empty products}">
+            <c:forEach var="product" items="${products}">
+                <tr resource-id="${product.id}">
 
                     <td>
-                        <button class="count-control add">+</button>
-                        <button class="count-control remove">-</button>
                     </td>
 
                     <td class="data">${product.id}</td>
