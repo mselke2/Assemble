@@ -2,6 +2,7 @@ package com.assemble.java.assemblecodebase.controller;
 
 
 import com.assemble.java.assemblecodebase.dao.EquipmentDao;
+import com.assemble.java.assemblecodebase.dao.EquipmentDaoException;
 import com.assemble.java.assemblecodebase.dao.EquipmentDaoImpl;
 import com.assemble.java.assemblecodebase.model.Equipment;
 import com.assemble.java.assemblecodebase.model.EquipmentType;
@@ -34,5 +35,34 @@ public class EquipmentServlet extends HttpServlet {
     request.setAttribute("equipmentList", equipment);
     request.setAttribute("equipmentTypes", types);
     getServletContext().getRequestDispatcher("/tool-manager.jsp").forward(request, response);
+  }
+
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try {
+      int typeId;
+      try {
+        typeId =  Integer.parseInt(request.getParameter("equipmentTypeId"));
+      } catch (NumberFormatException e) {
+        throw new RuntimeException("Invalid Equipment Type Id");
+      }
+
+      EquipmentDao dao = new EquipmentDaoImpl();
+      Equipment equipment = new Equipment();
+      equipment.setTypeId(typeId);
+      equipment.setStatus(0);
+      dao.addEquipment(equipment);
+    } catch (EquipmentDaoException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);
+
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    }
+
+    doGet(request, response);
   }
 }

@@ -11,7 +11,7 @@
     <h1>Equipment</h1>
     <form action="Equipment" method="post" class="new-entry-bar">
         <label for="tool-type-id">Equipment Type</label>
-        <select name="tool-type-id" id="tool-type-id">
+        <select name="equipmentTypeId" id="tool-type-id">
             <c:if test="${not empty equipmentTypes}">
                 <c:forEach var="equipmentType" items="${equipmentTypes}">
                     <option value="${equipmentType.id}">${equipmentType.description}</option>
