@@ -4,6 +4,8 @@ package com.assemble.java.assemblecodebase.controller;
 import com.assemble.java.assemblecodebase.dao.PersonnelDao;
 import com.assemble.java.assemblecodebase.dao.PersonnelDaoImpl;
 import com.assemble.java.assemblecodebase.model.Personnel;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,5 +32,38 @@ public class PersonnelServlet extends HttpServlet {
 
     request.setAttribute("personnel", personnelList);
     getServletContext().getRequestDispatcher("/personnel-manager.jsp").forward(request, response);
+  }
+
+  @Override
+  public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try {
+      int id = Integer.parseInt(request.getPathInfo().substring(1));
+      PersonnelDao personnelDao = new PersonnelDaoImpl();
+      Personnel personnel = personnelDao.retrieve(id);
+
+      Gson gson = new Gson();
+      JsonObject json = gson.fromJson(request.getReader(), JsonObject.class);
+
+      int newCount;
+      String actionString = json.get("action").getAsString();
+      if (actionString.equals("add"))
+        newCount = personnel.getCount() + 1;
+      else if (actionString.equals("remove"))
+        newCount = personnel.getCount() - 1;
+      else {
+        throw new IllegalArgumentException("Invalid action: " + actionString);
+      }
+
+      if (newCount > 0)
+        personnelDao.set(personnel.getDate(), newCount);
+      else
+        personnelDao.delete(personnel.getDate());
+    } catch (IllegalArgumentException e) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      response.getWriter().write(e.getMessage());
+    }
   }
 }

@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface PersonnelDao {
   void set(Date date, int count);
-  int retrieve(Date date);
+  int retrieveCount(Date date);
+  Personnel retrieve(int id);
   void delete(Date date);
   List<Personnel> retrieveAll();
 }

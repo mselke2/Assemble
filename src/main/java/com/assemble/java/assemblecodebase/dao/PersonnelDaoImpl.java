@@ -38,7 +38,7 @@ public class PersonnelDaoImpl implements PersonnelDao {
   }
   
   @Override
-  public int retrieve(Date date) {
+  public int retrieveCount(Date date) {
     
     try {
       Connection connection = MySQLUtility.createConnection();
@@ -59,7 +59,38 @@ public class PersonnelDaoImpl implements PersonnelDao {
       throw new PersonnelDaoException("Failed to retrieve personnel count for date " + date);
     }
   }
-  
+
+  @Override
+  public Personnel retrieve(int id) {
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+      // Prepare a select statement to see if Personnel exists
+      // with this personnelID and execute it
+      String MySQLSelect = "SELECT * FROM personnel WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
+      preparedStatement.setInt(1, id);
+      ResultSet resultSet = preparedStatement.executeQuery();
+
+      // IF personnel exists
+      if(resultSet.isBeforeFirst()) {
+        // Move cursor to the result
+        resultSet.next();
+        // Create a personnel object with the data from the result and return it.
+        Personnel personnel = new Personnel(resultSet.getDate("Date"), resultSet.getInt("Count"));
+        personnel.setId(resultSet.getInt("ID"));
+        return personnel;
+      } else {
+        // ELSE
+        // Throw an PersonnelDaoException with the message "Personnel does not exist."
+        throw new PersonnelDaoException("Personnel does not exists.");
+      }
+
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new PersonnelDaoException(e.getMessage());
+    }
+  }
+
   @Override
   public void delete(Date date) {
   
@@ -95,10 +126,8 @@ public class PersonnelDaoImpl implements PersonnelDao {
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(mySqlSelectAll);
       while (result.next()) {
-        Personnel personnel = new Personnel();
+        Personnel personnel = new Personnel(result.getDate("date"), result.getInt("Count"));
         personnel.setId(result.getInt("ID"));
-        personnel.setDate(result.getDate("date"));
-        personnel.setCount(result.getInt("Count"));
         personnelList.add(personnel);
       }
 
