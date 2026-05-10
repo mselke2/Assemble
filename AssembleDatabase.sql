@@ -508,7 +508,7 @@ BEGIN
         (3, 100);
         
     -- create 3 products
-	INSERT INTO `product` (`Description`, `Duration`, `TargetPersonnelCount`)
+	INSERT INTO `product` (`Description`, `MinutesDuration`, `TargetPersonnelCount`)
     VALUES
 		("steel button", 30, 1),
 		("brass button", 60, 1),
@@ -553,7 +553,7 @@ BEGIN
     (DATE_ADD(currentDate, INTERVAL 1 DAY), 7),
     (DATE_ADD(currentDate, INTERVAL 2 DAY), 6);
     
-    INSERT INTO `job` (`ProductID`, `StartTime`, `ProjectedEndTime`, `ActualEndTime`, `PersonnelCount`, `Line`)
+    INSERT INTO `job` (`ProductID`, `StartTime`, `ProjectedEndTime`, `ActualEndTime`, `PersonnelCount`, `LineNumber`)
     VALUES
     -- Day -2 [DONE]
     (1, TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:30:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:30:00"),  1, 1),
