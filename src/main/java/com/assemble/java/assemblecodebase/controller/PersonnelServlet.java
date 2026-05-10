@@ -97,4 +97,16 @@ public class PersonnelServlet extends HttpServlet {
 
     doGet(request, response);
   }
+
+  @Override
+  protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try{
+      int personnelId = Integer.parseInt(request.getPathInfo().substring(1));
+      PersonnelDao personnelDao = new PersonnelDaoImpl();
+      Personnel personnel = personnelDao.retrieve(personnelId);
+      personnelDao.delete(personnel.getDate());
+    } catch (NumberFormatException | InventoryDaoException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+  }
 }
