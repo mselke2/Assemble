@@ -1,6 +1,7 @@
 package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Equipment;
+import com.assemble.java.assemblecodebase.model.EquipmentType;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 
 import java.sql.*;
@@ -156,6 +157,30 @@ public class EquipmentDaoImpl implements EquipmentDao {
   }
 
   @Override
+  public List<EquipmentType> retrieveTypes() {
+    List<EquipmentType> types = new ArrayList<>();
+
+    try {
+      Connection conn = MySQLUtility.createConnection();
+
+      String mySqlSelectAll = "SELECT * FROM equipmenttype";
+      Statement statement = conn.createStatement();
+      ResultSet result = statement.executeQuery(mySqlSelectAll);
+      while (result.next()) {
+        EquipmentType type = new EquipmentType(result.getInt("ID"), result.getString("Description"));
+        types.add(type);
+      }
+
+      statement.close();
+      conn.close();
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new EquipmentDaoException(e.getMessage());
+    }
+
+    return types;
+  }
+
+  @Override
   public List<Equipment> retrieveAll() {
     List<Equipment> equipmentList = new ArrayList<>();
 
@@ -166,7 +191,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(mySqlSelectAll);
       while (result.next()) {
-        Equipment equipment = new Equipment(result.getInt("ID"), result.getInt("TypeID"), result.getInt("Count"));
+        Equipment equipment = new Equipment(result.getInt("ID"), result.getInt("TypeID"), result.getInt("Status"));
         equipmentList.add(equipment);
       }
 
