@@ -1,3 +1,3 @@
 $(function() {
-  initializeControls("Tools");
+  initializeControls("Equipment");
 })
