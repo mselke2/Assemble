@@ -1,6 +1,9 @@
 package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Equipment;
+import com.assemble.java.assemblecodebase.model.Inventory;
+
+import java.util.List;
 
 public interface EquipmentDao {
   
@@ -8,5 +11,6 @@ public interface EquipmentDao {
   boolean updateEquipment(Equipment equipment);
   int deleteEquipmentById(int id);
   Equipment retrieveById(int id);
+  List<Equipment> retrieveAll();
   
 }
