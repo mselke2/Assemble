@@ -29,10 +29,10 @@ class PersonnelDaoImplTest {
     PersonnelDaoImpl personnelDao = new PersonnelDaoImpl();
     
     assertDoesNotThrow(() -> {
-      assertTrue(personnelDao.retrieve(new Date(2026-1900, 5, 4)) == 10);
-      assertTrue(personnelDao.retrieve(new Date(2026-1900, 5, 5)) == 15);
-      assertTrue(personnelDao.retrieve(new Date(2026-1900, 5, 6)) == 20);
-      assertTrue(personnelDao.retrieve(new Date(2026-1900, 5, 7)) == 9);
+      assertTrue(personnelDao.retrieveCount(new Date(2026-1900, 5, 4)) == 10);
+      assertTrue(personnelDao.retrieveCount(new Date(2026-1900, 5, 5)) == 15);
+      assertTrue(personnelDao.retrieveCount(new Date(2026-1900, 5, 6)) == 20);
+      assertTrue(personnelDao.retrieveCount(new Date(2026-1900, 5, 7)) == 9);
     });
   }
   
@@ -47,10 +47,10 @@ class PersonnelDaoImplTest {
       personnelDao.delete(new Date(2026-1900, 5, 7));
     });
     
-    assertThrows(Exception.class, () -> personnelDao.retrieve(new Date(2026-1900, 5, 4)));
-    assertThrows(Exception.class, () -> personnelDao.retrieve(new Date(2026-1900, 5, 5)));
-    assertThrows(Exception.class, () -> personnelDao.retrieve(new Date(2026-1900, 5, 6)));
-    assertThrows(Exception.class, () -> personnelDao.retrieve(new Date(2026-1900, 5, 7)));
+    assertThrows(Exception.class, () -> personnelDao.retrieveCount(new Date(2026-1900, 5, 4)));
+    assertThrows(Exception.class, () -> personnelDao.retrieveCount(new Date(2026-1900, 5, 5)));
+    assertThrows(Exception.class, () -> personnelDao.retrieveCount(new Date(2026-1900, 5, 6)));
+    assertThrows(Exception.class, () -> personnelDao.retrieveCount(new Date(2026-1900, 5, 7)));
     
   }
 }

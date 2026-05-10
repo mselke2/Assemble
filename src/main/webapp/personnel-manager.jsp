@@ -12,12 +12,8 @@
     <h1>Personnel</h1>
     <form action="Personnel" method="post" class="new-entry-bar">
         <span>
-            Date Range
-            <label for="start-date" class="hidden">Start Date</label>
-            <input type="date" name="start-date" id="start-date">
-            -
-            <label for="end-date" class="hidden">End Date</label>
-            <input type="date" name="end-date" id="end-date">
+            <label for="date">Add Personnel:</label>
+            <input type="date" name="date" id="date">
             <input type="submit" name="submit" value="Submit">
         </span>
     </form>
@@ -35,7 +31,7 @@
                         <button class="count-control add">+</button>
                         <button class="count-control remove">-</button>
                     </td>
-                    <td>${scheduledPersonnel.date.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))}</td>
+                    <td>${scheduledPersonnel.date.toLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))}</td>
                     <td class="resource-count">${scheduledPersonnel.count}</td>
                     <td>
                         <button class="delete-btn">Delete</button>

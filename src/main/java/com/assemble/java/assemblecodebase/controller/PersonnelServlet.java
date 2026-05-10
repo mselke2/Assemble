@@ -1,11 +1,10 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
-import com.assemble.java.assemblecodebase.dao.InventoryDao;
 import com.assemble.java.assemblecodebase.dao.InventoryDaoException;
-import com.assemble.java.assemblecodebase.dao.InventoryDaoImpl;
-import com.assemble.java.assemblecodebase.model.Inventory;
-import com.assemble.java.assemblecodebase.model.InventoryType;
+import com.assemble.java.assemblecodebase.dao.PersonnelDao;
+import com.assemble.java.assemblecodebase.dao.PersonnelDaoImpl;
+import com.assemble.java.assemblecodebase.model.Personnel;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
@@ -15,53 +14,52 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "InventoryServlet", value = "/Inventory/*")
-public class InventoryServlet extends HttpServlet {
+@WebServlet(name = "PersonnelServlet", value = "/Personnel/*")
+public class PersonnelServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    InventoryDao inventoryDao = new InventoryDaoImpl();
+    PersonnelDao personnelDao = new PersonnelDaoImpl();
 
-    List<Inventory> inventory = new ArrayList<>();
-    List<InventoryType> types = new ArrayList<>();
+    List<Personnel> personnelList = new ArrayList<>();
 
     try {
-      inventory = inventoryDao.retrieveAll();
-      types = inventoryDao.retrieveTypes();
+      personnelList = personnelDao.retrieveAll();
     } catch (RuntimeException e) {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
-    request.setAttribute("inventory", inventory);
-    request.setAttribute("inventoryTypes", types);
-    getServletContext().getRequestDispatcher("/inventory-manager.jsp").forward(request, response);
+    request.setAttribute("personnel", personnelList);
+    getServletContext().getRequestDispatcher("/personnel-manager.jsp").forward(request, response);
   }
 
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
       int id = Integer.parseInt(request.getPathInfo().substring(1));
-      InventoryDao inventoryDao = new InventoryDaoImpl();
-      Inventory inventory = inventoryDao.retrieveById(id);
+      PersonnelDao personnelDao = new PersonnelDaoImpl();
+      Personnel personnel = personnelDao.retrieve(id);
 
       Gson gson = new Gson();
       JsonObject json = gson.fromJson(request.getReader(), JsonObject.class);
 
+      int newCount;
       String actionString = json.get("action").getAsString();
       if (actionString.equals("add"))
-        inventory.setCount(inventory.getCount() + 1);
+        newCount = personnel.getCount() + 1;
       else if (actionString.equals("remove"))
-        inventory.setCount(inventory.getCount() - 1);
+        newCount = personnel.getCount() - 1;
       else {
         throw new IllegalArgumentException("Invalid action: " + actionString);
       }
 
-      if (inventory.getCount() > 0)
-        inventoryDao.updateInventory(inventory);
+      if (newCount > 0)
+        personnelDao.set(personnel.getDate(), newCount);
       else
-        inventoryDao.deleteInventoryById(id);
+        personnelDao.delete(personnel.getDate());
     } catch (IllegalArgumentException e) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       response.getWriter().write(e.getMessage());
@@ -73,16 +71,18 @@ public class InventoryServlet extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
-      int typeId;
+      PersonnelDao dao = new PersonnelDaoImpl();
+      Date date;
+
       try {
-        typeId =  Integer.parseInt(request.getParameter("inventoryTypeId"));
+        date = Date.valueOf(request.getParameter("date"));
       } catch (NumberFormatException e) {
-        throw new RuntimeException("Invalid Inventory Type Id");
+        throw new RuntimeException("Invalid Date");
       }
 
-      InventoryDao dao = new InventoryDaoImpl();
-      Inventory inventory = new Inventory(typeId, 1);
-      dao.addInventory(inventory);
+      if (dao.retrieveCount(date) == 0) {
+        dao.set(date, 1);
+      }
     } catch (InventoryDaoException e) {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
@@ -101,9 +101,10 @@ public class InventoryServlet extends HttpServlet {
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try{
-      int inventoryId = Integer.parseInt(request.getPathInfo().substring(1));
-      InventoryDao inventoryDao = new InventoryDaoImpl();
-      inventoryDao.deleteInventoryById(inventoryId);
+      int personnelId = Integer.parseInt(request.getPathInfo().substring(1));
+      PersonnelDao personnelDao = new PersonnelDaoImpl();
+      Personnel personnel = personnelDao.retrieve(personnelId);
+      personnelDao.delete(personnel.getDate());
     } catch (NumberFormatException | InventoryDaoException e) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
