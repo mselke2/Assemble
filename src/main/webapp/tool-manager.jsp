@@ -3,18 +3,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Tools</title>
+    <title>Equipment</title>
     <link rel="stylesheet" href="assets/css/resource-manager.css">
 </head>
 <body>
 <div class="panel">
-    <h1>Tools</h1>
-    <form action="Tools" method="post" class="new-entry-bar">
-        <label for="tool-type-id">Tool Type</label>
-        <select name="tool-type-id" id="tool-type">
-            <c:if test="${not empty toolTypes}">
-                <c:forEach var="toolType" items="${toolTypes}">
-                    <option value="${toolType.id}">${toolType.description}</option>
+    <h1>Equipment</h1>
+    <form action="Equipment" method="post" class="new-entry-bar">
+        <label for="tool-type-id">Equipment Type</label>
+        <select name="tool-type-id" id="tool-type-id">
+            <c:if test="${not empty equipmentTypes}">
+                <c:forEach var="equipmentType" items="${equipmentTypes}">
+                    <option value="${equipmentType.id}">${equipmentType.description}</option>
                 </c:forEach>
             </c:if>
         </select>
@@ -23,19 +23,17 @@
     <table>
         <tr>
             <th></th>
-            <th>Tool Id</th>
-            <th>Quantity</th>
+            <th>Equipment Id</th>
+            <th>Status</th>
             <th></th>
         </tr>
-        <c:if test="${not empty tools}">
-            <c:forEach var="tool" items="${tools}">
-                <tr resource-id="${tool.id}">
+        <c:if test="${not empty equipmentList}">
+            <c:forEach var="equipment" items="${equipmentList}">
+                <tr resource-id="${equipment.id}">
                     <td>
-                        <button class="count-control add">+</button>
-                        <button class="count-control remove">-</button>
                     </td>
-                    <td>${tool.id}</td>
-                    <td class="resource-count">${tool.count}</td>
+                    <td>${equipment.id}</td>
+                    <td class="resource-count">${equipment.status}</td>
                     <td>
                         <button class="delete-btn">Delete</button>
                     </td>
