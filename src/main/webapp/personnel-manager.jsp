@@ -12,12 +12,8 @@
     <h1>Personnel</h1>
     <form action="Personnel" method="post" class="new-entry-bar">
         <span>
-            Date Range
-            <label for="start-date" class="hidden">Start Date</label>
-            <input type="date" name="start-date" id="start-date">
-            -
-            <label for="end-date" class="hidden">End Date</label>
-            <input type="date" name="end-date" id="end-date">
+            <label for="date">Add Personnel:</label>
+            <input type="date" name="date" id="date">
             <input type="submit" name="submit" value="Submit">
         </span>
     </form>

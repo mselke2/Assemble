@@ -1,6 +1,7 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
+import com.assemble.java.assemblecodebase.dao.InventoryDaoException;
 import com.assemble.java.assemblecodebase.dao.PersonnelDao;
 import com.assemble.java.assemblecodebase.dao.PersonnelDaoImpl;
 import com.assemble.java.assemblecodebase.model.Personnel;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,5 +67,34 @@ public class PersonnelServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       response.getWriter().write(e.getMessage());
     }
+  }
+
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try {
+      PersonnelDao dao = new PersonnelDaoImpl();
+      Date date;
+
+      try {
+        date = Date.valueOf(request.getParameter("date"));
+      } catch (NumberFormatException e) {
+        throw new RuntimeException("Invalid Date");
+      }
+
+      if (dao.retrieveCount(date) == 0) {
+        dao.set(date, 1);
+      }
+    } catch (InventoryDaoException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);
+
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    }
+
+    doGet(request, response);
   }
 }

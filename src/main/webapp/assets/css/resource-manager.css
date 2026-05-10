@@ -10,7 +10,8 @@ body {
     }
 
     .new-entry-bar {
-      margin: 1em;
+      display: flex;
+      justify-content: center;
 
       select {
         width: 15em;
