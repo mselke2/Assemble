@@ -72,10 +72,8 @@ public class InventoryServlet extends HttpServlet {
   }
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    int typeId;
-    int count;
-
     try {
+      int typeId;
       try {
         typeId =  Integer.parseInt(request.getParameter("inventoryTypeId"));
       } catch (NumberFormatException e) {
