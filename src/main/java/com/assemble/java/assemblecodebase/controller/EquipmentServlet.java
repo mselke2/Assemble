@@ -65,4 +65,15 @@ public class EquipmentServlet extends HttpServlet {
 
     doGet(request, response);
   }
+
+  @Override
+  protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try{
+      int equipmentId = Integer.parseInt(request.getPathInfo().substring(1));
+      EquipmentDao equipmentDao = new EquipmentDaoImpl();
+      equipmentDao.deleteEquipmentById(equipmentId);
+    } catch (NumberFormatException | EquipmentDaoException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+  }
 }
