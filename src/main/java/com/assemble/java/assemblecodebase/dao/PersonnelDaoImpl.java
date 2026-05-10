@@ -52,7 +52,7 @@ public class PersonnelDaoImpl implements PersonnelDao {
         
         return resultSet.getInt("Count");
       } else {
-        throw new PersonnelDaoException("No personnel record found for date " + date);
+        return 0;
       }
       
     } catch (SQLException | ClassNotFoundException e) {
