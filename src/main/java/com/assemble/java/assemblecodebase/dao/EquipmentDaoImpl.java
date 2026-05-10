@@ -1,7 +1,6 @@
 package com.assemble.java.assemblecodebase.dao;
 
 import com.assemble.java.assemblecodebase.model.Equipment;
-import com.assemble.java.assemblecodebase.model.Inventory;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 
 import java.sql.Connection;
@@ -9,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class EquipmentDaoImpl implements EqipmentDao{
+public class EquipmentDaoImpl implements EquipmentDao {
   
   
   @Override
