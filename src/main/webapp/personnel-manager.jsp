@@ -35,7 +35,7 @@
                         <button class="count-control add">+</button>
                         <button class="count-control remove">-</button>
                     </td>
-                    <td>${scheduledPersonnel.date.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))}</td>
+                    <td>${scheduledPersonnel.date.toLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))}</td>
                     <td class="resource-count">${scheduledPersonnel.count}</td>
                     <td>
                         <button class="delete-btn">Delete</button>
