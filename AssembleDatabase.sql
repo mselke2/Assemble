@@ -28,7 +28,7 @@ CREATE TABLE `equipment` (
   `Status` tinyint DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `equipment_typeID_idx` (`TypeID`),
-  CONSTRAINT `equipment_TypeID` FOREIGN KEY (`TypeID`) REFERENCES `equipmenttype` (`ID`)
+  CONSTRAINT `equipment_TypeID` FOREIGN KEY (`TypeID`) REFERENCES `equipmenttype` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -79,7 +79,7 @@ CREATE TABLE `inventory` (
   `Count` mediumint unsigned NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `inventory_typeId_idx` (`TypeID`),
-  CONSTRAINT `inventory_TypeID` FOREIGN KEY (`TypeID`) REFERENCES `inventorytype` (`ID`)
+  CONSTRAINT `inventory_TypeID` FOREIGN KEY (`TypeID`) REFERENCES `inventorytype` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -134,7 +134,7 @@ CREATE TABLE `job` (
   `LineNumber` tinyint NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `job_productId_idx` (`ProductID`),
-  CONSTRAINT `job_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`)
+  CONSTRAINT `job_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -160,8 +160,8 @@ CREATE TABLE `jobequipment` (
   `EquipmentID` smallint unsigned NOT NULL,
   PRIMARY KEY (`JobID`,`EquipmentID`),
   KEY `jobequipment_EquipmentID_idx` (`EquipmentID`),
-  CONSTRAINT `jobequipment_EquipmentID` FOREIGN KEY (`EquipmentID`) REFERENCES `equipment` (`ID`),
-  CONSTRAINT `jobequipment_JobID` FOREIGN KEY (`JobID`) REFERENCES `job` (`ID`)
+  CONSTRAINT `jobequipment_EquipmentID` FOREIGN KEY (`EquipmentID`) REFERENCES `equipment` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `jobequipment_JobID` FOREIGN KEY (`JobID`) REFERENCES `job` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -188,8 +188,8 @@ CREATE TABLE `jobinventory` (
   `InventoryUsedCount` tinyint unsigned NOT NULL,
   PRIMARY KEY (`JobID`,`InventoryID`),
   KEY `jobinventory_InventoryID_idx` (`InventoryID`),
-  CONSTRAINT `jobinventory_InventoryID` FOREIGN KEY (`InventoryID`) REFERENCES `inventory` (`ID`),
-  CONSTRAINT `jobinventory_JobID` FOREIGN KEY (`JobID`) REFERENCES `job` (`ID`)
+  CONSTRAINT `jobinventory_InventoryID` FOREIGN KEY (`InventoryID`) REFERENCES `inventory` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `jobinventory_JobID` FOREIGN KEY (`JobID`) REFERENCES `job` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -267,8 +267,8 @@ CREATE TABLE `productequipment` (
   `RequiredEquipmentTypeCount` tinyint unsigned DEFAULT NULL,
   PRIMARY KEY (`ProductID`,`EquipmentTypeID`),
   KEY `productequipment_EquipmentTypeID_idx` (`EquipmentTypeID`),
-  CONSTRAINT `productequipment_EquipmentTypeID` FOREIGN KEY (`EquipmentTypeID`) REFERENCES `equipmenttype` (`ID`),
-  CONSTRAINT `productequipment_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`)
+  CONSTRAINT `productequipment_EquipmentTypeID` FOREIGN KEY (`EquipmentTypeID`) REFERENCES `equipmenttype` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `productequipment_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -295,8 +295,8 @@ CREATE TABLE `productinventory` (
   `RequiredInventoryCount` tinyint unsigned NOT NULL,
   PRIMARY KEY (`ProductID`,`InventoryTypeID`),
   KEY `productinventory_InventoryID_idx` (`InventoryTypeID`),
-  CONSTRAINT `productinventory_InventoryID` FOREIGN KEY (`InventoryTypeID`) REFERENCES `inventorytype` (`ID`),
-  CONSTRAINT `productinventory_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`)
+  CONSTRAINT `productinventory_InventoryID` FOREIGN KEY (`InventoryTypeID`) REFERENCES `inventorytype` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `productinventory_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -324,7 +324,7 @@ CREATE TABLE `session` (
   `LastUsed` datetime DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `session_UserID_idx` (`UserID`),
-  CONSTRAINT `session_UserID` FOREIGN KEY (`UserID`) REFERENCES `user` (`ID`)
+  CONSTRAINT `session_UserID` FOREIGN KEY (`UserID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -658,4 +658,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-06 14:35:29
+-- Dump completed on 2026-05-09 18:49:34
