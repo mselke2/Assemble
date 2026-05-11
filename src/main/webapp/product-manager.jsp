@@ -10,9 +10,6 @@
     <h1>Product</h1>
     <form action="Product" method="post" class="new-entry-bar">
 
-        <label for="id" class="productLabel">ID</label>
-        <input type="text" id="id" name="id" class="productInput"><br>
-
         <label for="description" class="productLabel">Description</label>
         <input type="text" class="productInput" name="description" id="description"><br>
 
@@ -20,7 +17,7 @@
         <input type="text" name="duration" class="productInput" id="duration"><br>
 
         <label for="personnel-count" class="productLabel">Personnel Count</label>
-        <input type="text" name="personnel-count" class="productInput" id="personnel-count"><br><br>
+        <input type="text" name="personnelCount" class="productInput" id="personnel-count"><br><br>
 
         <input class="submit" type="submit" name="submit" value="Submit">
 
