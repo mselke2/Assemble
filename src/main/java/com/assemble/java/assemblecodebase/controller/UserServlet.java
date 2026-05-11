@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "UserServlet", value = "/User/*")
+@WebServlet(name = "UserServlet", value = "/User")
 public class UserServlet extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -65,6 +65,9 @@ public class UserServlet extends HttpServlet {
 
       User user = new User(username, permissionId, fName, lName, password);
       dao.addUser(user);
+      
+      
+      
     } catch (UserDaoException e) {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       response.getWriter().write(e.getMessage());
@@ -88,5 +91,24 @@ public class UserServlet extends HttpServlet {
     } catch (NumberFormatException | UserDaoException e) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
+  }
+  
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  
+    User[] users;
+    
+    try {
+      UserDaoImpl dao = new UserDaoImpl();
+      users = dao.retrieveAll();
+      
+      request.setAttribute("users", users);
+      
+      // Send the response.
+      getServletContext().getRequestDispatcher("/user-manager.jsp").forward(request, response);
+    } catch (UserDaoException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      response.getWriter().write(e.getMessage());
+    }
+  
   }
 }

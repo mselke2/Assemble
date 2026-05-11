@@ -165,7 +165,7 @@ public class UserDaoImpl implements UserDao {
   }
   
   @Override
-  public int retrieve(String username, String password) {
+  public int retrieveWithLogin(String username, String password) {
 
     try {
       Connection conn = MySQLUtility.createConnection();
@@ -230,5 +230,97 @@ public class UserDaoImpl implements UserDao {
     }
 
     return permissions;
+  }
+  
+  public User[] retrieveAll() {
+    
+    try {
+      Connection connection = MySQLUtility.createConnection();
+      
+      String mySqlSelectAll = "SELECT * FROM user";
+      PreparedStatement statement = connection.prepareStatement(mySqlSelectAll, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+      ResultSet results = statement.executeQuery();
+      User[] users;
+      
+      if (results.isBeforeFirst()) {
+        results.last();
+        int records =  results.getRow();
+        users = new User[records];
+        results.beforeFirst();
+        
+        for (int i = 0; i < records; i++) {
+          results.next();
+          
+          int id = results.getInt("ID");
+          String username = results.getString("Username");
+          String firstName = results.getString("FirstName");
+          String lastName = results.getString("LastName");
+          int permissionId = results.getInt("PermissionID");
+          
+          User user = new User();
+          user.setId(id);
+          user.setUsername(username);
+          user.setFirstName(firstName);
+          user.setLastName(lastName);
+          user.setPermissionId(permissionId);
+          
+          users[i] = user;
+        }
+        
+        results.close();
+        statement.close();
+        connection.close();
+        
+        return users;
+      } else {
+        throw new UserDaoException("Users do not exist.");
+      }
+      
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new UserDaoException("Error retrieving user list. " + e.getMessage());
+    }
+  }
+  
+  public User retrieveByUsername(String userToGrab) {
+    
+    try {
+      Connection connection =  MySQLUtility.createConnection();
+      String mySqlSelectById = "SELECT * FROM user WHERE Username = ?";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectById);
+      preparedStatement.setString(1, userToGrab);
+      ResultSet results = preparedStatement.executeQuery();
+      
+      if (results.isBeforeFirst()) {
+        results.next();
+        
+        int userId = results.getInt("ID");
+        String username = results.getString("Username");
+        String firstName = results.getString("FirstName");
+        String lastName = results.getString("LastName");
+        int permissionId = results.getInt("PermissionID");
+        String passwordHash = results.getString("passwordHash");
+        
+        User user = new User();
+        user.setId(userId);
+        user.setUsername(username);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPermissionId(permissionId);
+        user.setPasswordHash(passwordHash);
+        
+        results.close();
+        preparedStatement.close();
+        connection.close();
+        
+        return user;
+        
+      } else  {
+        throw new UserDaoException("User does not exist.");
+      }
+      
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new UserDaoException("Error retrieving user." + e.getMessage());
+    }
+    
   }
 }
