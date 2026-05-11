@@ -3,7 +3,6 @@
 <html>
 <head>
     <title>Product</title>
-    <link rel="stylesheet" href="assets/css/resource-manager.css">
     <link rel="stylesheet" href="assets/css/product.css">
 </head>
 <body>
