@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @WebServlet(name = "UserServlet", value = "/User")
 public class UserServlet extends HttpServlet {
@@ -95,20 +96,43 @@ public class UserServlet extends HttpServlet {
   
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
   
-    User[] users;
-    
-    try {
-      UserDaoImpl dao = new UserDaoImpl();
-      users = dao.retrieveAll();
+    if (request.getParameter("username") == null) {
+      User[] users;
       
-      request.setAttribute("users", users);
+      try {
+        UserDaoImpl dao = new UserDaoImpl();
+        users = dao.retrieveAll();
+        
+        request.setAttribute("users", users);
+        
+        // Send the response.
+        getServletContext().getRequestDispatcher("/user-manager.jsp").forward(request, response);
+      } catch (UserDaoException e) {
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        response.getWriter().write(e.getMessage());
+      }
+    } else {
       
-      // Send the response.
-      getServletContext().getRequestDispatcher("/user-manager.jsp").forward(request, response);
-    } catch (UserDaoException e) {
-      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-      response.getWriter().write(e.getMessage());
+      try  {
+        UserDaoImpl dao = new UserDaoImpl();
+        
+        User user = dao.retrieveByUsername((String) request.getParameter("username"));
+        
+        response.setContentType("application/json");
+        String json = String.format("{\"id\":%d,\"username\":\"%s\",\"permissionId\":%d,\"fName\":\"%s\",\"lName\":\"%s\"}",
+            user.getId(), user.getUsername(), user.getPermissionId(), user.getFirstName(), user.getLastName());
+        
+        // Send the response
+        PrintWriter out = response.getWriter();
+        out.write(json);
+        out.flush();
+        
+      }  catch (UserDaoException e) {
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        response.getWriter().write(e.getMessage());
+      }
     }
-  
+    
+    
   }
 }

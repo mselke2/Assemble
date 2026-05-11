@@ -1,21 +1,29 @@
-// $(document).ready(function () {
-//   $.ajax(
-//     "User",
-//     {
-//       method: "GET",
-//       dataType: "json",
-//       success: function (result) {
-//
-//         foreach(result.data, function (result) {
-//
-//         });
-//
-//         $("username").value(result["username"]);
-//         $("fName").value(result["fName"]);
-//
-//
-//       }
-//     }
-//
-//   );
-// })
+$(document).ready(function () {
+  
+  // Set the click action of usernames
+  $(".username").on("click", function (event) {
+  
+    let value = $(event.target).text();
+    
+    $.ajax({
+      type: "GET",
+      url: "User",
+      dataType: "json",
+      data: {
+        username: value
+      },
+      
+      success: function (data) {
+        
+        $("#username").val(data["username"]);
+        $("#fName").val(data["fName"]);
+        $("#lName").val(data["lName"]);
+        $("#type").val(data["permissionId"]);
+        
+      }
+    });
+  
+  
+  });
+  
+});

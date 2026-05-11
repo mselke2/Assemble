@@ -59,10 +59,14 @@
 
       <c:forEach var="user" items="${users}">
         <tr class="userRow">
-          <td class="tableData">${user.username}</td>
+          <td class="tableData username">${user.username}</td>
           <td class="tableData">${user.firstName}</td>
           <td class="tableData">${user.lastName}</td>
-          <td class="tableData">${user.permissionId}</td>
+          <td class="tableData">
+            <c:if test="${user.permissionId == 1}">Administrator</c:if>
+            <c:if test="${user.permissionId == 2}">Editor</c:if>
+            <c:if test="${user.permissionId == 3}">Viewer</c:if>
+          </td>
         </tr>
       </c:forEach>
 
