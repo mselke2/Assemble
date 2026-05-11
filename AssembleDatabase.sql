@@ -131,7 +131,7 @@ CREATE TABLE `job` (
   `ProjectedEndTime` datetime NOT NULL,
   `ActualEndTime` datetime DEFAULT NULL,
   `PersonnelCount` tinyint NOT NULL,
-  `Line` tinyint DEFAULT NULL,
+  `LineNumber` tinyint NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `job_productId_idx` (`ProductID`),
   CONSTRAINT `job_ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -144,7 +144,7 @@ CREATE TABLE `job` (
 
 LOCK TABLES `job` WRITE;
 /*!40000 ALTER TABLE `job` DISABLE KEYS */;
-INSERT INTO `job` VALUES (1,1,'2026-05-04 05:00:00','2026-05-04 05:30:00','2026-05-04 05:30:00',1,1),(2,3,'2026-05-04 05:15:00','2026-05-04 07:00:00','2026-05-04 07:00:00',2,2),(3,1,'2026-05-04 05:35:00','2026-05-04 06:05:00','2026-05-04 06:10:00',1,1),(4,2,'2026-05-05 05:00:00','2026-05-05 06:00:00','2026-05-05 06:03:00',1,1),(5,2,'2026-05-05 06:05:00','2026-05-05 07:05:00','2026-05-05 07:05:00',1,1),(6,3,'2026-05-05 05:30:00','2026-05-05 07:05:00','2026-05-05 07:10:00',2,2),(7,4,'2026-05-06 05:00:00','2026-05-06 06:30:00','2026-05-06 06:33:00',2,1),(8,4,'2026-05-06 06:35:00','2026-05-06 08:05:00','2026-05-06 08:08:00',2,1),(9,4,'2026-05-06 08:10:00','2026-05-06 09:40:00',NULL,2,1),(10,2,'2026-05-07 06:00:00','2026-05-07 07:00:00',NULL,1,1),(11,4,'2026-05-07 11:00:00','2026-05-07 12:30:00',NULL,2,2),(12,1,'2026-05-07 16:00:00','2026-05-07 16:30:00',NULL,1,1),(13,1,'2026-05-08 06:00:00','2026-05-08 06:30:00',NULL,1,1),(14,1,'2026-05-08 11:00:00','2026-05-08 11:30:00',NULL,1,1),(15,1,'2026-05-08 16:00:00','2026-05-08 16:30:00',NULL,1,1);
+INSERT INTO `job` VALUES (1,1,'2026-05-09 05:00:00','2026-05-09 05:30:00','2026-05-09 05:30:00',1,1),(2,3,'2026-05-09 05:15:00','2026-05-09 07:00:00','2026-05-09 07:00:00',2,2),(3,1,'2026-05-09 05:35:00','2026-05-09 06:05:00','2026-05-09 06:10:00',1,1),(4,2,'2026-05-10 05:00:00','2026-05-10 06:00:00','2026-05-10 06:03:00',1,1),(5,2,'2026-05-10 06:05:00','2026-05-10 07:05:00','2026-05-10 07:05:00',1,1),(6,3,'2026-05-10 05:30:00','2026-05-10 07:05:00','2026-05-10 07:10:00',2,2),(7,4,'2026-05-11 05:00:00','2026-05-11 06:30:00','2026-05-11 06:33:00',2,1),(8,4,'2026-05-11 06:35:00','2026-05-11 08:05:00','2026-05-11 08:08:00',2,1),(9,4,'2026-05-11 08:10:00','2026-05-11 09:40:00',NULL,2,1),(10,2,'2026-05-12 06:00:00','2026-05-12 07:00:00',NULL,1,1),(11,4,'2026-05-12 11:00:00','2026-05-12 12:30:00',NULL,2,2),(12,1,'2026-05-12 16:00:00','2026-05-12 16:30:00',NULL,1,1),(13,1,'2026-05-13 06:00:00','2026-05-13 06:30:00',NULL,1,1),(14,1,'2026-05-13 11:00:00','2026-05-13 11:30:00',NULL,1,1),(15,1,'2026-05-13 16:00:00','2026-05-13 16:30:00',NULL,1,1);
 /*!40000 ALTER TABLE `job` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -224,7 +224,7 @@ CREATE TABLE `personnel` (
 
 LOCK TABLES `personnel` WRITE;
 /*!40000 ALTER TABLE `personnel` DISABLE KEYS */;
-INSERT INTO `personnel` VALUES (1,'2026-05-04',5),(2,'2026-05-05',6),(3,'2026-05-06',4),(4,'2026-05-07',7),(5,'2026-05-08',6);
+INSERT INTO `personnel` VALUES (1,'2026-05-09',5),(2,'2026-05-10',6),(3,'2026-05-11',4),(4,'2026-05-12',7),(5,'2026-05-13',6);
 /*!40000 ALTER TABLE `personnel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -238,7 +238,7 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `ID` smallint unsigned NOT NULL AUTO_INCREMENT,
   `Description` varchar(50) NOT NULL,
-  `Duration` smallint NOT NULL,
+  `MinutesDuration` smallint unsigned NOT NULL,
   `TargetPersonnelCount` tinyint unsigned NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -319,13 +319,13 @@ DROP TABLE IF EXISTS `session`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `session` (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
-  `LoginToken` char(64) NOT NULL,
+  `SessionID` char(64) NOT NULL,
   `UserID` smallint unsigned NOT NULL,
   `LastUsed` datetime DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `session_UserID_idx` (`UserID`),
   CONSTRAINT `session_UserID` FOREIGN KEY (`UserID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -334,6 +334,7 @@ CREATE TABLE `session` (
 
 LOCK TABLES `session` WRITE;
 /*!40000 ALTER TABLE `session` DISABLE KEYS */;
+INSERT INTO `session` VALUES (1,'h{D8-ebcc)QfjPY}He66e3W6QntA}HuVcjksB]rJHo(GWSQS_7Nvf}36eZCpojx-',1,'2026-05-11 12:41:18');
 /*!40000 ALTER TABLE `session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -508,7 +509,7 @@ BEGIN
         (3, 100);
         
     -- create 3 products
-	INSERT INTO `product` (`Description`, `Duration`, `TargetPersonnelCount`)
+	INSERT INTO `product` (`Description`, `MinutesDuration`, `TargetPersonnelCount`)
     VALUES
 		("steel button", 30, 1),
 		("brass button", 60, 1),
@@ -553,7 +554,7 @@ BEGIN
     (DATE_ADD(currentDate, INTERVAL 1 DAY), 7),
     (DATE_ADD(currentDate, INTERVAL 2 DAY), 6);
     
-    INSERT INTO `job` (`ProductID`, `StartTime`, `ProjectedEndTime`, `ActualEndTime`, `PersonnelCount`, `Line`)
+    INSERT INTO `job` (`ProductID`, `StartTime`, `ProjectedEndTime`, `ActualEndTime`, `PersonnelCount`, `LineNumber`)
     VALUES
     -- Day -2 [DONE]
     (1, TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:00:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:30:00"), TIMESTAMP(DATE_ADD(currentDate, INTERVAL -2 DAY), "5:30:00"),  1, 1),
@@ -658,4 +659,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-09 18:49:34
+-- Dump completed on 2026-05-11 14:29:56
