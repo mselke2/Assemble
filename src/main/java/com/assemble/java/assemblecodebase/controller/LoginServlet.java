@@ -83,7 +83,7 @@ public class LoginServlet extends HttpServlet {
     response.getWriter().write(jsonObject.toString());
     response.addHeader("success", jsonObject.toString());
 
-    getServletContext().getRequestDispatcher("/scheduler.jsp").forward(request, response);
+    getServletContext().getRequestDispatcher("/calendar.jsp").forward(request, response);
     
   }
   

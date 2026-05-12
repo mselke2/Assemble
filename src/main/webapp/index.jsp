@@ -6,6 +6,6 @@
     <title></title>
 </head>
 <body>
-<c:redirect url="scheduler.jsp"/>
+<c:redirect url="calendar.jsp"/>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.assemble.java.assemblecodebase;
+package com.assemble.java.assemblecodebase.filter;
 
 import com.assemble.java.assemblecodebase.dao.SessionDaoImpl;
 import jakarta.servlet.*;
@@ -6,7 +6,6 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.annotation.WebInitParam;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
