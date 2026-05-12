@@ -22,7 +22,7 @@
     <label for="username">Username:</label>
     <input class="userFormInput" type="text" id="username" name="username"/><br>
 
-    <label for="password">Password:</label>
+    <label for="password">Password: (Leave blank to keep old password)</label>
     <input class="userFormInput" type="password" id="password" name="password" /><br>
 
     <label for="password-repeat">Confirm Password:</label>
