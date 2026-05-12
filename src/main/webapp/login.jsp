@@ -23,15 +23,7 @@
         <input type="text" name="username" id="username">
         <label for="password">Password</label>
         <input type="password" name="password" id="password">
-        <% if (response.getHeader("success") != null && !response.getHeader("success").isEmpty()) {
-            Gson gson = new Gson();
-            JsonObject jsonObject = new Gson().fromJson(response.getHeader("success"), JsonObject.class);
-
-
-            if (!jsonObject.get("success").getAsBoolean()) {
-        %>
-            <label><%= jsonObject.get("error") %></label>
-        <% } } %>
+        <h2 style="color: ${color}">${message}</h2>
         <input type="submit" name="submit" value="Submit">
     </form>
 </div>

@@ -34,10 +34,7 @@ public class LoginServlet extends HttpServlet {
     // Get password from client
       String password = StringEscapeUtils.escapeHtml4(request.getParameter("password"));
     // Validate and sanitize username and password.
-
-    JsonObject jsonObject = new JsonObject();
-
-
+    
     // Create UserDAO object
     UserDaoImpl userDao = new UserDaoImpl();
     // Run retrieve() and pass in username and password
@@ -46,9 +43,11 @@ public class LoginServlet extends HttpServlet {
       userID = userDao.retrieveWithLogin(username, password);
     } catch (UserDaoException e) {
 
-      // return success: false as JSON with an error message back to the client.
-      jsonObject.addProperty("success", false);
-      jsonObject.addProperty("error", e.getMessage());
+      // return failure
+      request.setAttribute("message", e.getMessage());
+      request.setAttribute("color", "red");
+      
+      getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
     }
 
 
@@ -67,23 +66,24 @@ public class LoginServlet extends HttpServlet {
         loginTokenCookie.setMaxAge(60 * 60 * 24);
         // Add the cookie to the response
         response.addCookie(loginTokenCookie);
-        // Return success: true as JSON
-        jsonObject.addProperty("success", true);
-        jsonObject.addProperty("error", (String) null);
+        // Return success
+        request.setAttribute("message", "success");
+        request.setAttribute("color", "green");
+        
+        getServletContext().getRequestDispatcher("/calendar.jsp").forward(request, response);
+        
       } catch (Exception e) {
-        // ELSE return success: false with error message from exception.
-        jsonObject.addProperty("success", false);
-        jsonObject.addProperty("error", e.getMessage());
+        // ELSE return failure
+        request.setAttribute("message", e.getMessage());
+        request.setAttribute("color", "red");
+        
+        getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
 
       } // ENDIF
 
     }// ENDIF
-
-    response.setContentType("text/plain");
-    response.getWriter().write(jsonObject.toString());
-    response.addHeader("success", jsonObject.toString());
-
-    getServletContext().getRequestDispatcher("/calendar.jsp").forward(request, response);
+    
+    
     
   }
   
