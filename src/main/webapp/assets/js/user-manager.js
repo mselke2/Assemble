@@ -15,6 +15,8 @@ $(document).ready(function () {
       
       success: function (data) {
         
+        $("#formPanel").css("display", "block");
+        
         $("#username").val(data["username"]);
         $("#fName").val(data["fName"]);
         $("#lName").val(data["lName"]);

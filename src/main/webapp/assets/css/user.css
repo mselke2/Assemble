@@ -1,5 +1,10 @@
 body {
 
+
+    #formPanel {
+        display: none;
+    }
+
     .panel {
         border: 1px solid black;
         width: 55%;
@@ -23,16 +28,31 @@ body {
             }
         }
 
+        #tablePanel {
+            margin-top: 5rem;
+        }
+
         .userTable {
+            display: inline;
             width: 70%;
             margin: 0 auto;
+            .username {
+                cursor: pointer;
+            }
 
             th,
             td {
-                width: 6em;
+                width: 15em;
                 text-align: center;
             }
+
+            tbody {
+                margin: 0 auto;
+            }
+
         }
+
+
 
     }
 }

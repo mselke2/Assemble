@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/user.css"/>
 </head>
 <body>
-<div class="panel">
+<div class="panel" id="formPanel">
 
   <h1>Edit User</h1>
 
@@ -50,12 +50,12 @@
 
 <c:if test="${not empty users}">
 
-  <div class="panel">
+  <div class="panel" id="tablePanel">
     <h2>Existing Users</h2>
 
     <table class="userTable">
       <tr class="headerRow">
-        <th class="tableHeader">Username</th>
+        <th class="tableHeader">Username (Click to edit user)</th>
         <th class="tableHeader">First Name</th>
         <th class="tableHeader">Last Name</th>
         <th class="tableHeader">Permission</th>
