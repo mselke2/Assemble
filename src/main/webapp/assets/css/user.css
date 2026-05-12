@@ -1,0 +1,38 @@
+body {
+
+    .panel {
+        border: 1px solid black;
+        width: 55%;
+        margin: 0 auto;
+        position: relative;
+        top: 4rem;
+        padding: 2rem;
+        text-align: center;
+        line-height: 1.8rem;
+
+        .userForm {
+
+            .userFormInput {
+                position: absolute;
+                right: 5rem;
+            }
+
+            label {
+                position: absolute;
+                left: 5rem;
+            }
+        }
+
+        .userTable {
+            width: 70%;
+            margin: 0 auto;
+
+            th,
+            td {
+                width: 6em;
+                text-align: center;
+            }
+        }
+
+    }
+}

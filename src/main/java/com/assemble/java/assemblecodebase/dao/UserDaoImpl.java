@@ -89,34 +89,49 @@ public class UserDaoImpl implements UserDao {
   }
   
   @Override
-  public void updateUser(User user, String oldPasswordHash) {
+  public void updateUser(String username, User user) {
     try {
       // Get a connection to the database
       Connection conn = MySQLUtility.createConnection();
       
       // Prepare a select statement to see if a user exists
       // with this username and execute it.
-      String mySqlSelectExists = "SELECT * FROM user WHERE username = ? AND passwordHash = ?";
+      String mySqlSelectExists = "SELECT * FROM user WHERE username = ?";
       PreparedStatement preparedStatement = conn.prepareStatement(mySqlSelectExists);
-      preparedStatement.setString(1, user.getUsername());
-      preparedStatement.setString(2, oldPasswordHash);
+      preparedStatement.setString(1, username);
       ResultSet results = preparedStatement.executeQuery();
       
       // IF a user exists for this username
       if (results.isBeforeFirst()) {
         // Salt the new password with the userID
         results.next();
-        String passwordIn =  user.getPasswordHash();
-        String saltedPassword = passwordIn + results.getInt("ID");
-        String passwordOut = DigestUtils.sha256Hex(saltedPassword);
-        // Re-hash the password with the new salt.
-        // Prepare an update statement to update this user in the database and execute it.
-        String mySqlUpdate = "UPDATE user SET username = ?, passwordHash = ? WHERE username = ?";
-        preparedStatement = conn.prepareStatement(mySqlUpdate);
-        preparedStatement.setString(1, user.getUsername());
-        preparedStatement.setString(2, passwordOut);
-        preparedStatement.setString(3, user.getUsername());
-        preparedStatement.executeUpdate();
+        
+        if(user.getPasswordHash() != null) {
+          String passwordIn = user.getPasswordHash();
+          String saltedPassword = passwordIn + results.getInt("ID");
+          String passwordOut = DigestUtils.sha256Hex(saltedPassword);
+          // Re-hash the password with the new salt.
+          // Prepare an update statement to update this user in the database and execute it.
+          String mySqlUpdate = "UPDATE user SET username = ?, PermissionID = ?, FirstName = ?, LastName = ?, passwordHash = ? WHERE username = ?";
+          preparedStatement = conn.prepareStatement(mySqlUpdate);
+          preparedStatement.setString(1, user.getUsername());
+          preparedStatement.setInt(2, user.getPermissionId());
+          preparedStatement.setString(3, user.getFirstName());
+          preparedStatement.setString(4, user.getLastName());
+          preparedStatement.setString(5, passwordOut);
+          preparedStatement.setString(6, username);
+          preparedStatement.executeUpdate();
+        } else {
+          String mySqlUpdate = "UPDATE user SET Username = ?, PermissionID = ?, FirstName = ?, LastName = ? WHERE username = ?";
+          preparedStatement = conn.prepareStatement(mySqlUpdate);
+          preparedStatement.setString(1, user.getUsername());
+          preparedStatement.setInt(2, user.getPermissionId());
+          preparedStatement.setString(3, user.getFirstName());
+          preparedStatement.setString(4, user.getLastName());
+          preparedStatement.setString(5, username);
+          preparedStatement.executeUpdate();
+          
+        }
         
       } else {
         // ELSE
@@ -165,7 +180,7 @@ public class UserDaoImpl implements UserDao {
   }
   
   @Override
-  public int retrieve(String username, String password) {
+  public int retrieveWithLogin(String username, String password) {
 
     try {
       Connection conn = MySQLUtility.createConnection();
@@ -230,5 +245,97 @@ public class UserDaoImpl implements UserDao {
     }
 
     return permissions;
+  }
+  
+  public User[] retrieveAll() {
+    
+    try {
+      Connection connection = MySQLUtility.createConnection();
+      
+      String mySqlSelectAll = "SELECT * FROM user";
+      PreparedStatement statement = connection.prepareStatement(mySqlSelectAll, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+      ResultSet results = statement.executeQuery();
+      User[] users;
+      
+      if (results.isBeforeFirst()) {
+        results.last();
+        int records =  results.getRow();
+        users = new User[records];
+        results.beforeFirst();
+        
+        for (int i = 0; i < records; i++) {
+          results.next();
+          
+          int id = results.getInt("ID");
+          String username = results.getString("Username");
+          String firstName = results.getString("FirstName");
+          String lastName = results.getString("LastName");
+          int permissionId = results.getInt("PermissionID");
+          
+          User user = new User();
+          user.setId(id);
+          user.setUsername(username);
+          user.setFirstName(firstName);
+          user.setLastName(lastName);
+          user.setPermissionId(permissionId);
+          
+          users[i] = user;
+        }
+        
+        results.close();
+        statement.close();
+        connection.close();
+        
+        return users;
+      } else {
+        throw new UserDaoException("Users do not exist.");
+      }
+      
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new UserDaoException("Error retrieving user list. " + e.getMessage());
+    }
+  }
+  
+  public User retrieveByUsername(String userToGrab) {
+    
+    try {
+      Connection connection =  MySQLUtility.createConnection();
+      String mySqlSelectById = "SELECT * FROM user WHERE Username = ?";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectById);
+      preparedStatement.setString(1, userToGrab);
+      ResultSet results = preparedStatement.executeQuery();
+      
+      if (results.isBeforeFirst()) {
+        results.next();
+        
+        int userId = results.getInt("ID");
+        String username = results.getString("Username");
+        String firstName = results.getString("FirstName");
+        String lastName = results.getString("LastName");
+        int permissionId = results.getInt("PermissionID");
+        String passwordHash = results.getString("passwordHash");
+        
+        User user = new User();
+        user.setId(userId);
+        user.setUsername(username);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPermissionId(permissionId);
+        user.setPasswordHash(passwordHash);
+        
+        results.close();
+        preparedStatement.close();
+        connection.close();
+        
+        return user;
+        
+      } else  {
+        throw new UserDaoException("User does not exist.");
+      }
+      
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new UserDaoException("Error retrieving user." + e.getMessage());
+    }
+    
   }
 }

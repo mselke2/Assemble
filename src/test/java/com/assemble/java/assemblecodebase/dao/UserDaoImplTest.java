@@ -44,8 +44,6 @@ class UserDaoImplTest {
   
   @Test
   void updateUser() {
-    
-    String testPass = "password";
     String newPassword = "passwordUpdated";
     
     User user1 = new User("Test1", 1, "Test", "One", newPassword);
@@ -59,12 +57,12 @@ class UserDaoImplTest {
     
     assertDoesNotThrow(() -> {
       
-      userDao.updateUser(user1, DigestUtils.sha256Hex(testPass + "1"));
-      userDao.updateUser(user2, DigestUtils.sha256Hex(testPass + "2"));
-      userDao.updateUser(user3, DigestUtils.sha256Hex(testPass + "3"));
-      userDao.updateUser(user4, DigestUtils.sha256Hex(testPass + "4"));
-      userDao.updateUser(user5, DigestUtils.sha256Hex(testPass + "5"));
-      userDao.updateUser(user6, DigestUtils.sha256Hex(testPass + "6"));
+      userDao.updateUser("Test1", user1);
+      userDao.updateUser("Test2",user2);
+      userDao.updateUser("Test3",user3);
+      userDao.updateUser("Test4",user4);
+      userDao.updateUser("Test5",user5);
+      userDao.updateUser("Test6",user6);
     
     });
     
@@ -88,23 +86,23 @@ class UserDaoImplTest {
   }
   
   @Test
-  void retrieve() {
+  void retrieveWithLogin() {
     UserDaoImpl userDao = new UserDaoImpl();
     String password = "passwordUpdated";
     assertDoesNotThrow(() -> {
-      assertEquals(1, userDao.retrieve("Test1", password));
-      assertEquals(2, userDao.retrieve("Test2", password));
-      assertEquals(3, userDao.retrieve("Test3", password));
-      assertEquals(4, userDao.retrieve("Test4", password));
-      assertEquals(5, userDao.retrieve("Test5", password));
-      assertEquals(6, userDao.retrieve("Test6", password));
+      assertEquals(1, userDao.retrieveWithLogin("Test1", password));
+      assertEquals(2, userDao.retrieveWithLogin("Test2", password));
+      assertEquals(3, userDao.retrieveWithLogin("Test3", password));
+      assertEquals(4, userDao.retrieveWithLogin("Test4", password));
+      assertEquals(5, userDao.retrieveWithLogin("Test5", password));
+      assertEquals(6, userDao.retrieveWithLogin("Test6", password));
       
-      assertThrows(Exception.class, () -> userDao.retrieve("Test1", "wrong"));
-      assertThrows(Exception.class, () -> userDao.retrieve("Test2", "wrong"));
-      assertThrows(Exception.class, () -> userDao.retrieve("Test3", "wrong"));
-      assertThrows(Exception.class, () -> userDao.retrieve("Test4", "wrong"));
-      assertThrows(Exception.class, () -> userDao.retrieve("Test5", "wrong"));
-      assertThrows(Exception.class, () -> userDao.retrieve("Test6", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieveWithLogin("Test1", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieveWithLogin("Test2", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieveWithLogin("Test3", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieveWithLogin("Test4", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieveWithLogin("Test5", "wrong"));
+      assertThrows(Exception.class, () -> userDao.retrieveWithLogin("Test6", "wrong"));
     });
   }
 }
