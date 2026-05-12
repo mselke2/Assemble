@@ -42,8 +42,6 @@
 
     <input type="submit" value="Submit"/><br>
 
-    <h2 class="message" style="color: ${color}">${message}</h2>
-
   </form>
 
 </div>
@@ -74,7 +72,9 @@
         </tr>
       </c:forEach>
 
-    </table>
+    </table><br>
+
+    <h2 class="message" style="color: ${color}">${message}</h2>
   </div>
 
 </c:if>
