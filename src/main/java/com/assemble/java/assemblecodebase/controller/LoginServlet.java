@@ -43,7 +43,7 @@ public class LoginServlet extends HttpServlet {
     // Run retrieve() and pass in username and password
     int userID = -1;
     try {
-      userID = userDao.retrieve(username, password);
+      userID = userDao.retrieveWithLogin(username, password);
     } catch (UserDaoException e) {
 
       // return success: false as JSON with an error message back to the client.
