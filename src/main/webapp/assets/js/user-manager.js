@@ -10,7 +10,7 @@ $(document).ready(function () {
       url: "User",
       dataType: "json",
       data: {
-        username: value
+        userToDisplay: value
       },
       
       success: function (data) {
@@ -19,6 +19,7 @@ $(document).ready(function () {
         $("#fName").val(data["fName"]);
         $("#lName").val(data["lName"]);
         $("#type").val(data["permissionId"]);
+        $("#userToEdit").val(data["username"]);
         
       }
     });

@@ -89,34 +89,49 @@ public class UserDaoImpl implements UserDao {
   }
   
   @Override
-  public void updateUser(User user, String oldPasswordHash) {
+  public void updateUser(String username, User user) {
     try {
       // Get a connection to the database
       Connection conn = MySQLUtility.createConnection();
       
       // Prepare a select statement to see if a user exists
       // with this username and execute it.
-      String mySqlSelectExists = "SELECT * FROM user WHERE username = ? AND passwordHash = ?";
+      String mySqlSelectExists = "SELECT * FROM user WHERE username = ?";
       PreparedStatement preparedStatement = conn.prepareStatement(mySqlSelectExists);
-      preparedStatement.setString(1, user.getUsername());
-      preparedStatement.setString(2, oldPasswordHash);
+      preparedStatement.setString(1, username);
       ResultSet results = preparedStatement.executeQuery();
       
       // IF a user exists for this username
       if (results.isBeforeFirst()) {
         // Salt the new password with the userID
         results.next();
-        String passwordIn =  user.getPasswordHash();
-        String saltedPassword = passwordIn + results.getInt("ID");
-        String passwordOut = DigestUtils.sha256Hex(saltedPassword);
-        // Re-hash the password with the new salt.
-        // Prepare an update statement to update this user in the database and execute it.
-        String mySqlUpdate = "UPDATE user SET username = ?, passwordHash = ? WHERE username = ?";
-        preparedStatement = conn.prepareStatement(mySqlUpdate);
-        preparedStatement.setString(1, user.getUsername());
-        preparedStatement.setString(2, passwordOut);
-        preparedStatement.setString(3, user.getUsername());
-        preparedStatement.executeUpdate();
+        
+        if(user.getPasswordHash() != null) {
+          String passwordIn = user.getPasswordHash();
+          String saltedPassword = passwordIn + results.getInt("ID");
+          String passwordOut = DigestUtils.sha256Hex(saltedPassword);
+          // Re-hash the password with the new salt.
+          // Prepare an update statement to update this user in the database and execute it.
+          String mySqlUpdate = "UPDATE user SET username = ?, PermissionID = ?, FirstName = ?, LastName = ?, passwordHash = ? WHERE username = ?";
+          preparedStatement = conn.prepareStatement(mySqlUpdate);
+          preparedStatement.setString(1, user.getUsername());
+          preparedStatement.setInt(2, user.getPermissionId());
+          preparedStatement.setString(3, user.getFirstName());
+          preparedStatement.setString(4, user.getLastName());
+          preparedStatement.setString(5, passwordOut);
+          preparedStatement.setString(6, username);
+          preparedStatement.executeUpdate();
+        } else {
+          String mySqlUpdate = "UPDATE user SET Username = ?, PermissionID = ?, FirstName = ?, LastName = ? WHERE username = ?";
+          preparedStatement = conn.prepareStatement(mySqlUpdate);
+          preparedStatement.setString(1, user.getUsername());
+          preparedStatement.setInt(2, user.getPermissionId());
+          preparedStatement.setString(3, user.getFirstName());
+          preparedStatement.setString(4, user.getLastName());
+          preparedStatement.setString(5, username);
+          preparedStatement.executeUpdate();
+          
+        }
         
       } else {
         // ELSE

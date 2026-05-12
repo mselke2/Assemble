@@ -37,8 +37,12 @@
     <label for="type">Permission Level</label>
     <input class="userFormInput" type="text" id="type" name="type" /><br><br>
 
+    <label for="userToEdit" typeof="hidden"></label>
+    <input class="userFormInput" type="hidden" id="userToEdit" name="userToEdit" /><br>
 
     <input type="submit" value="Submit"/><br>
+
+    <h2 class="message" style="color: ${color}">${message}</h2>
 
   </form>
 

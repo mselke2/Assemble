@@ -44,8 +44,6 @@ class UserDaoImplTest {
   
   @Test
   void updateUser() {
-    
-    String testPass = "password";
     String newPassword = "passwordUpdated";
     
     User user1 = new User("Test1", 1, "Test", "One", newPassword);
@@ -59,12 +57,12 @@ class UserDaoImplTest {
     
     assertDoesNotThrow(() -> {
       
-      userDao.updateUser(user1, DigestUtils.sha256Hex(testPass + "1"));
-      userDao.updateUser(user2, DigestUtils.sha256Hex(testPass + "2"));
-      userDao.updateUser(user3, DigestUtils.sha256Hex(testPass + "3"));
-      userDao.updateUser(user4, DigestUtils.sha256Hex(testPass + "4"));
-      userDao.updateUser(user5, DigestUtils.sha256Hex(testPass + "5"));
-      userDao.updateUser(user6, DigestUtils.sha256Hex(testPass + "6"));
+      userDao.updateUser("Test1", user1);
+      userDao.updateUser("Test2",user2);
+      userDao.updateUser("Test3",user3);
+      userDao.updateUser("Test4",user4);
+      userDao.updateUser("Test5",user5);
+      userDao.updateUser("Test6",user6);
     
     });
     

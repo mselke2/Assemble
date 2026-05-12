@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserDao {
   
   int addUser(User user);
-  void updateUser(User user, String oldPassword);
+  void updateUser(String username, User user);
   void deleteUser(int userId);
   int retrieveWithLogin(String username, String password);
   List<UserPermission> retrievePermissions();
