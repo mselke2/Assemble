@@ -18,7 +18,7 @@ public class MySQLUtility {
     // Set the driver
     Class.forName(DRIVER_NAME);
 
-    // Return a connection using the previously set driver and the connectoin url.
+    // Return a connection using the previously set driver and the connection url.
     return DriverManager.getConnection(CONNECTION);
 
   }

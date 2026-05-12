@@ -9,4 +9,5 @@
             <include-prelude>/WEB-INF/global-includes.jsp</include-prelude>
         </jsp-property-group>
     </jsp-config>
+
 </web-app>
