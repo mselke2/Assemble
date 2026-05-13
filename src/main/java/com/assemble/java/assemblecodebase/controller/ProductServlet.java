@@ -5,6 +5,8 @@ import com.assemble.java.assemblecodebase.dao.ProductDao;
 import com.assemble.java.assemblecodebase.dao.ProductDaoException;
 import com.assemble.java.assemblecodebase.dao.ProductDaoImpl;
 import com.assemble.java.assemblecodebase.model.Product;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -74,5 +76,33 @@ public class ProductServlet extends HttpServlet {
     }
 
     doGet(request, response);
+  }
+
+  @Override
+  public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try {
+      int id = Integer.parseInt(request.getPathInfo().substring(1));
+
+      Gson gson = new Gson();
+      JsonObject json = gson.fromJson(request.getReader(), JsonObject.class);
+
+      String description = json.get("description").getAsString();
+      if (description.length() > 50)
+        throw new RuntimeException("Invalid Description");
+
+      int duration = json.get("duration").getAsInt();
+      int personnelCount = json.get("personnelCount").getAsInt();
+
+      Product product = new Product(id, description, duration, personnelCount);
+
+      ProductDao productDao = new ProductDaoImpl();
+      productDao.updateProduct(product);
+    } catch (IllegalArgumentException e) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      response.getWriter().write(e.getMessage());
+    }
   }
 }
