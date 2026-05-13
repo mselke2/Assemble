@@ -39,8 +39,10 @@ public class LoginServlet extends HttpServlet {
     UserDaoImpl userDao = new UserDaoImpl();
     // Run retrieve() and pass in username and password
     int userID = -1;
+    int userPermissionID = -1;
     try {
       userID = userDao.retrieveWithLogin(username, password);
+      userPermissionID = userDao.retrieveByUsername(username).getPermissionId();
     } catch (UserDaoException e) {
 
       // return failure
@@ -59,13 +61,21 @@ public class LoginServlet extends HttpServlet {
 
       // IF createSession returns a String
       try {
-        String loginTokenID = session.createSession(userID);
+        String sessionID = session.createSession(userID);
         // Create a cookie with the name "loginToken" and the value of the String returned from createSession()
-        Cookie loginTokenCookie = new Cookie("loginToken", loginTokenID);
+        Cookie loginTokenCookie = new Cookie("loginToken", sessionID);
         // Set the max age of the cookie to 24 hours
         loginTokenCookie.setMaxAge(60 * 60 * 24);
         // Add the cookie to the response
         response.addCookie(loginTokenCookie);
+
+        //create permission cookie
+        Cookie permissionCookie = new Cookie("permissionLevel",  "" + userPermissionID);
+        // Set the max age of the cookie to 24 hours
+        permissionCookie.setMaxAge(60 * 60 * 24);
+        // Add the cookie to the response
+        response.addCookie(permissionCookie);
+
         // Return success
         request.setAttribute("message", "success");
         request.setAttribute("color", "green");

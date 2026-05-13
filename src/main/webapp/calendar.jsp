@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="assets/css/calendar.css">
 </head>
 <body>
+<%@ include file="navigation.jsp" %>
 <script src="assets/js/calendar.js"></script>
 <main>
     <div id="calendar-header">
