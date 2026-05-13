@@ -22,7 +22,7 @@ let laneWidth;
 
 const subTickRatio = 1.0 / 6.0;
 
-let timelineLanesHovered = false;
+let timelineLanesHovered = true;
 
 let $newJobGhost;
 let newJobStartTime;
@@ -30,7 +30,7 @@ let newJobEndTime;
 let newJobLane;
 let addingJob = false;
 let editingJob = false;
-let validNewJobHover = true;
+let validNewJobHover = false;
 
 let $timelineWrapper;
 let timelineMouseX = 0;
