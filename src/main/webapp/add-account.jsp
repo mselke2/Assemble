@@ -9,7 +9,7 @@
 <body>
 <div class="panel">
     <h1>Add Account</h1>
-    <form>
+    <form id="create-user-form">
         <label for="fName">First Name</label>
         <input type="text" name="fName" id="fName" pattern="^[a-zA-Z]{1,50}$" required>
         <label for="lName">Last Name</label>
