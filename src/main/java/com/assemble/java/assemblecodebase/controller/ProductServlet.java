@@ -105,4 +105,14 @@ public class ProductServlet extends HttpServlet {
       response.getWriter().write(e.getMessage());
     }
   }
+
+  public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try{
+      int productId = Integer.parseInt(request.getPathInfo().substring(1));
+      ProductDao productDao = new ProductDaoImpl();
+      productDao.deleteProductById(productId);
+    } catch (NumberFormatException | ProductDaoException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+  }
 }
