@@ -44,11 +44,11 @@
 
                     <td class="data">${product.id}</td>
 
-                    <td class="data"><input type="text" class="description" pattern="^.{1,50}$"  value="${product.description}"></td>
+                    <td class="data"><input type="text" name="description" required class="description" pattern="^.{1,50}$"  value="${product.description}"></td>
 
-                    <td class="data"><input type="number" class="duration" min="1" value="${product.minutesDuration}"></td>
+                    <td class="data"><input type="number" name="duration" required class="duration" min="1" value="${product.minutesDuration}"></td>
 
-                    <td class="resource-count data"><input type="number" class="personnel-count" min="1" value="${product.targetPersonnelCount}"></td>
+                    <td class="resource-count data"><input type="number" name="personnelCount" required class="personnel-count" min="1" value="${product.targetPersonnelCount}"></td>
 
                     <td><button class="delete-btn">Delete</button></td>
                 </tr>

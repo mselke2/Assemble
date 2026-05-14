@@ -46,18 +46,10 @@ public class PersonnelServlet extends HttpServlet {
       Gson gson = new Gson();
       JsonObject json = gson.fromJson(request.getReader(), JsonObject.class);
 
-      int newCount;
-      String actionString = json.get("action").getAsString();
-      if (actionString.equals("add"))
-        newCount = personnel.getCount() + 1;
-      else if (actionString.equals("remove"))
-        newCount = personnel.getCount() - 1;
-      else {
-        throw new IllegalArgumentException("Invalid action: " + actionString);
-      }
+      int personnelCount = json.get("personnelCount").getAsInt();
 
-      if (newCount > 0)
-        personnelDao.set(personnel.getDate(), newCount);
+      if (personnelCount > 0)
+        personnelDao.set(personnel.getDate(), personnelCount);
       else
         personnelDao.delete(personnel.getDate());
     } catch (IllegalArgumentException e) {

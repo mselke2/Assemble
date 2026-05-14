@@ -43,21 +43,16 @@ public class InventoryServlet extends HttpServlet {
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
       int id = Integer.parseInt(request.getPathInfo().substring(1));
-      InventoryDao inventoryDao = new InventoryDaoImpl();
-      Inventory inventory = inventoryDao.retrieveById(id);
 
       Gson gson = new Gson();
       JsonObject json = gson.fromJson(request.getReader(), JsonObject.class);
 
-      String actionString = json.get("action").getAsString();
-      if (actionString.equals("add"))
-        inventory.setCount(inventory.getCount() + 1);
-      else if (actionString.equals("remove"))
-        inventory.setCount(inventory.getCount() - 1);
-      else {
-        throw new IllegalArgumentException("Invalid action: " + actionString);
-      }
+      int typeId = json.get("typeId").getAsInt();
+      int count = json.get("count").getAsInt();
+      Inventory inventory = new Inventory(typeId, count);
+      inventory.setId(id);
 
+      InventoryDao inventoryDao = new InventoryDaoImpl();
       if (inventory.getCount() > 0)
         inventoryDao.updateInventory(inventory);
       else

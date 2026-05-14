@@ -1,43 +1,22 @@
-function initializeControls(endpoint) {
-  $(".count-control.add").on("click", function (e) {
+function initializeControls (endpoint) {
+  $(".submit-btn").on("click", function (e) {
     let $target = $(e.target);
     let $row = $target.parent().parent();
 
-    let resourceId = $row.attr("resource-id");
+    let resourceId = +$row.attr("resource-id");
+    let data = {
+      id: resourceId
+    };
+
+    $row.find("input").each(function() {
+      data[$(this).attr("name")] = $(this).val();
+    })
+
     $.ajax(`${endpoint}/${resourceId}`, {
       method: "PUT",
       contentType: "application/json",
-      data: JSON.stringify({
-        action: "add"
-      })
+      data: JSON.stringify(data)
     });
-
-    let $resourceCount = $row.find(".resource-count");
-    let count = +$resourceCount.text() + 1;
-    $resourceCount.text(count);
-  });
-
-  $(".count-control.remove").on("click", function (e) {
-    let $target = $(e.target);
-    let $row = $target.parent().parent();
-
-    let resourceId = $row.attr("resource-id");
-    $.ajax(`${endpoint}/${resourceId}`, {
-      method: "PUT",
-      contentType: "application/json",
-      data: JSON.stringify({
-        action: "remove"
-      })
-    });
-
-    let $resourceCount = $row.find(".resource-count");
-    let count = $resourceCount.text() - 1;
-
-    if (count === 0) {
-      $row.remove();
-    } else {
-      $resourceCount.text(count);
-    }
   });
 
   $(".delete-btn").on("click", function (e) {
@@ -50,5 +29,16 @@ function initializeControls(endpoint) {
     });
 
     $row.remove();
+  });
+
+  $("table input").on("input", function() {
+    let $row = $(this).parent().parent();
+
+    let valid = true;
+    $row.find("input").each(function() {
+      valid &= this.checkValidity();
+    })
+
+    $row.find(".submit-btn").prop("disabled", !valid);
   });
 }
