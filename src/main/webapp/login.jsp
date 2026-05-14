@@ -23,7 +23,9 @@
         <input type="text" name="username" id="username">
         <label for="password">Password</label>
         <input type="password" name="password" id="password">
+        <% if (request.getAttribute("color") != null) {%>
         <h2 style="color: ${color}">${message}</h2>
+        <%}%>
         <input type="submit" name="submit" value="Submit">
     </form>
 </div>

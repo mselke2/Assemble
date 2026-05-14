@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="assets/css/add-account.css">
 </head>
 <body>
+<%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Add Account</h1>
     <form>

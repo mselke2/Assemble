@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="assets/css/resource-manager.css">
 </head>
 <body>
+<%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Personnel</h1>
     <form action="Personnel" method="post" class="new-entry-bar">

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="assets/css/product.css">
 </head>
 <body>
+<%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Product</h1>
     <form action="Product" method="post" class="new-entry-bar">
