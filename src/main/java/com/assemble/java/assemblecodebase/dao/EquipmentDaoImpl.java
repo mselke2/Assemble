@@ -203,4 +203,75 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     return equipmentList;
   }
+
+  @Override
+  public boolean updateEquipmentType(EquipmentType equipmentType) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String MySQLUpdate = "UPDATE equipmenttype SET Description = ? WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLUpdate);
+      preparedStatement.setString(1, equipmentType.getDescription());
+      preparedStatement.setInt(2, equipmentType.getId());
+      int rowsEffected = preparedStatement.executeUpdate();
+
+      connection.close();
+      preparedStatement.close();
+
+      if (rowsEffected > 0)
+        return true;
+
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new EquipmentDaoException(e.getMessage());
+    }
+
+    return false;
+  }
+
+  @Override
+  public int addEquipmentType(EquipmentType equipmentType) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String MySQLInsert = "INSERT INTO equipmenttype (Description) VALUES (?)";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLInsert, Statement.RETURN_GENERATED_KEYS);
+      preparedStatement.setString(1, equipmentType.getDescription());
+      preparedStatement.executeUpdate();
+
+      ResultSet result = preparedStatement.getGeneratedKeys();
+      result.next();
+      int insertedId = result.getInt(1);
+
+      result.close();
+      preparedStatement.close();
+      connection.close();
+
+      return insertedId;
+    } catch (Exception e) {
+      throw new EquipmentDaoException(e.getMessage());
+    }
+  }
+
+  @Override
+  public int deleteEquipmentTypeById(int id) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String MySQLDelete = "DELETE FROM equipmenttype WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLDelete);
+      preparedStatement.setInt(1, id);
+      int effectedRows = preparedStatement.executeUpdate();
+
+      preparedStatement.close();
+      connection.close();
+
+      if (effectedRows > 0)
+        return id;
+
+      throw new EquipmentDaoException("EquipmentType does not exist.");
+
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new EquipmentDaoException(e.getMessage());
+    }
+  }
 }
