@@ -22,7 +22,7 @@ let laneWidth;
 
 const subTickRatio = 1.0 / 6.0;
 
-let timelineLanesHovered = false;
+let timelineLanesHovered = true;
 
 let $newJobGhost;
 let newJobStartTime;
@@ -30,7 +30,7 @@ let newJobEndTime;
 let newJobLane;
 let addingJob = false;
 let editingJob = false;
-let validNewJobHover = true;
+let validNewJobHover = false;
 
 let $timelineWrapper;
 let timelineMouseX = 0;
@@ -54,7 +54,7 @@ function updateGhostPosition() {
   newJobStartTime = convertFloatToTime(newJobStartTimeFloat);
   newJobEndTime = convertFloatToTime(newJobEndTimeFloat);
 
-  let inHoveredLane = jobEntries.values().filter(entry => entry.lane === newJobLane).toArray();
+  let inHoveredLane = jobEntries.values().filter(entry => entry.lineNumber === newJobLane).toArray();
 
   for (let job of inHoveredLane) {
     if (newJobStartTime >= job.startTime && newJobStartTime <= job.endTime) {
@@ -91,7 +91,7 @@ function validateChanges() {
   let endTime = $endTimeInput.val();
   let line = +$lineNumInput.val();
 
-  let inHoveredLane = jobEntries.entries().filter(entry => entry[1].lane === line).toArray();
+  let inHoveredLane = jobEntries.entries().filter(entry => entry[1].lineNumber === line).toArray();
 
   for (let job of inHoveredLane) {
     let [jobId, jobData] = job;
@@ -123,15 +123,15 @@ function validateChanges() {
   $submitBtn.attr("disabled", !isValid);
 }
 
-function updateLocalJobData(id, startTime, endTime, lane) {
+function updateLocalJobData(id, startTime, endTime, lineNumber) {
   jobEntries.set(id, {
     startTime: startTime,
     endTime: endTime,
-    lane: lane
+    lineNumber: lineNumber
   });
 }
 
-function addJobEntry(id, startTime, endTime, lane) {
+function addJobEntry(id, startTime, endTime, lineNumber) {
   $activeJobEntry = $("<div></div>", {
     class: "job-entry",
     click: onJobEntryClicked,
@@ -140,7 +140,7 @@ function addJobEntry(id, startTime, endTime, lane) {
     text: id
   })).appendTo($timelineLanes);
 
-  updateLocalJobData(id, startTime, endTime, lane);
+  updateLocalJobData(id, startTime, endTime, lineNumber);
 
   updateActiveJobStyles();
 }
@@ -197,7 +197,7 @@ function cancelEdit() {
 
     $startTimeInput.val(jobInfo.startTime);
     $endTimeInput.val(jobInfo.endTime);
-    $lineNumInput.val(jobInfo.lineNum);
+    $lineNumInput.val(jobInfo.lineNumber);
 
     updateActiveJobStyles();
   }
@@ -220,12 +220,11 @@ function onSubmitClicked() {
     numMembers: +$numMembersInput.val(),
     lineNum: +$lineNumInput.val()
   };
-
   if (addingJob) {// perform PUT request with info from form
     $.post("Job", data).done(responseData => {
       addJobEntry(responseData["jobId"],
-        data.startTime,
-        data.projectedEndTime,
+        $startTimeInput.val(),
+        $endTimeInput.val(),
         data.lineNum);
 
       cancelEdit();
@@ -239,8 +238,8 @@ function onSubmitClicked() {
       data: JSON.stringify(data)
     }).done(() => {
       updateLocalJobData(id,
-        data.startTime,
-        data.projectedEndTime,
+        $startTimeInput.val(),
+        $endTimeInput.val(),
         data.lineNum
       );
 
