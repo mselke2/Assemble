@@ -3,7 +3,6 @@ package com.assemble.java.assemblecodebase.dao;
 import com.assemble.java.assemblecodebase.model.Inventory;
 import com.assemble.java.assemblecodebase.model.InventoryType;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
-import com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -212,5 +211,79 @@ public class InventoryDaoImpl implements InventoryDao{
     }
 
     return inventoryList;
+  }
+
+  @Override
+  public boolean updateInventoryType(InventoryType inventoryType) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String MySQLUpdate = "UPDATE inventorytype SET Description = ? WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLUpdate);
+      preparedStatement.setString(1, inventoryType.getDescription());
+      preparedStatement.setInt(2, inventoryType.getId());
+      int rowsEffected = preparedStatement.executeUpdate();
+
+      connection.close();
+      preparedStatement.close();
+
+      if (rowsEffected > 0)
+        return true;
+
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new InventoryDaoException(e.getMessage());
+    }
+
+    return false;
+  }
+
+  @Override
+  public int addInventoryType(InventoryType inventoryType) {
+    try {
+      // Get a connection to the database
+      Connection connection = MySQLUtility.createConnection();
+
+      // Prepare a select statement to see if Inventory exists
+      // with this inventoryID and execute it.
+      String MySQLInsert = "INSERT INTO inventorytype (Description) VALUES (?)";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLInsert, Statement.RETURN_GENERATED_KEYS);
+      preparedStatement.setString(1, inventoryType.getDescription());
+      preparedStatement.executeUpdate();
+
+      ResultSet result = preparedStatement.getGeneratedKeys();
+      result.next();
+      int insertedId = result.getInt(1);
+
+      result.close();
+      preparedStatement.close();
+      connection.close();
+
+      return insertedId;
+    } catch (Exception e) {
+      throw new InventoryDaoException(e.getMessage());
+    }
+  }
+
+  @Override
+  public int deleteInventoryTypeById(int id) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String MySQLDelete = "DELETE FROM inventorytype WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLDelete);
+      preparedStatement.setInt(1, id);
+      int effectedRows = preparedStatement.executeUpdate();
+
+      preparedStatement.close();
+      connection.close();
+
+      if (effectedRows > 0)
+        return id;
+
+      throw new InventoryDaoException("InventoryType does not exist.");
+
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new InventoryDaoException(e.getMessage());
+    }
   }
 }
