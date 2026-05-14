@@ -27,15 +27,10 @@
         <c:if test="${not empty personnel}">
             <c:forEach var="scheduledPersonnel" items="${personnel}">
                 <tr resource-id="${scheduledPersonnel.id}">
-                    <td>
-                        <button class="count-control add">+</button>
-                        <button class="count-control remove">-</button>
-                    </td>
+                    <td><button class="submit-btn">Submit</button></td>
                     <td>${scheduledPersonnel.date.toLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))}</td>
-                    <td class="resource-count">${scheduledPersonnel.count}</td>
-                    <td>
-                        <button class="delete-btn">Delete</button>
-                    </td>
+                    <td class="resource-count"><input type="number" name="personnelCount" required min="1" value="${scheduledPersonnel.count}"></td>
+                    <td><button class="delete-btn">Delete</button></td>
                 </tr>
             </c:forEach>
         </c:if>
