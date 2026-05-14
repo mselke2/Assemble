@@ -1,0 +1,39 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory Type</title>
+    <link rel="stylesheet" href="assets/css/resource-manager.css">
+</head>
+<body>
+<div class="panel">
+    <h1>Inventory Type</h1>
+    <form action="InventoryType" method="post" class="new-entry-bar">
+        <label for="inventory-type-description">Description</label>
+        <input type="text" name="description" maxlength="50" required id="inventory-type-description">
+        <input type="submit" name="submit" value="Submit">
+    </form>
+    <table>
+        <tr>
+            <th></th>
+            <th>Id</th>
+            <th>Description</th>
+            <th></th>
+        </tr>
+        <c:if test="${not empty inventoryTypes}">
+            <c:forEach var="inventoryType" items="${inventoryTypes}">
+                <tr resource-id="${inventoryType.id}">
+                    <td><button class="submit-btn">Submit</button></td>
+                    <td>${inventoryType.id}</td>
+                    <td><input type="text" name="description" maxlength="50" required value="${inventoryType.description}"></td>
+                    <td><button class="delete-btn">Delete</button></td>
+                </tr>
+            </c:forEach>
+        </c:if>
+    </table>
+</div>
+<script src="assets/js/resource-manager.js"></script>
+<script src="assets/js/inventory-type-manager.js"></script>
+</body>
+</html>
