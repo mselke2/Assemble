@@ -2,6 +2,7 @@ package com.assemble.java.assemblecodebase.controller;
 
 
 import com.assemble.java.assemblecodebase.dao.InventoryDao;
+import com.assemble.java.assemblecodebase.dao.InventoryDaoException;
 import com.assemble.java.assemblecodebase.dao.InventoryDaoImpl;
 import com.assemble.java.assemblecodebase.model.InventoryType;
 import com.google.gson.Gson;
@@ -57,5 +58,31 @@ public class InventoryTypeServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       response.getWriter().write(e.getMessage());
     }
+  }
+
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try {
+      String description = request.getParameter("description");
+      if (description == null
+          || description.length() > 50)
+        throw new RuntimeException("Invalid Description");
+
+      InventoryType inventoryType = new InventoryType(0, description);
+
+      InventoryDao dao = new InventoryDaoImpl();
+      dao.addInventoryType(inventoryType);
+    } catch (InventoryDaoException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);
+
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    }
+
+    doGet(request, response);
   }
 }
