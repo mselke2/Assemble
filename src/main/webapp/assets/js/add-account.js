@@ -13,7 +13,7 @@ $(function() {
 
   let $submitBtn = $("#submit");
 
-  $("form").on("submit", function(e) {
+  $("#create-user-form").on("submit", function(e) {
     e.preventDefault();
     $submitBtn.prop("disabled", true);
 
