@@ -14,4 +14,5 @@ public interface EquipmentDao {
   List<EquipmentType> retrieveTypes();
   List<Equipment> retrieveAll();
   boolean updateEquipmentType(EquipmentType equipmentType);
+  int addEquipmentType(EquipmentType equipmentType);
 }

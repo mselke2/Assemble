@@ -227,4 +227,28 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     return false;
   }
+
+  @Override
+  public int addEquipmentType(EquipmentType equipmentType) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String MySQLInsert = "INSERT INTO equipmenttype (Description) VALUES (?)";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLInsert, Statement.RETURN_GENERATED_KEYS);
+      preparedStatement.setString(1, equipmentType.getDescription());
+      preparedStatement.executeUpdate();
+
+      ResultSet result = preparedStatement.getGeneratedKeys();
+      result.next();
+      int insertedId = result.getInt(1);
+
+      result.close();
+      preparedStatement.close();
+      connection.close();
+
+      return insertedId;
+    } catch (Exception e) {
+      throw new EquipmentDaoException(e.getMessage());
+    }
+  }
 }
