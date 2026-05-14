@@ -15,4 +15,5 @@ public interface EquipmentDao {
   List<Equipment> retrieveAll();
   boolean updateEquipmentType(EquipmentType equipmentType);
   int addEquipmentType(EquipmentType equipmentType);
+  int deleteEquipmentTypeById(int id);
 }

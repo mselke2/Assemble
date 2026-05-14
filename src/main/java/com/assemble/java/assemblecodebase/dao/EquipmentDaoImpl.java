@@ -251,4 +251,27 @@ public class EquipmentDaoImpl implements EquipmentDao {
       throw new EquipmentDaoException(e.getMessage());
     }
   }
+
+  @Override
+  public int deleteEquipmentTypeById(int id) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String MySQLDelete = "DELETE FROM equipmenttype WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLDelete);
+      preparedStatement.setInt(1, id);
+      int effectedRows = preparedStatement.executeUpdate();
+
+      preparedStatement.close();
+      connection.close();
+
+      if (effectedRows > 0)
+        return id;
+
+      throw new EquipmentDaoException("EquipmentType does not exist.");
+
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new EquipmentDaoException(e.getMessage());
+    }
+  }
 }
