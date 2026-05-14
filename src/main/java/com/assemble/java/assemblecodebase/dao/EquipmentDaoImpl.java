@@ -203,4 +203,28 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     return equipmentList;
   }
+
+  @Override
+  public boolean updateEquipmentType(EquipmentType equipmentType) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String MySQLUpdate = "UPDATE equipmenttype SET Description = ? WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLUpdate);
+      preparedStatement.setString(1, equipmentType.getDescription());
+      preparedStatement.setInt(2, equipmentType.getId());
+      int rowsEffected = preparedStatement.executeUpdate();
+
+      connection.close();
+      preparedStatement.close();
+
+      if (rowsEffected > 0)
+        return true;
+
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new EquipmentDaoException(e.getMessage());
+    }
+
+    return false;
+  }
 }
