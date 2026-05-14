@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="assets/css/resource-manager.css">
 </head>
 <body>
+<%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Inventory Type</h1>
     <form action="InventoryType" method="post" class="new-entry-bar">

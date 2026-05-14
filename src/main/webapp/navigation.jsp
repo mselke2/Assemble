@@ -30,11 +30,13 @@
     <form action="Logout" method="post"><input type="submit" name="logout" value="Logout"></form>
   </div>
   <nav id="navBar">
-    <a href="calendar.jsp">Calendar</a>
-    <a href="inventory-manager.jsp">Inventory</a>
-    <a href="personnel-manager.jsp">Personnel</a>
-    <a href="product-manager.jsp">Products</a>
-    <a href="tool-manager.jsp">Equipment</a>
+    <a href="Calendar">Calendar</a>
+    <a href="Personnel">Personnel</a>
+    <a href="Product">Products</a>
+    <a href="Equipment">Equipment</a>
+    <a href="EquipmentType">Equipment Types</a>
+    <a href="Inventory">Inventory</a>
+    <a href="InventoryType">Inventory Types</a>
     <% if (permissionCookie != null && permissionCookie.getValue().equals("1")) {%>
     <a href="admin-tools.jsp">Admin Tools</a>
     <% } %>
