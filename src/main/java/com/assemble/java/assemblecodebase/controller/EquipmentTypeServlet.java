@@ -2,6 +2,7 @@ package com.assemble.java.assemblecodebase.controller;
 
 
 import com.assemble.java.assemblecodebase.dao.EquipmentDao;
+import com.assemble.java.assemblecodebase.dao.EquipmentDaoException;
 import com.assemble.java.assemblecodebase.dao.EquipmentDaoImpl;
 import com.assemble.java.assemblecodebase.model.EquipmentType;
 import com.google.gson.Gson;
@@ -57,5 +58,32 @@ public class EquipmentTypeServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       response.getWriter().write(e.getMessage());
     }
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try {
+      String description = request.getParameter("description");
+      if (description == null
+          || description.length() > 50)
+        throw new RuntimeException("Invalid Description");
+
+      EquipmentType equipmentType = new EquipmentType(0, description);
+
+      EquipmentDao dao = new EquipmentDaoImpl();
+      dao.addEquipmentType(equipmentType);
+    } catch (EquipmentDaoException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_UNPROCESSABLE_CONTENT);
+
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+    }
+
+    doGet(request, response);
   }
 }
