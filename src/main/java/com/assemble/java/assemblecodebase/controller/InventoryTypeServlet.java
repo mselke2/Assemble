@@ -85,4 +85,15 @@ public class InventoryTypeServlet extends HttpServlet {
 
     doGet(request, response);
   }
+
+  @Override
+  protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try{
+      int inventoryTypeId = Integer.parseInt(request.getPathInfo().substring(1));
+      InventoryDao inventoryDao = new InventoryDaoImpl();
+      inventoryDao.deleteInventoryTypeById(inventoryTypeId);
+    } catch (NumberFormatException | InventoryDaoException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+  }
 }
