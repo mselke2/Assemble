@@ -86,6 +86,7 @@
             </div>
         </div>
     </div>
+    <a id="back-button" href="Calendar">Go Back</a>
 </main>
 <script src="assets/js/scheduler.js"></script>
 </body>
