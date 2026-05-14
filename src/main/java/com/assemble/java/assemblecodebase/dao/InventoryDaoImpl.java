@@ -3,7 +3,6 @@ package com.assemble.java.assemblecodebase.dao;
 import com.assemble.java.assemblecodebase.model.Inventory;
 import com.assemble.java.assemblecodebase.model.InventoryType;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
-import com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -212,5 +211,29 @@ public class InventoryDaoImpl implements InventoryDao{
     }
 
     return inventoryList;
+  }
+
+  @Override
+  public boolean updateInventoryType(InventoryType inventoryType) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String MySQLUpdate = "UPDATE inventorytype SET Description = ? WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(MySQLUpdate);
+      preparedStatement.setString(1, inventoryType.getDescription());
+      preparedStatement.setInt(2, inventoryType.getId());
+      int rowsEffected = preparedStatement.executeUpdate();
+
+      connection.close();
+      preparedStatement.close();
+
+      if (rowsEffected > 0)
+        return true;
+
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new InventoryDaoException(e.getMessage());
+    }
+
+    return false;
   }
 }
