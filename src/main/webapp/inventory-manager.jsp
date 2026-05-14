@@ -30,15 +30,10 @@
         <c:if test="${not empty inventory}">
             <c:forEach var="resource" items="${inventory}">
                 <tr resource-id="${resource.id}">
-                    <td>
-                        <button class="count-control add">+</button>
-                        <button class="count-control remove">-</button>
-                    </td>
-                    <td>${resource.id}</td>
-                    <td class="resource-count">${resource.count}</td>
-                    <td>
-                        <button class="delete-btn">Delete</button>
-                    </td>
+                    <td><button class="submit-btn">Submit</button></td>
+                    <td>${resource.id}<input type="hidden" name="typeId" value="${resource.typeId}"> </td>
+                    <td class="resource-count"><input type="number" name="count" required min="1" value="${resource.count}"></td>
+                    <td><button class="delete-btn">Delete</button></td>
                 </tr>
             </c:forEach>
         </c:if>
