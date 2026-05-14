@@ -13,6 +13,12 @@ main {
     }
   }
 
+  .weekday-header {
+    text-align: center;
+    border: 1px solid black;
+    padding: 0.3em;
+  }
+
   #calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
