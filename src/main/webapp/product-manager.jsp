@@ -11,9 +11,6 @@
     <h1>Product</h1>
     <form action="Product" method="post" class="new-entry-bar">
 
-        <label for="id" class="productLabel">ID</label>
-        <input type="text" id="id" name="id" class="productInput"><br>
-
         <label for="description" class="productLabel">Description</label>
         <input type="text" class="productInput" name="description" id="description"><br>
 
@@ -21,7 +18,7 @@
         <input type="text" name="duration" class="productInput" id="duration"><br>
 
         <label for="personnel-count" class="productLabel">Personnel Count</label>
-        <input type="text" name="personnel-count" class="productInput" id="personnel-count"><br><br>
+        <input type="text" name="personnelCount" class="productInput" id="personnel-count"><br><br>
 
         <input class="submit" type="submit" name="submit" value="Submit">
 
@@ -39,26 +36,21 @@
             <th></th>
         </tr>
 
-        <c:if test="${not empty product}">
-            <c:forEach var="product" items="${product}">
-                <tr resource-id="${scheduledPersonnel.id}">
+        <c:if test="${not empty products}">
+            <c:forEach var="product" items="${products}">
+                <tr resource-id="${product.id}">
 
-                    <td>
-                        <button class="count-control add">+</button>
-                        <button class="count-control remove">-</button>
-                    </td>
+                    <td><button class="submit-btn">Submit</button></td>
 
                     <td class="data">${product.id}</td>
 
-                    <td class="data">${product.description}</td>
+                    <td class="data"><input type="text" class="description" pattern="^.{1,50}$"  value="${product.description}"></td>
 
-                    <td class="data">${product.minutesDuration}</td>
+                    <td class="data"><input type="number" class="duration" min="1" value="${product.minutesDuration}"></td>
 
-                    <td class="resource-count data">${product.targetPersonnelCount}</td>
+                    <td class="resource-count data"><input type="number" class="personnel-count" min="1" value="${product.targetPersonnelCount}"></td>
 
-                    <td>
-                        <button class="delete-btn">Delete</button>
-                    </td>
+                    <td><button class="delete-btn">Delete</button></td>
                 </tr>
             </c:forEach>
         </c:if>
