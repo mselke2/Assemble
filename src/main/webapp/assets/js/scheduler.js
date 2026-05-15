@@ -129,10 +129,19 @@ function validateChanges() {
   $submitBtn.attr("disabled", !isValid);
 }
 
-function updateLocalJobData(id, startTime, endTime, lineNumber) {
-  $(`.job-entry[job-id="${id}"]`).css("background-color", calculateJobColorString(id));
+function updateLocalJobData(id, newId, startTime, endTime, lineNumber) {
+  let $entry = $(`.job-entry[job-id="${id}"]`);
 
-  jobEntries.set(id, {
+  if (id !== newId) {
+    jobEntries.set(newId, jobEntries.get(id));
+    jobEntries.delete(id);
+    $entry.find("p").text(newId);
+    $entry.attr("job-id", newId);
+  }
+
+  $entry.css("background-color", calculateJobColorString(newId));
+
+  jobEntries.set(newId, {
     startTime: startTime,
     endTime: endTime,
     lineNumber: lineNumber
@@ -148,7 +157,7 @@ function addJobEntry(id, startTime, endTime, lineNumber) {
     text: id
   })).appendTo($timelineLanes);
 
-  updateLocalJobData(id, startTime, endTime, lineNumber);
+  updateLocalJobData(id, id, startTime, endTime, lineNumber);
 
   updateActiveJobStyles();
 }
@@ -228,7 +237,8 @@ function onSubmitClicked() {
     numMembers: +$numMembersInput.val(),
     lineNum: +$lineNumInput.val()
   };
-  if (addingJob) {// perform PUT request with info from form
+  if (addingJob) {
+    // perform POST request with info from form
     $.post("Job", data).done(responseData => {
       addJobEntry(responseData["jobId"],
         $startTimeInput.val(),
@@ -244,8 +254,10 @@ function onSubmitClicked() {
       method: "PUT",
       contentType: "application/json",
       data: JSON.stringify(data)
-    }).done(() => {
+    }).done(response => {
+
       updateLocalJobData(id,
+        response["newId"],
         $startTimeInput.val(),
         $endTimeInput.val(),
         data.lineNum
@@ -287,6 +299,7 @@ function onJobEntryClicked(e) {
     $lineNumInput.val(lineNum);
 
     updateLocalJobData(jobId,
+      jobId,
       lastValidStartTime,
       lastValidEndTime,
       lineNum);
@@ -371,6 +384,7 @@ $(function() {
       let id = +$this.attr("job-id");
 
       updateLocalJobData(id,
+        id,
         convertFloatToTime(+$this.css("--start-time")),
         convertFloatToTime(+$this.css("--end-time")),
         +$this.css("--lane"));

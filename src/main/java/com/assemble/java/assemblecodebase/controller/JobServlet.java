@@ -109,7 +109,9 @@ public class JobServlet extends HttpServlet {
       job.setLineNumber(json.get("lineNum").getAsInt());
 
       JobDao jobDao = new JobDaoImpl();
-      jobDao.updateJob(job);
+      int newId = jobDao.updateJob(job);
+      response.setContentType("application/json");
+      response.getWriter().write("{ \"newId\": %s }".formatted(newId));
     } catch (NumberFormatException | JobDaoException e) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     } catch (RuntimeException e) {
