@@ -33,6 +33,8 @@
             <th class="header">Description</th>
             <th class="header">Duration (Minutes)</th>
             <th class="header">Personnel Count (Target)</th>
+            <th class="header">Inventory</th>
+            <th class="header">Equipment</th>
             <th></th>
         </tr>
 
@@ -50,11 +52,39 @@
 
                     <td class="resource-count data"><input type="number" name="personnelCount" required class="personnel-count" min="1" value="${product.targetPersonnelCount}"></td>
 
+                    <td>
+                        <button class="inventory-btn">Edit</button>
+                        <input type="hidden" name="inventoryIds" class="inventory-ids" value="${product.requiredInventoryIds}">
+                        <input type="hidden" name="inventoryCounts" class="inventory-counts" value="${product.requiredInventoryCounts}">
+                    </td>
+
+                    <td>
+                        <button class="equipment-btn">Edit</button>
+                        <input type="hidden" name="equipmentIds" class="equipment-ids" value="${product.requiredEquipmentIds}">
+                        <input type="hidden" name="equipmentCounts" class="equipment-counts" value="${product.requiredEquipmentCounts}">
+                    </td>
+
                     <td><button class="delete-btn">Delete</button></td>
                 </tr>
             </c:forEach>
         </c:if>
     </table>
+</div>
+<div id="inventory-editor" class="editor" hidden>
+    <div class="editor-panel">
+        <h1>Required Inventory Counts</h1>
+        <ul>
+        <c:if test="${not empty inventoryTypes}">
+            <c:forEach var="inventoryType" items="${inventoryTypes}">
+                <li>
+                    <label>${inventoryType.description}:</label>
+                    <input type="number" inventory-type-id="${inventoryType.id}" min="0" class="inventory-count">
+                </li>
+            </c:forEach>
+        </c:if>
+        </ul>
+        <button class="editor-submit">Ok</button>
+    </div>
 </div>
 <script src="assets/js/resource-manager.js"></script>
 <script src="assets/js/product-manager.js"></script>

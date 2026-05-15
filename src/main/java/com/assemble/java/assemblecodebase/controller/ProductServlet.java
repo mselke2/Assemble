@@ -1,9 +1,8 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
-import com.assemble.java.assemblecodebase.dao.ProductDao;
-import com.assemble.java.assemblecodebase.dao.ProductDaoException;
-import com.assemble.java.assemblecodebase.dao.ProductDaoImpl;
+import com.assemble.java.assemblecodebase.dao.*;
+import com.assemble.java.assemblecodebase.model.InventoryType;
 import com.assemble.java.assemblecodebase.model.Product;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -22,16 +21,20 @@ public class ProductServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     ProductDao productDao = new ProductDaoImpl();
+    InventoryDao inventoryDao = new InventoryDaoImpl();
 
     List<Product> products = new ArrayList<>();
+    List<InventoryType> inventoryTypes = new ArrayList<>();
 
     try {
       products = productDao.retrieveAll();
+      inventoryTypes = inventoryDao.retrieveTypes();
     } catch (RuntimeException e) {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
     request.setAttribute("products", products);
+    request.setAttribute("inventoryTypes", inventoryTypes);
     getServletContext().getRequestDispatcher("/product-manager.jsp").forward(request, response);
   }
 
