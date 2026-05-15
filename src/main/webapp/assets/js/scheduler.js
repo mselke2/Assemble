@@ -57,15 +57,21 @@ function updateGhostPosition() {
   let inHoveredLane = jobEntries.values().filter(entry => entry.lineNumber === newJobLane).toArray();
 
   for (let job of inHoveredLane) {
-    if (newJobStartTime >= job.startTime && newJobStartTime <= job.endTime) {
-      newJobStartTimeFloat = convertTimeToFloat(job.endTime) + 1.0 / 60;
-      newJobStartTime = convertFloatToTime(newJobStartTimeFloat);
+    if (newJobStartTime >= job.startTime) {
+      if (newJobStartTime <= job.endTime) {
+        newJobStartTimeFloat = convertTimeToFloat(job.endTime) + 1.0 / 60;
+        newJobStartTime = convertFloatToTime(newJobStartTimeFloat);
+      }
+    } else if (newJobEndTime >= job.endTime) {
+      newJobEndTimeFloat = convertTimeToFloat(job.startTime) - 1.0 / 60;
+      newJobEndTime = convertFloatToTime(newJobEndTimeFloat);
     }
 
     if (newJobEndTime >= job.startTime && newJobEndTime <= job.endTime) {
       newJobEndTimeFloat = convertTimeToFloat(job.startTime) - 1.0 / 60;
       newJobEndTime = convertFloatToTime(newJobEndTimeFloat);
     }
+
   }
 
   validNewJobHover = newJobStartTime < newJobEndTime;
