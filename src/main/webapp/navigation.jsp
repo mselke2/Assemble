@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Brendan04
@@ -15,15 +16,20 @@
   Cookie[] cookies = request.getCookies();
 
   Cookie permissionCookie = null;
-  if (cookies != null) {
+  if (cookies != null && cookies.length >= 3) {
     for (Cookie cookie : cookies) {
       String name = cookie.getName();
       if (name.equals("permissionLevel")) {
         permissionCookie = cookie;
       }
     }
-  }
+  } else {
+
 %>
+<h1>TESTING</h1>
+<c:redirect url="calendar.jsp"/>
+<%}%>
+
 <header>
   <div class="navDiv">
     <h1 id="navH1">Assemble</h1>
