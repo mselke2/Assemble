@@ -167,7 +167,7 @@ public class InventoryDaoImpl implements InventoryDao{
     try {
       Connection conn = MySQLUtility.createConnection();
 
-      String mySqlSelectAll = "SELECT * FROM inventorytype";
+      String mySqlSelectAll = "SELECT * FROM inventorytype;";
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(mySqlSelectAll);
       while (result.next()) {
@@ -193,7 +193,7 @@ public class InventoryDaoImpl implements InventoryDao{
     try {
       Connection conn = MySQLUtility.createConnection();
 
-      String mySqlSelectAll = "SELECT * FROM inventory";
+      String mySqlSelectAll = "SELECT * FROM inventory;";
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(mySqlSelectAll);
       while (result.next()) {
@@ -245,7 +245,7 @@ public class InventoryDaoImpl implements InventoryDao{
 
       // Prepare a select statement to see if Inventory exists
       // with this inventoryID and execute it.
-      String MySQLInsert = "INSERT INTO inventorytype (Description) VALUES (?)";
+      String MySQLInsert = "INSERT INTO inventorytype (Description) VALUES (?);";
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLInsert, Statement.RETURN_GENERATED_KEYS);
       preparedStatement.setString(1, inventoryType.getDescription());
       preparedStatement.executeUpdate();

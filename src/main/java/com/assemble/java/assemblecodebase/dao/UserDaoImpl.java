@@ -20,7 +20,7 @@ public class UserDaoImpl implements UserDao {
       
       // Prepare a select statement to see if a user exists
       // with this username and execute it.
-      String mySqlSelectExists = "SELECT * FROM user WHERE username = ?";
+      String mySqlSelectExists = "SELECT * FROM user WHERE username = ?;";
       
       PreparedStatement preparedStatement = conn.prepareStatement(mySqlSelectExists);
       
@@ -37,7 +37,7 @@ public class UserDaoImpl implements UserDao {
       } else {
         // ELSE
         // Prepare a set statement to add this user to the database and execute it.
-        String mySqlInsert = "INSERT INTO user (username, permissionId, firstName, lastName, passwordHash) VALUES (?, ?, ?, ?, ?)";
+        String mySqlInsert = "INSERT INTO user (username, permissionId, firstName, lastName, passwordHash) VALUES (?, ?, ?, ?, ?);";
         preparedStatement = conn.prepareStatement(mySqlInsert);
         
         preparedStatement.setString(1, user.getUsername());
@@ -48,7 +48,7 @@ public class UserDaoImpl implements UserDao {
         preparedStatement.executeUpdate();
         
         // Prepare a select statement to get the newly created userID and execute it.
-        String mySqlSelectId = "SELECT ID, passwordHash FROM user WHERE username = ?";
+        String mySqlSelectId = "SELECT ID, passwordHash FROM user WHERE username = ?;";
         preparedStatement = conn.prepareStatement(mySqlSelectId);
         preparedStatement.setString(1, user.getUsername());
         results = preparedStatement.executeQuery();
@@ -65,7 +65,7 @@ public class UserDaoImpl implements UserDao {
           String passwordOut = DigestUtils.sha256Hex(saltedPassword);
           
           // Prepare an update statement to update the password with the new hash and execute it.
-          String mySqlUpdate = "UPDATE user SET passwordHash = ? WHERE username = ?";
+          String mySqlUpdate = "UPDATE user SET passwordHash = ? WHERE username = ?;";
           preparedStatement = conn.prepareStatement(mySqlUpdate);
           preparedStatement.setString(1, passwordOut);
           preparedStatement.setString(2, user.getUsername());
@@ -96,7 +96,7 @@ public class UserDaoImpl implements UserDao {
       
       // Prepare a select statement to see if a user exists
       // with this username and execute it.
-      String mySqlSelectExists = "SELECT * FROM user WHERE username = ?";
+      String mySqlSelectExists = "SELECT * FROM user WHERE username = ?;";
       PreparedStatement preparedStatement = conn.prepareStatement(mySqlSelectExists);
       preparedStatement.setString(1, username);
       ResultSet results = preparedStatement.executeQuery();
@@ -112,7 +112,7 @@ public class UserDaoImpl implements UserDao {
           String passwordOut = DigestUtils.sha256Hex(saltedPassword);
           // Re-hash the password with the new salt.
           // Prepare an update statement to update this user in the database and execute it.
-          String mySqlUpdate = "UPDATE user SET username = ?, PermissionID = ?, FirstName = ?, LastName = ?, passwordHash = ? WHERE username = ?";
+          String mySqlUpdate = "UPDATE user SET username = ?, PermissionID = ?, FirstName = ?, LastName = ?, passwordHash = ? WHERE username = ?;";
           preparedStatement = conn.prepareStatement(mySqlUpdate);
           preparedStatement.setString(1, user.getUsername());
           preparedStatement.setInt(2, user.getPermissionId());
@@ -122,7 +122,7 @@ public class UserDaoImpl implements UserDao {
           preparedStatement.setString(6, username);
           preparedStatement.executeUpdate();
         } else {
-          String mySqlUpdate = "UPDATE user SET Username = ?, PermissionID = ?, FirstName = ?, LastName = ? WHERE username = ?";
+          String mySqlUpdate = "UPDATE user SET Username = ?, PermissionID = ?, FirstName = ?, LastName = ? WHERE username = ?;";
           preparedStatement = conn.prepareStatement(mySqlUpdate);
           preparedStatement.setString(1, user.getUsername());
           preparedStatement.setInt(2, user.getPermissionId());
@@ -154,7 +154,7 @@ public class UserDaoImpl implements UserDao {
 
       // Prepare a select statement to see if a user exists
       // with this userId and execute it.
-      String mySqlSelectExists = "SELECT * FROM user WHERE ID = ?";
+      String mySqlSelectExists = "SELECT * FROM user WHERE ID = ?;";
       PreparedStatement preparedStatement = conn.prepareStatement(mySqlSelectExists);
       preparedStatement.setInt(1, userId);
       ResultSet results = preparedStatement.executeQuery();
@@ -162,7 +162,7 @@ public class UserDaoImpl implements UserDao {
       // IF a user exists
       if (results.isBeforeFirst()) {
         // Prepare a delete statement to delete this user from the database and execute it.
-        String mySqlDelete = "DELETE FROM user WHERE ID = ?";
+        String mySqlDelete = "DELETE FROM user WHERE ID = ?;";
         preparedStatement = conn.prepareStatement(mySqlDelete);
         preparedStatement.setInt(1, userId);
         preparedStatement.executeUpdate();
@@ -188,7 +188,7 @@ public class UserDaoImpl implements UserDao {
       // Get a connection to the database
 
       // Prepare a select statement to see if a user exists with this username and execute it
-      String mySqlSelectExists = "SELECT * FROM user WHERE username = ?";
+      String mySqlSelectExists = "SELECT * FROM user WHERE username = ?;";
       PreparedStatement preparedStatement = conn.prepareStatement(mySqlSelectExists);
       preparedStatement.setString(1, username);
       ResultSet results = preparedStatement.executeQuery();
@@ -228,7 +228,7 @@ public class UserDaoImpl implements UserDao {
     try {
       Connection conn = MySQLUtility.createConnection();
 
-      String mySqlSelectAll = "SELECT * FROM userpermission";
+      String mySqlSelectAll = "SELECT * FROM userpermission;";
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(mySqlSelectAll);
       while (result.next()) {
@@ -252,7 +252,7 @@ public class UserDaoImpl implements UserDao {
     try {
       Connection connection = MySQLUtility.createConnection();
       
-      String mySqlSelectAll = "SELECT * FROM user";
+      String mySqlSelectAll = "SELECT * FROM user;";
       PreparedStatement statement = connection.prepareStatement(mySqlSelectAll, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       ResultSet results = statement.executeQuery();
       User[] users;
@@ -300,7 +300,7 @@ public class UserDaoImpl implements UserDao {
     
     try {
       Connection connection =  MySQLUtility.createConnection();
-      String mySqlSelectById = "SELECT * FROM user WHERE Username = ?";
+      String mySqlSelectById = "SELECT * FROM user WHERE Username = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectById);
       preparedStatement.setString(1, userToGrab);
       ResultSet results = preparedStatement.executeQuery();

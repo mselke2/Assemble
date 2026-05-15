@@ -187,7 +187,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
     try {
       Connection conn = MySQLUtility.createConnection();
 
-      String mySqlSelectAll = "SELECT * FROM equipment";
+      String mySqlSelectAll = "SELECT * FROM equipment;";
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(mySqlSelectAll);
       while (result.next()) {
@@ -233,7 +233,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
     try {
       Connection connection = MySQLUtility.createConnection();
 
-      String MySQLInsert = "INSERT INTO equipmenttype (Description) VALUES (?)";
+      String MySQLInsert = "INSERT INTO equipmenttype (Description) VALUES (?);";
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLInsert, Statement.RETURN_GENERATED_KEYS);
       preparedStatement.setString(1, equipmentType.getDescription());
       preparedStatement.executeUpdate();

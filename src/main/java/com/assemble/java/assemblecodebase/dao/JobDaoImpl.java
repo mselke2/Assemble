@@ -337,7 +337,7 @@ public class JobDaoImpl implements JobDao {
         int personnelCommittedCount = calculateCommittedPersonnelCount(startTime);
         
         
-        String mySqlPersonnelAvailable = "SELECT * FROM personnel WHERE Date = ?;";
+        String mySqlPersonnelAvailable = "SELECT * FROM personnel WHERE `Date` = ?;";
         PreparedStatement preparedStatementPersonnel = connection.prepareStatement(mySqlPersonnelAvailable);
         preparedStatementPersonnel.setDate(1, new Date(startTime.getTime()));
         ResultSet resultSetPersonnel = preparedStatementPersonnel.executeQuery();
@@ -531,25 +531,6 @@ public class JobDaoImpl implements JobDao {
       throw new JobDaoException(e.getMessage());
     }
     
-    return true;
-  }
-  
-  public static boolean releasePrerequisites(Job job) {
-    
-    try {
-      // Get a connection to the database
-      Connection connection = MySQLUtility.createConnection();
-      String mySqlUpdate = "UPDATE Equipment SET Count = ? WHERE ID = ? ;";
-      
-      for (int i = 0; i < job.getEquipmentCounts()[0].length; i++) {
-        PreparedStatement equipmentCountStatement = connection.prepareStatement(mySqlUpdate);
-        
-      }
-      
-      // Use InventoryDao and EquipmentDao to add counts back to the database for each inventory and equipment type required for this job
-    } catch (Exception e) {
-      throw new JobDaoException(e.getMessage());
-    }
     return true;
   }
   

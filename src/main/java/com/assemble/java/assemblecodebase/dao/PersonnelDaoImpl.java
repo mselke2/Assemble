@@ -13,13 +13,13 @@ public class PersonnelDaoImpl implements PersonnelDao {
     
     try {
       Connection connection = MySQLUtility.createConnection();
-      String mySqlSelect = "SELECT * FROM personnel WHERE date = ?";
+      String mySqlSelect = "SELECT * FROM personnel WHERE date = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
       preparedStatement.setDate(1, date);
       ResultSet resultSet = preparedStatement.executeQuery();
       
       if (resultSet.isBeforeFirst()) {
-        String mySqlUpdate = "UPDATE personnel SET count = ? WHERE date = ?";
+        String mySqlUpdate = "UPDATE personnel SET count = ? WHERE date = ?;";
         preparedStatement = connection.prepareStatement(mySqlUpdate);
         preparedStatement.setInt(1, count);
         preparedStatement.setDate(2, date);
@@ -42,7 +42,7 @@ public class PersonnelDaoImpl implements PersonnelDao {
     
     try {
       Connection connection = MySQLUtility.createConnection();
-      String mySqlSelect = "SELECT * FROM personnel WHERE date = ?";
+      String mySqlSelect = "SELECT * FROM personnel WHERE date = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
       preparedStatement.setDate(1, date);
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -96,13 +96,13 @@ public class PersonnelDaoImpl implements PersonnelDao {
   
     try {
       Connection connection = MySQLUtility.createConnection();
-      String MySqlSelect = "SELECT * FROM personnel WHERE date = ?";
+      String MySqlSelect = "SELECT * FROM personnel WHERE date = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(MySqlSelect);
       preparedStatement.setDate(1, date);
       ResultSet resultSet = preparedStatement.executeQuery();
       
       if (resultSet.isBeforeFirst()) {
-        String mySqlDelete = "DELETE FROM personnel WHERE date = ?";
+        String mySqlDelete = "DELETE FROM personnel WHERE date = ?;";
         preparedStatement = connection.prepareStatement(mySqlDelete);
         preparedStatement.setDate(1, date);
         preparedStatement.executeUpdate();
