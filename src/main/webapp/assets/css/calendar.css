@@ -50,7 +50,8 @@ main {
         .job-entry {
           border-radius: 5px;
           border: 1px solid black;
-          color: black;
+          color: white;
+          padding-left: 0.5em;
         }
       }
     }

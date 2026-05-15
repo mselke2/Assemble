@@ -89,5 +89,6 @@
     <a id="back-button" href="Calendar">Go Back</a>
 </main>
 <script src="assets/js/scheduler.js"></script>
+<script src="assets/js/job-color.js"></script>
 </body>
 </html>

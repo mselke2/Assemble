@@ -124,6 +124,8 @@ function validateChanges() {
 }
 
 function updateLocalJobData(id, startTime, endTime, lineNumber) {
+  $(`.job-entry[job-id="${id}"]`).css("background-color", calculateJobColorString(id));
+
   jobEntries.set(id, {
     startTime: startTime,
     endTime: endTime,

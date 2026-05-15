@@ -8,6 +8,7 @@
 <body>
 <%@ include file="navigation.jsp" %>
 <script src="assets/js/calendar.js"></script>
+<script src="assets/js/job-color.js"></script>
 <main>
     <div id="calendar-header">
         <button id="prev-btn">Previous</button>
