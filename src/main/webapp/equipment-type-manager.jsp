@@ -10,13 +10,11 @@
 <%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Equipment Type</h1>
-    <c:if test="${requestingUser.clearanceAtLeast('admin')}">
     <form action="EquipmentType" method="post" class="new-entry-bar">
         <label for="equipment-type-description">Description</label>
         <input type="text" name="description" maxlength="50" required id="equipment-type-description">
         <input type="submit" name="submit" value="Submit">
     </form>
-    </c:if>
     <table>
         <tr>
             <th></th>
@@ -27,10 +25,10 @@
         <c:if test="${not empty equipmentTypes}">
             <c:forEach var="equipmentType" items="${equipmentTypes}">
                 <tr resource-id="${equipmentType.id}">
-                  <td><c:if test="${requestingUser.clearanceAtLeast('admin')}"><button class="submit-btn">Submit</button></c:if></td>
+                    <td><button class="submit-btn">Submit</button></td>
                     <td>${equipmentType.id}</td>
-                  <td><input type="text" name="description" maxlength="50" required value="${equipmentType.description}" <c:if test="${!requestingUser.clearanceAtLeast('admin')}">disabled</c:if> ></td>
-                  <td><c:if test="${requestingUser.clearanceAtLeast('admin')}"><button class="delete-btn">Delete</button></c:if></td>
+                    <td><input type="text" name="description" maxlength="50" required value="${equipmentType.description}"></td>
+                    <td><button class="delete-btn">Delete</button></td>
                 </tr>
             </c:forEach>
         </c:if>

@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class User implements Serializable {
   private int id;
   private String username;
-  private int permissionId = 4;
+  private int permissionId;
   private String firstName;
   private String lastName;
   private String passwordHash;
@@ -81,15 +81,5 @@ public class User implements Serializable {
   @Override
   public String toString() {
     return "User [id=" + id + ", username=" + username + ", permissionId=" + permissionId + ", firstName=" + firstName + ", lastName=" + lastName + "]";
-  }
-
-  public Boolean clearanceAtLeast(String requiredPermission) {
-    if (requiredPermission.equals("admin") && permissionId == 1)
-      return true;
-
-    if (requiredPermission.equals("editor") && permissionId <= 2)
-      return true;
-
-    return requiredPermission.equals("viewer") && permissionId <= 3;
   }
 }

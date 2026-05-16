@@ -26,7 +26,7 @@
   } else {
 
 %>
-<c:redirect url="Calendar"/>
+<c:redirect url="calendar.jsp"/>
 <%}%>
 
 <header>
@@ -42,9 +42,9 @@
     <a href="EquipmentType">Equipment Types</a>
     <a href="Inventory">Inventory</a>
     <a href="InventoryType">Inventory Types</a>
-    <c:if test="${requestingUser.clearanceAtLeast('admin')}">
-    <a href="AdminTools">Admin Tools</a>
-    </c:if>
+    <% if (permissionCookie != null && permissionCookie.getValue().equals("1")) {%>
+    <a href="admin-tools.jsp">Admin Tools</a>
+    <% } %>
   </nav>
 </header>
 </body>
