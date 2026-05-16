@@ -43,7 +43,7 @@
     <a href="Inventory">Inventory</a>
     <a href="InventoryType">Inventory Types</a>
     <c:if test="${requestingUser.clearanceAtLeast('admin')}">
-    <a href="admin-tools.jsp">Admin Tools</a>
+    <a href="AdminTools">Admin Tools</a>
     </c:if>
   </nav>
 </header>
