@@ -25,16 +25,24 @@
         <tr>
             <th></th>
             <th>Equipment Id</th>
-            <th>Status</th>
+            <th>Type</th>
+            <th>Condition</th>
             <th></th>
         </tr>
         <c:if test="${not empty equipmentList}">
             <c:forEach var="equipment" items="${equipmentList}">
                 <tr resource-id="${equipment.id}">
                     <td>
+                      <button class="submit-btn">Submit</button>
                     </td>
                     <td>${equipment.id}</td>
-                    <td class="resource-count">${equipment.status}</td>
+                    <td>${equipment.typeDescription}</td>
+                    <td class="resource-count">
+                      <select name="status">
+                        <option value="0" <c:if test="${equipment.status == 0}">selected</c:if>>Lost/Damaged</option>
+                        <option value="1" <c:if test="${equipment.status == 1}">selected</c:if>>Good</option>
+                      </select>
+                    </td>
                     <td>
                         <button class="delete-btn">Delete</button>
                     </td>

@@ -131,7 +131,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
       
       // Prepare a select statement to see if Equipment exists
       // with this typeID and execute it.
-      String sqlSelect = "SELECT * FROM equipment WHERE ID = ?;";
+      String sqlSelect = "SELECT * FROM equipment LEFT JOIN equipmenttype ON equipment.TypeID = equipmenttype.id WHERE equipment.ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(sqlSelect);
       preparedStatement.setInt(1, id);
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -143,6 +143,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
         resultSet.next();
         
         Equipment equipment = new Equipment(resultSet.getInt("ID"), resultSet.getInt("TypeID"), resultSet.getInt("Status"));
+        equipment.setTypeDescription(resultSet.getString("Description"));
         preparedStatement.close();
         connection.close();
         return equipment;
@@ -187,11 +188,12 @@ public class EquipmentDaoImpl implements EquipmentDao {
     try {
       Connection conn = MySQLUtility.createConnection();
 
-      String mySqlSelectAll = "SELECT * FROM equipment;";
+      String mySqlSelectAll = "SELECT * FROM equipment LEFT JOIN equipmenttype ON equipment.TypeID = equipmenttype.id;";
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(mySqlSelectAll);
       while (result.next()) {
         Equipment equipment = new Equipment(result.getInt("ID"), result.getInt("TypeID"), result.getInt("Status"));
+        equipment.setTypeDescription(result.getString("Description"));
         equipmentList.add(equipment);
       }
 
