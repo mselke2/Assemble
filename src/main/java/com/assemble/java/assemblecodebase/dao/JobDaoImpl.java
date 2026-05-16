@@ -334,7 +334,7 @@ public class JobDaoImpl implements JobDao {
         
         int personnelAvailableCount;
         
-        int personnelCommittedCount = calculateCommittedPersonnelCount(startTime);
+        int personnelCommittedCount = calculateCommittedPersonnelCount(startTime, projectedEndTime);
         
         
         String mySqlPersonnelAvailable = "SELECT * FROM personnel WHERE `Date` = ?;";
@@ -737,15 +737,23 @@ public class JobDaoImpl implements JobDao {
     }
   }
   
-  public int calculateCommittedPersonnelCount(Timestamp startTime) {
+  public int calculateCommittedPersonnelCount(Timestamp startTime, Timestamp endTime) {
     
-    String mySqlSelect = "SELECT * FROM job WHERE StartTime <= ? AND ProjectedEndTime >= ?;";
+    String mySqlSelect = """
+      SELECT * FROM job WHERE (StartTime <= ? AND ProjectedEndTime >= ?)
+        OR (StartTime > ? AND ProjectedEndTime <= ?)
+        OR (StartTime <= ? AND ProjectedEndTime >= ?);
+""";
     
     try {
       Connection connection = MySQLUtility.createConnection();
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       preparedStatement.setTimestamp(1, startTime);
       preparedStatement.setTimestamp(2, startTime);
+      preparedStatement.setTimestamp(3, startTime);
+      preparedStatement.setTimestamp(4, endTime);
+      preparedStatement.setTimestamp(5, endTime);
+      preparedStatement.setTimestamp(6, endTime);
       ResultSet resultSet = preparedStatement.executeQuery();
       
       if (resultSet.isBeforeFirst()) {

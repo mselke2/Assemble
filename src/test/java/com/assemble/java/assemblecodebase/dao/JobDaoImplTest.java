@@ -132,7 +132,7 @@ class JobDaoImplTest {
     JobDaoImpl jobDao = new JobDaoImpl();
     assertDoesNotThrow(() -> {
       
-      int count = jobDao.calculateCommittedPersonnelCount(new Timestamp(2026-1900, 0, 1, 19, 0, 0, 0));
+      int count = jobDao.calculateCommittedPersonnelCount(new Timestamp(2026-1900, 0, 1, 19, 0, 0, 0), new Timestamp(2026-1900, 0, 1, 20, 0, 0, 0));
       assertEquals(10, count);
       
       System.out.println(count);
