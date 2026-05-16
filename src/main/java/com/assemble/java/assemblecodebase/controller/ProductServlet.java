@@ -2,6 +2,7 @@ package com.assemble.java.assemblecodebase.controller;
 
 
 import com.assemble.java.assemblecodebase.dao.*;
+import com.assemble.java.assemblecodebase.model.EquipmentType;
 import com.assemble.java.assemblecodebase.model.InventoryType;
 import com.assemble.java.assemblecodebase.model.Product;
 import com.google.gson.Gson;
@@ -23,19 +24,23 @@ public class ProductServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     ProductDao productDao = new ProductDaoImpl();
     InventoryDao inventoryDao = new InventoryDaoImpl();
+    EquipmentDao equipmentDao = new EquipmentDaoImpl();
 
     List<Product> products = new ArrayList<>();
     List<InventoryType> inventoryTypes = new ArrayList<>();
+    List<EquipmentType> equipmentTypes = new ArrayList<>();
 
     try {
       products = productDao.retrieveAll();
       inventoryTypes = inventoryDao.retrieveTypes();
+      equipmentTypes = equipmentDao.retrieveTypes();
     } catch (RuntimeException e) {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
     request.setAttribute("products", products);
     request.setAttribute("inventoryTypes", inventoryTypes);
+    request.setAttribute("equipmentTypes", equipmentTypes);
     getServletContext().getRequestDispatcher("/product-manager.jsp").forward(request, response);
   }
 

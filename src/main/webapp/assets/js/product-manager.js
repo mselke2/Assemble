@@ -1,17 +1,16 @@
 let $inventoryEditor;
+let $equipmentEditor;
 let editedProductId = -1;
 
-$(function() {
-  initializeControls("Product");
-
+function initializeInventoryEditor() {
   $inventoryEditor = $("#inventory-editor");
-  $inventoryEditor.find(".editor-submit").on("click", function() {
+  $inventoryEditor.find(".editor-submit").on("click", function () {
     let $row = $(`[resource-id="${editedProductId}"]`);
 
     let inventoryIds = [];
     let inventoryCounts = [];
 
-    $inventoryEditor.find("input").each(function() {
+    $inventoryEditor.find("input").each(function () {
       let $this = $(this);
       if ($this.val() > 0) {
         inventoryIds.push(+$this.attr("inventory-type-id"));
@@ -25,7 +24,7 @@ $(function() {
     $inventoryEditor.hide();
   });
 
-  $(".inventory-btn").on("click", function() {
+  $(".inventory-btn").on("click", function () {
     let $row = $(this).parent().parent();
     let $inventoryIds = $row.find(".inventory-ids");
     let $inventoryCounts = $row.find(".inventory-counts");
@@ -42,4 +41,51 @@ $(function() {
 
     $inventoryEditor.show();
   });
+}
+
+function initializeEquipmentEditor() {
+  $equipmentEditor = $("#equipment-editor");
+  $equipmentEditor.find(".editor-submit").on("click", function () {
+    let $row = $(`[resource-id="${editedProductId}"]`);
+
+    let equipmentIds = [];
+    let equipmentCounts = [];
+
+    $equipmentEditor.find("input").each(function () {
+      let $this = $(this);
+      if ($this.val() > 0) {
+        equipmentIds.push(+$this.attr("equipment-type-id"));
+        equipmentCounts.push(+$this.val());
+      }
+    });
+
+    $row.find(".equipment-ids").val(`[${equipmentIds}]`);
+    $row.find(".equipment-counts").val(`[${equipmentCounts}]`);
+
+    $equipmentEditor.hide();
+  });
+
+  $(".equipment-btn").on("click", function () {
+    let $row = $(this).parent().parent();
+    let $equipmentIds = $row.find(".equipment-ids");
+    let $equipmentCounts = $row.find(".equipment-counts");
+    editedProductId = +$row.attr("resource-id");
+
+    let equipmentIds = JSON.parse($equipmentIds.val());
+    let equipmentCounts = JSON.parse($equipmentCounts.val());
+
+    $equipmentEditor.find("input").val(0);
+
+    for (let i = 0; i < equipmentIds.length; i++) {
+      $equipmentEditor.find(`input[equipment-type-id="${equipmentIds[i]}"]`).val(equipmentCounts[i]);
+    }
+
+    $equipmentEditor.show();
+  });
+}
+
+$(function () {
+  initializeControls("Product");
+  initializeInventoryEditor();
+  initializeEquipmentEditor();
 })

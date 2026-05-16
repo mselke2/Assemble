@@ -86,6 +86,22 @@
         <button class="editor-submit">Ok</button>
     </div>
 </div>
+<div id="equipment-editor" class="editor" hidden>
+    <div class="editor-panel">
+        <h1>Required Equipment Counts</h1>
+        <ul>
+        <c:if test="${not empty equipmentTypes}">
+            <c:forEach var="equipmentType" items="${equipmentTypes}">
+                <li>
+                    <label>${equipmentType.description}:</label>
+                    <input type="number" equipment-type-id="${equipmentType.id}" min="0" class="equipment-count">
+                </li>
+            </c:forEach>
+        </c:if>
+        </ul>
+        <button class="editor-submit">Ok</button>
+    </div>
+</div>
 <script src="assets/js/resource-manager.js"></script>
 <script src="assets/js/product-manager.js"></script>
 </body>
