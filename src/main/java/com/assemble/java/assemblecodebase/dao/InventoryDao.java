@@ -16,4 +16,5 @@ public interface InventoryDao {
   boolean updateInventoryType(InventoryType inventoryType);
   int addInventoryType(InventoryType inventoryType);
   int deleteInventoryTypeById(int id);
+  InventoryType retrieveTypeById(int id);
 }
