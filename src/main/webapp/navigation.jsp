@@ -26,7 +26,7 @@
   } else {
 
 %>
-<c:redirect url="calendar.jsp"/>
+<c:redirect url="Calendar"/>
 <%}%>
 
 <header>
