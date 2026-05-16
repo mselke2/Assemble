@@ -108,6 +108,8 @@ public class JobServlet extends HttpServlet {
 
       job.setLineNumber(json.get("lineNum").getAsInt());
 
+      job.setPersonnelCount(json.get("numMembers").getAsInt());
+
       JobDao jobDao = new JobDaoImpl();
       int newId = jobDao.updateJob(job);
       response.setContentType("application/json");
