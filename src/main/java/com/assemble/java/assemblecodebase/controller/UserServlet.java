@@ -5,6 +5,7 @@ import com.assemble.java.assemblecodebase.dao.UserDao;
 import com.assemble.java.assemblecodebase.dao.UserDaoException;
 import com.assemble.java.assemblecodebase.dao.UserDaoImpl;
 import com.assemble.java.assemblecodebase.model.User;
+import com.assemble.java.assemblecodebase.model.UserPermission;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,8 +14,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
-@WebServlet(name = "UserServlet", value = "/User")
+@WebServlet(name = "UserServlet", value = "/User/*")
 public class UserServlet extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -136,15 +138,18 @@ public class UserServlet extends HttpServlet {
   }
   
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-  
+    request.setAttribute("loggedInUser", Authenticate.RetrieveRequestingUser(request));
+
     if (request.getParameter("userToDisplay") == null) {
       User[] users;
       
       try {
         UserDaoImpl dao = new UserDaoImpl();
         users = dao.retrieveAll();
+        List<UserPermission> userPermissionTypes = dao.retrievePermissions();
         
         request.setAttribute("users", users);
+        request.setAttribute("userPermissionTypes", userPermissionTypes);
         
         // Send the response.
         getServletContext().getRequestDispatcher("/user-manager.jsp").forward(request, response);

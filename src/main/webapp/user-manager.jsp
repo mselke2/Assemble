@@ -13,8 +13,9 @@
     <link rel="stylesheet" type="text/css" href="assets/css/user.css"/>
 </head>
 <body>
+<%@ include file="navigation.jsp" %>
+<div id="logged-in-user" user-id="${loggedInUser.id}" hidden></div>
 <div class="panel" id="formPanel">
-
   <h1>Edit User</h1>
 
   <form class="userForm" action="User" method="POST">
@@ -23,7 +24,7 @@
     <input class="userFormInput" type="text" id="username" name="username"/><br>
 
     <label for="password">Password: (Leave blank to keep old password)</label>
-    <input class="userFormInput" type="password" id="password" name="password" /><br>
+    <input class="userFormInput" type="password" id="password" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$"/><br>
 
     <label for="password-repeat">Confirm Password:</label>
     <input class="userFormInput" type="password" id="password-repeat" name="password-repeat" /><br>
@@ -34,15 +35,23 @@
     <label for="lName">Last Name:</label>
     <input class="userFormInput" type="text" id="lName" name="lName" /><br>
 
-    <label for="type">Permission Level</label>
-    <input class="userFormInput" type="text" id="type" name="type" /><br><br>
+    <div id="permission-field">
+      <label for="type">Permission Level</label>
+      <select id="type" name="type" class="userFormInput">
+        <c:if test="${not empty userPermissionTypes}">
+          <c:forEach var="permissionType" items="${userPermissionTypes}">
+            <option value="${permissionType.id}">${permissionType.description}</option>
+          </c:forEach>
+        </c:if>
+      </select>
+    </div>
 
     <label for="userToEdit" typeof="hidden"></label>
     <input class="userFormInput" type="hidden" id="userToEdit" name="userToEdit" /><br>
 
     <input type="submit" value="Submit"/><br>
-
   </form>
+  <button id="delete-user-btn">Delete User</button>
 
 </div>
 

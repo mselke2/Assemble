@@ -338,4 +338,28 @@ public class UserDaoImpl implements UserDao {
     }
     
   }
+
+  public User retrieveById(int id) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+      String mySqlSelectById = "SELECT * FROM user WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelectById);
+      preparedStatement.setInt(1, id);
+      ResultSet results = preparedStatement.executeQuery();
+      if (results.next()) {
+        User user = new User();
+        user.setId(results.getInt("ID"));
+        user.setUsername(results.getString("Username"));
+        user.setFirstName(results.getString("FirstName"));
+        user.setLastName(results.getString("LastName"));
+        user.setPermissionId(results.getInt("PermissionID"));
+
+        return user;
+      }
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new UserDaoException(e.getMessage());
+    }
+
+    return null;
+  }
 }

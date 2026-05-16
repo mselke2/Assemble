@@ -12,4 +12,5 @@ public interface UserDao {
   void deleteUser(int userId);
   int retrieveWithLogin(String username, String password);
   List<UserPermission> retrievePermissions();
+  User retrieveById(int id);
 }
