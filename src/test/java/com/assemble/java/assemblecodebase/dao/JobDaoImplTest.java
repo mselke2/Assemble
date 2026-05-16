@@ -115,7 +115,7 @@ class JobDaoImplTest {
       job.setProjectedEndTime(new  Timestamp(2026-1900, 0, 1, 16, 0, 0, 0));
       
       jobDao.addJob(job);
-      jobDao.fillCommittedEquipmentCount(new Timestamp(2026-1900, 0, 1, 15, 0, 0, 0));
+      jobDao.fillCommittedEquipmentCount(new Timestamp(2026-1900, 0, 1, 15, 0, 0, 0), new Timestamp(2026-1900, 0, 1, 16, 0, 0, 0));
       
       int[][] equipmentCounts = jobDao.getEquipmentCounts();
       
