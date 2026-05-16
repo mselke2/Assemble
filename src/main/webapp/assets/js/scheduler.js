@@ -271,6 +271,8 @@ function onSubmitClicked() {
       );
 
       cancelEdit();
+    }).fail(response => {
+      $errorMessage.text(response.responseText);
     });
   }
 }

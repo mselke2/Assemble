@@ -114,10 +114,15 @@ public class JobServlet extends HttpServlet {
       int newId = jobDao.updateJob(job);
       response.setContentType("application/json");
       response.getWriter().write("{ \"newId\": %s }".formatted(newId));
-    } catch (NumberFormatException | JobDaoException e) {
+    } catch (NumberFormatException e) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+
     } catch (RuntimeException e) {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
     }
   }
 

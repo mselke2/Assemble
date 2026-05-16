@@ -80,7 +80,7 @@
                         <input type="number" min="1" name="line-num" id="line-num"><br>
                         <button id="cancel-btn">Cancel</button>
                         <button id="submit-btn">Submit</button><br><br>
-                        <button id="delete-btn">Delete</button>
+                        <button id="delete-btn">Delete</button><br>
                         <p id="error" class="error"></p>
                     </div>
                 </div>
