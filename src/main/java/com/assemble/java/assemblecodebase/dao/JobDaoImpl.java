@@ -350,19 +350,7 @@ public class JobDaoImpl implements JobDao {
         }
         
         // Get personnel required for product produced by job
-        int personnelRequiredCount;
-        
-        String mySqlPersonnelRequired = "SELECT * FROM product WHERE ID = ?;";
-        preparedStatementPersonnel = connection.prepareStatement(mySqlPersonnelRequired);
-        preparedStatementPersonnel.setInt(1, job.getProductId());
-        ResultSet resultsPersonnelRequired = preparedStatementPersonnel.executeQuery();
-        
-        if (resultsPersonnelRequired.isBeforeFirst()) {
-          resultsPersonnelRequired.next();
-          personnelRequiredCount = resultsPersonnelRequired.getInt("TargetPersonnelCount");
-        } else {
-          throw new JobDaoException("No personnel data for product.");
-        }
+        int personnelRequiredCount = job.getPersonnelCount();
         
         int personnelAvailablePrime = personnelAvailableCount - personnelCommittedCount;
         
