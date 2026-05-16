@@ -26,7 +26,6 @@
   } else {
 
 %>
-<h1>TESTING</h1>
 <c:redirect url="calendar.jsp"/>
 <%}%>
 
