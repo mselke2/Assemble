@@ -138,11 +138,7 @@ public class UserServlet extends HttpServlet {
   }
   
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    User requester = Authenticate.RetrieveRequestingUser(request);
-    if (requester == null || !requester.clearanceAtLeast("admin")) {
-      response.sendRedirect("Calendar");
-      return;
-    }
+    request.setAttribute("loggedInUser", Authenticate.RetrieveRequestingUser(request));
 
     if (request.getParameter("userToDisplay") == null) {
       User[] users;

@@ -10,7 +10,6 @@
 <%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Inventory</h1>
-    <c:if test="${requestingUser.clearanceAtLeast('editor')}">
     <form action="Inventory" method="post" class="new-entry-bar">
         <label for="inventory-type">Inventory Type</label>
         <select name="inventoryTypeId" id="inventory-type">
@@ -22,7 +21,6 @@
         </select>
         <input type="submit" name="submit" value="Submit">
     </form>
-    </c:if>
     <table>
         <tr>
             <th></th>
@@ -34,11 +32,11 @@
         <c:if test="${not empty inventory}">
             <c:forEach var="resource" items="${inventory}">
                 <tr resource-id="${resource.id}">
-                  <td><c:if test="${requestingUser.clearanceAtLeast('editor')}"><button class="submit-btn">Submit</button></c:if></td>
+                    <td><button class="submit-btn">Submit</button></td>
                     <td>${resource.id}<input type="hidden" name="typeId" value="${resource.typeId}"> </td>
                     <td>${resource.typeDescription}</td>
-                  <td class="resource-count"><input type="number" name="count" required min="1" value="${resource.count}" <c:if test="${!requestingUser.clearanceAtLeast('editor')}">disabled</c:if>></td>
-                  <td><c:if test="${requestingUser.clearanceAtLeast('editor')}"><button class="delete-btn">Delete</button></c:if></td>
+                    <td class="resource-count"><input type="number" name="count" required min="1" value="${resource.count}"></td>
+                    <td><button class="delete-btn">Delete</button></td>
                 </tr>
             </c:forEach>
         </c:if>

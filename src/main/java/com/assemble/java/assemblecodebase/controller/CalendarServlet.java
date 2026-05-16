@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "CalendarServlet", value = {"/Calendar", "/"})
+@WebServlet(name = "CalendarServlet", value = "/Calendar")
 public class CalendarServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
