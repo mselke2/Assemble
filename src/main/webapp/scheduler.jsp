@@ -81,6 +81,7 @@
                         <button id="cancel-btn">Cancel</button>
                         <button id="submit-btn">Submit</button><br><br>
                         <button id="delete-btn">Delete</button>
+                        <p id="error" class="error"></p>
                     </div>
                 </div>
             </div>

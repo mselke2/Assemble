@@ -10,6 +10,7 @@ let $numMembersInput;
 let $lineNumInput;
 let $submitBtn;
 let $deleteBtn;
+let $errorMessage;
 
 let lastValidStartTime;
 let lastValidEndTime;
@@ -225,11 +226,15 @@ function cancelEdit() {
   $activeJobEntry = null;
   updateGhostVisibility();
 
+  $errorMessage.text("");
+
   // hide the form since the edit was canceled
   $jobForm.hide();
 }
 
 function onSubmitClicked() {
+  $errorMessage.text("");
+
   let data = {
     productId: +$productChoiceInput.val(),
     startTime: `${$dateInput.val()} ${$startTimeInput.val()}:00`,
@@ -246,6 +251,8 @@ function onSubmitClicked() {
         data.lineNum);
 
       cancelEdit();
+    }).fail(response => {
+      $errorMessage.text(response.responseText);
     });
   } else {
     // perform PUT request with info from form
@@ -320,6 +327,7 @@ $(function() {
   $jobIdLabel = $("#job-id-label");
   $jobIdDisplay = $("#job-id");
   $productChoiceInput = $("#product-choice");
+  $errorMessage = $("#error");
 
   let $timeline = $(".timeline");
   hourTickSpace = parseInt($timeline.css("--hour-tick-space"));
