@@ -12,13 +12,13 @@
     <form action="Product" method="post" class="new-entry-bar">
 
         <label for="description" class="productLabel">Description</label>
-        <input type="text" class="productInput" name="description" id="description"><br>
+        <input type="text" class="productInput" name="description" id="description" required><br>
 
         <label for="duration" class="productLabel">Duration (Minutes)</label>
-        <input type="text" name="duration" class="productInput" id="duration"><br>
+        <input type="number" name="duration" class="productInput" id="duration" min="1" required><br>
 
         <label for="personnel-count" class="productLabel">Personnel Count</label>
-        <input type="text" name="personnelCount" class="productInput" id="personnel-count"><br><br>
+        <input type="number" name="personnelCount" class="productInput" id="personnel-count" min="1" required><br><br>
 
         <input class="submit" type="submit" name="submit" value="Submit">
 
