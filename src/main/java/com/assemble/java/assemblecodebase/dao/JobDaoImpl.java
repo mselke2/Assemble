@@ -44,7 +44,7 @@ public class JobDaoImpl implements JobDao {
         Connection connection = MySQLUtility.createConnection();
         
         
-        PreparedStatement preparedStatement = connection.prepareStatement(mySqlInsert);
+        PreparedStatement preparedStatement = connection.prepareStatement(mySqlInsert, Statement.RETURN_GENERATED_KEYS);
         
         preparedStatement.setInt(1, job.getProductId());
         preparedStatement.setInt(2, job.getLineNumber());
@@ -52,21 +52,14 @@ public class JobDaoImpl implements JobDao {
         preparedStatement.setTimestamp(4, job.getProjectedEndTime());
         preparedStatement.setInt(5, job.getPersonnelCount());
         preparedStatement.executeUpdate();
-        
-        preparedStatement.close();
-        
-        String mySqlSelectId = "SELECT ID FROM Job WHERE ProductID = ? AND LineNumber = ? AND StartTime = ?;";
-        preparedStatement = connection.prepareStatement(mySqlSelectId);
-        preparedStatement.setInt(1, job.getProductId());
-        preparedStatement.setInt(2, job.getLineNumber());
-        preparedStatement.setTimestamp(3, job.getStartTime());
-        ResultSet resultSet = preparedStatement.executeQuery();
-        
-        if(resultSet.isBeforeFirst()) {
-          resultSet.next();
-          jobId = resultSet.getInt("ID");
+
+        ResultSet insertedRows = preparedStatement.getGeneratedKeys();
+
+        if(insertedRows.next()) {
+          jobId = insertedRows.getInt(1);
         }
-        
+
+        preparedStatement.close();
         connection.close();
         subtractInventory();
         
@@ -83,9 +76,9 @@ public class JobDaoImpl implements JobDao {
   
   @Override
   public int updateJob(Job job) {
-    int id = job.getId();
-    deleteJob(id);
-    return addJob(job);
+    int newID = addJob(job);
+    deleteJob(job.getId());
+    return newID;
   }
   
   @Override
@@ -314,12 +307,13 @@ public class JobDaoImpl implements JobDao {
       
       // Prepare a select statement to see if a job already exists
       // with this datetime range on this line number and execute it.
-      String mySqlSelect = "SELECT * FROM Job WHERE LineNumber = ? AND StartTime < ? AND ProjectedEndTime > ?;";
+      String mySqlSelect = "SELECT * FROM Job WHERE LineNumber = ? AND StartTime < ? AND ProjectedEndTime > ? AND ID <> ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
       
       preparedStatement.setInt(1, job.getLineNumber());
       preparedStatement.setTimestamp(2, projectedEndTime);
       preparedStatement.setTimestamp(3, startTime);
+      preparedStatement.setInt(4, job.getId());
       
       ResultSet resultSet = preparedStatement.executeQuery();
       
@@ -334,7 +328,7 @@ public class JobDaoImpl implements JobDao {
         
         int personnelAvailableCount;
         
-        int personnelCommittedCount = calculateCommittedPersonnelCount(startTime, projectedEndTime);
+        int personnelCommittedCount = calculateCommittedPersonnelCount(startTime, projectedEndTime, job);
         
         
         String mySqlPersonnelAvailable = "SELECT * FROM personnel WHERE `Date` = ?;";
@@ -421,7 +415,7 @@ public class JobDaoImpl implements JobDao {
         
         // Fill the 3rd row with committed inventory counts
         fillCommittedInventoryCounts(startTime);
-        
+
         // Fill in the inventoryCounts array with a rotating SQL statement
         // searching for counts by TypeIDs
         for (int i = 0; i < inventoryCounts[0].length; i++) {
@@ -464,7 +458,7 @@ public class JobDaoImpl implements JobDao {
         }
         
         // Fill the 3rd row with committed equipment counts
-        fillCommittedEquipmentCount(startTime, projectedEndTime);
+        fillCommittedEquipmentCount(startTime, projectedEndTime, job);
         
         // Fill in the equipmentCounts array with a rotating SQL statement
         // searching for counts by TypeIDs
@@ -628,8 +622,14 @@ public class JobDaoImpl implements JobDao {
       throw new JobDaoException(e.getMessage());
     }
   }
-  
+
   public void fillCommittedEquipmentCount(Timestamp startTime, Timestamp endTime) {
+    fillCommittedEquipmentCount(startTime, endTime, null);
+  }
+  
+  public void fillCommittedEquipmentCount(Timestamp startTime, Timestamp endTime, Job ignoreJob) {
+    int ignoreId = ignoreJob == null ? -1 : ignoreJob.getId();
+
     // This method fills the current instance's equipmentCounts array's
     // 3rd row index with the committed number of equipment at a given time
     // for each TypeID stored in the first row index of the equipmentCounts array.
@@ -642,9 +642,10 @@ public class JobDaoImpl implements JobDao {
       
       // Prepare a query to select jobs at the time of the passed in job
       String mySqlSelect = """
-        SELECT * FROM job WHERE (StartTime <= ? AND ProjectedEndTime >= ?)
+        SELECT * FROM job WHERE ((StartTime <= ? AND ProjectedEndTime >= ?)
           OR (StartTime > ? AND ProjectedEndTime <= ?)
-          OR (StartTime <= ? AND ProjectedEndTime >= ?);
+          OR (StartTime <= ? AND ProjectedEndTime >= ?))
+          AND ID <> ?;
 """;
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       preparedStatement.setTimestamp(1, startTime);
@@ -653,6 +654,7 @@ public class JobDaoImpl implements JobDao {
       preparedStatement.setTimestamp(4, endTime);
       preparedStatement.setTimestamp(5, endTime);
       preparedStatement.setTimestamp(6, endTime);
+      preparedStatement.setInt(7, ignoreId);
 
       // Execute the query
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -745,13 +747,20 @@ public class JobDaoImpl implements JobDao {
       throw new JobDaoException(e.getMessage());
     }
   }
-  
+
   public int calculateCommittedPersonnelCount(Timestamp startTime, Timestamp endTime) {
-    
+    return calculateCommittedPersonnelCount(startTime, endTime, null);
+  }
+  
+  public int calculateCommittedPersonnelCount(Timestamp startTime, Timestamp endTime, Job ignoreJob) {
+
+    int ignoreId = ignoreJob == null ? -1 : ignoreJob.getId();
+
     String mySqlSelect = """
-      SELECT * FROM job WHERE (StartTime <= ? AND ProjectedEndTime >= ?)
+      SELECT * FROM job WHERE ((StartTime <= ? AND ProjectedEndTime >= ?)
         OR (StartTime > ? AND ProjectedEndTime <= ?)
-        OR (StartTime <= ? AND ProjectedEndTime >= ?);
+        OR (StartTime <= ? AND ProjectedEndTime >= ?))
+        AND ID <> ?;
 """;
     
     try {
@@ -763,6 +772,7 @@ public class JobDaoImpl implements JobDao {
       preparedStatement.setTimestamp(4, endTime);
       preparedStatement.setTimestamp(5, endTime);
       preparedStatement.setTimestamp(6, endTime);
+      preparedStatement.setInt(7, ignoreId);
       ResultSet resultSet = preparedStatement.executeQuery();
       
       if (resultSet.isBeforeFirst()) {
