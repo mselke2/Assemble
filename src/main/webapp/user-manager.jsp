@@ -13,8 +13,8 @@
     <link rel="stylesheet" type="text/css" href="assets/css/user.css"/>
 </head>
 <body>
+<div id="logged-in-user" user-id="${loggedInUser.id}" hidden></div>
 <div class="panel" id="formPanel">
-
   <h1>Edit User</h1>
 
   <form class="userForm" action="User" method="POST">
@@ -41,8 +41,8 @@
     <input class="userFormInput" type="hidden" id="userToEdit" name="userToEdit" /><br>
 
     <input type="submit" value="Submit"/><br>
-
   </form>
+  <button id="delete-user-btn">Delete User</button>
 
 </div>
 

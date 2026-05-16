@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "UserServlet", value = "/User")
+@WebServlet(name = "UserServlet", value = "/User/*")
 public class UserServlet extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -136,7 +136,8 @@ public class UserServlet extends HttpServlet {
   }
   
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-  
+    request.setAttribute("loggedInUser", Authenticate.RetrieveRequestingUser(request));
+
     if (request.getParameter("userToDisplay") == null) {
       User[] users;
       

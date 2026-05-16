@@ -26,6 +26,10 @@ body {
                 position: absolute;
                 left: 5rem;
             }
+
+            button {
+                margin: 0.2em;
+            }
         }
 
         #tablePanel {
