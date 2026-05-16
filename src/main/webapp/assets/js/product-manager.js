@@ -1,9 +1,17 @@
-let $inventoryEditor;
-let $equipmentEditor;
 let editedProductId = -1;
 
 function initializeInventoryEditor() {
-  $inventoryEditor = $("#inventory-editor");
+  let $inventoryEditor = $("#inventory-editor");
+
+  let $inputs = $inventoryEditor.find("input").on("input", function() {
+    let valid = true;
+    $inputs.each(function() {
+      valid &= this.checkValidity();
+    })
+
+    $inventoryEditor.find(".editor-submit").prop("disabled", !valid);
+  });
+
   $inventoryEditor.find(".editor-submit").on("click", function () {
     let $row = $(`[resource-id="${editedProductId}"]`);
 
@@ -44,7 +52,17 @@ function initializeInventoryEditor() {
 }
 
 function initializeEquipmentEditor() {
-  $equipmentEditor = $("#equipment-editor");
+  let $equipmentEditor = $("#equipment-editor");
+
+  let $inputs = $equipmentEditor.find("input").on("input", function() {
+    let valid = true;
+    $inputs.each(function() {
+      valid &= this.checkValidity();
+    })
+
+    $equipmentEditor.find(".editor-submit").prop("disabled", !valid);
+  });
+
   $equipmentEditor.find(".editor-submit").on("click", function () {
     let $row = $(`[resource-id="${editedProductId}"]`);
 
