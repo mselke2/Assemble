@@ -1,5 +1,6 @@
 package com.assemble.java.assemblecodebase.dao;
 
+import com.assemble.java.assemblecodebase.model.InventoryType;
 import com.assemble.java.assemblecodebase.model.Job;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 
@@ -452,7 +453,10 @@ public class JobDaoImpl implements JobDao {
           inventoryCounts[4][i] = availablePrime - inventoryCounts[1][i];
           
           if (inventoryCounts[4][i] < 0) {
-            prerequisitesError += String.format("You need %d more of Inventory Type ID: %d. ", abs(inventoryCounts[4][i]), inventoryCounts[0][i]);
+            InventoryDao inventoryDao = new InventoryDaoImpl();
+            InventoryType inventoryType = inventoryDao.retrieveTypeById(inventoryCounts[0][i]);
+
+            prerequisitesError += String.format("You need %d more of Inventory Type %s. ", abs(inventoryCounts[4][i]), inventoryType.getDescription());
           }
           
         }
