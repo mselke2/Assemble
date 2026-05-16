@@ -25,6 +25,7 @@
         <tr>
             <th></th>
             <th>InventoryId</th>
+            <th>Type</th>
             <th>Quantity</th>
             <th></th>
         </tr>
@@ -33,6 +34,7 @@
                 <tr resource-id="${resource.id}">
                     <td><button class="submit-btn">Submit</button></td>
                     <td>${resource.id}<input type="hidden" name="typeId" value="${resource.typeId}"> </td>
+                    <td>${resource.typeDescription}</td>
                     <td class="resource-count"><input type="number" name="count" required min="1" value="${resource.count}"></td>
                     <td><button class="delete-btn">Delete</button></td>
                 </tr>

@@ -137,7 +137,7 @@ public class InventoryDaoImpl implements InventoryDao{
       Connection connection = MySQLUtility.createConnection();
       // Prepare a select statement to see if Inventory exists
       // with this inventoryID and execute it
-      String MySQLSelect = "SELECT * FROM inventory WHERE ID = ?;";
+      String MySQLSelect = "SELECT * FROM inventory LEFT JOIN inventorytype ON inventory.TypeId = inventorytype.ID WHERE inventory.ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
       preparedStatement.setInt(1, id);
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -148,6 +148,7 @@ public class InventoryDaoImpl implements InventoryDao{
         resultSet.next();
         // Create an inventory object with the data from the result and return it.
         Inventory inventory = new Inventory(resultSet.getInt("ID"), resultSet.getInt("TypeID"), resultSet.getInt("Count"));
+        inventory.setTypeDescription(resultSet.getString("Description"));
         return inventory;
       } else {
         // ELSE
@@ -193,13 +194,14 @@ public class InventoryDaoImpl implements InventoryDao{
     try {
       Connection conn = MySQLUtility.createConnection();
 
-      String mySqlSelectAll = "SELECT * FROM inventory;";
+      String mySqlSelectAll = "SELECT * FROM inventory LEFT JOIN inventorytype ON inventory.TypeID = inventorytype.ID;";
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(mySqlSelectAll);
       while (result.next()) {
         Inventory inventory = new Inventory();
         inventory.setId(result.getInt("ID"));
         inventory.setTypeId(result.getInt("TypeID"));
+        inventory.setTypeDescription(result.getString("Description"));
         inventory.setCount(result.getInt("Count"));
         inventoryList.add(inventory);
       }

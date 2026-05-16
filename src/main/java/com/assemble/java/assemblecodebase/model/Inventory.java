@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Inventory implements Serializable {
   private int id;
   private int typeId;
+  private String typeDescription;
   private int count;
   
   public Inventory() {
@@ -44,7 +45,15 @@ public class Inventory implements Serializable {
   public void setId(int id) {
     this.id = id;
   }
-  
+
+  public String getTypeDescription() {
+    return typeDescription;
+  }
+
+  public void setTypeDescription(String typeDescription) {
+    this.typeDescription = typeDescription;
+  }
+
   @Override
   public String toString() {
     return "Inventory [id=" + id + ", typeId=" + typeId + ", count=" + count + "]";
