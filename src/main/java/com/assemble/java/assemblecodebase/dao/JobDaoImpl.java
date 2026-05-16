@@ -414,7 +414,7 @@ public class JobDaoImpl implements JobDao {
         String mySqlEquipmentAvailable = "SELECT TypeID, SUM(Status) AS `Count` FROM Equipment WHERE TypeID = ? GROUP BY TypeID;";
         
         // Fill the 3rd row with committed inventory counts
-        fillCommittedInventoryCounts(startTime);
+        fillCommittedInventoryCounts(startTime, projectedEndTime, job);
 
         // Fill in the inventoryCounts array with a rotating SQL statement
         // searching for counts by TypeIDs
@@ -515,8 +515,12 @@ public class JobDaoImpl implements JobDao {
     
     return true;
   }
-  
-  public void fillCommittedInventoryCounts(Timestamp startTime) {
+
+  public void fillCommittedInventoryCounts(Timestamp startTime, Timestamp endTime) {
+    fillCommittedInventoryCounts(startTime, endTime, null);
+  }
+
+  public void fillCommittedInventoryCounts(Timestamp startTime, Timestamp endTime, Job ignoreJob) {
     // This method fills the current instance's inventoryCounts array's
     // 3rd row index with the committed number of inventory at a given time
     // for each TypeID stored in the first row index of the inventoryCounts array.
@@ -528,10 +532,20 @@ public class JobDaoImpl implements JobDao {
       Connection connection = MySQLUtility.createConnection();
       
       // Prepare a query to select jobs at the time of the passed in job
-      String mySqlSelect = "SELECT * FROM Job WHERE StartTime <= ? AND ProjectedEndTime >= ?;";
+      String mySqlSelect = """
+        SELECT * FROM job WHERE ((StartTime <= ? AND ProjectedEndTime >= ?)
+          OR (StartTime > ? AND ProjectedEndTime <= ?)
+          OR (StartTime <= ? AND ProjectedEndTime >= ?))
+          AND ID <> ?;
+""";
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       preparedStatement.setTimestamp(1, startTime);
       preparedStatement.setTimestamp(2, startTime);
+      preparedStatement.setTimestamp(3, startTime);
+      preparedStatement.setTimestamp(4, endTime);
+      preparedStatement.setTimestamp(5, endTime);
+      preparedStatement.setTimestamp(6, endTime);
+      preparedStatement.setInt(7, ignoreJob.getId());
       // Execute the query
       ResultSet resultSet = preparedStatement.executeQuery();
       
