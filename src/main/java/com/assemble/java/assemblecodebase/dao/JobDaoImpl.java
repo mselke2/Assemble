@@ -1,5 +1,7 @@
 package com.assemble.java.assemblecodebase.dao;
 
+import com.assemble.java.assemblecodebase.model.Equipment;
+import com.assemble.java.assemblecodebase.model.EquipmentType;
 import com.assemble.java.assemblecodebase.model.InventoryType;
 import com.assemble.java.assemblecodebase.model.Job;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
@@ -493,7 +495,10 @@ public class JobDaoImpl implements JobDao {
           equipmentCounts[4][i] = availablePrime - equipmentCounts[1][i];
           
           if (equipmentCounts[4][i] < 0) {
-            prerequisitesError += String.format("You need %d more of Equipment Type ID: %d. ", abs(equipmentCounts[4][i]), equipmentCounts[0][i]);
+            EquipmentDao equipmentDao = new EquipmentDaoImpl();
+            EquipmentType equipmentType = equipmentDao.retrieveTypeById(equipmentCounts[0][i]);
+
+            prerequisitesError += String.format("You need %d more of Equipment Type: %s.", abs(equipmentCounts[4][i]), equipmentType.getDescription());
           }
         
         }
