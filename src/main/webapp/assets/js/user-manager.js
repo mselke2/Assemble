@@ -25,7 +25,7 @@ $(document).ready(function () {
         $("#lName").val(data["lName"]);
         $("#type").val(data["permissionId"]);
         $("#userToEdit").val(data["username"]);
-        $("#delete-user-btn").toggle(selectedUser !== requesterId);
+        $("#delete-user-btn").add("#permission-field").toggle(selectedUser !== requesterId);
       }
     });
   });
