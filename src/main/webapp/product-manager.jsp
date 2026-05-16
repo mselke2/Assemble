@@ -25,7 +25,7 @@
     </form>
 
     <br><br>
-
+    <p class="warning">WARNING: Editing any products will DELETE ALL JOBS associated with that product.</p>
     <table>
         <tr>
             <th></th>
