@@ -42,9 +42,9 @@
     <a href="EquipmentType">Equipment Types</a>
     <a href="Inventory">Inventory</a>
     <a href="InventoryType">Inventory Types</a>
-    <% if (permissionCookie != null && permissionCookie.getValue().equals("1")) {%>
+    <c:if test="${requestingUser.clearanceAtLeast('admin')}">
     <a href="admin-tools.jsp">Admin Tools</a>
-    <% } %>
+    </c:if>
   </nav>
 </header>
 </body>
