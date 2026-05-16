@@ -10,7 +10,7 @@
 <div class="panel">
     <h1>Admin Tools</h1>
     <a href="CreateUser">Add Account</a>
-    <a href="DeleteUser">Remove Account</a>
+    <a href="User">Manage Accounts</a>
 </div>
 </body>
 </html>
