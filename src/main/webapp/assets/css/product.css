@@ -1,43 +1,87 @@
 body {
 
-    .panel {
-        border: 1px solid black;
-        width: 50%;
-        margin: 0 auto;
-        position: relative;
-        top: 12rem;
-        padding: 5rem;
-        line-height: 1.5rem;
-        text-align: center;
+  .panel {
+    border: 1px solid black;
+    width: 70%;
+    margin: 0 auto 15rem auto;
+    position: relative;
+    top: 5rem;
+    padding: 5rem;
+    line-height: 1.5rem;
+    text-align: center;
 
-        .new-entry-bar {
-            position: relative;
-            /*line-height: 1.5rem;*/
-            text-align: center;
+    .new-entry-bar {
+      position: relative;
+      /*line-height: 1.5rem;*/
+      text-align: center;
 
-            .productInput {
-                position: absolute;
-                right: 0;
-            }
+      .productInput {
+        position: absolute;
+        right: 0;
+      }
 
-            label {
-                position: absolute;
-                left: 0;
-            }
-        }
-
-        table {
-
-            margin: 0 auto;
-
-            .header {
-                border: 1px solid black;
-            }
-
-            .data {
-                border: 1px solid black;
-            }
-        }
-
+      label {
+        position: absolute;
+        left: 0;
+      }
     }
+
+    table {
+      border-collapse: collapse;
+      margin: 0 auto;
+
+      th,
+      td {
+
+        &:not(:first-child):not(:last-child) {
+          border: 1px solid black;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .editor {
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(1rem);
+
+    .editor-panel {
+      position: absolute;
+      width: 40%;
+      background: white;
+      border: 1px solid black;
+      top: 50%;
+      left: 50%;
+      translate: -50% -50%;
+      padding: 3em;
+      height: 50%;
+
+      h1 {
+        text-align: center;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        max-height: 50%;
+        overflow: auto;
+
+        li {
+          position: relative;
+          margin-bottom: 0.5em;
+
+          input {
+            position: absolute;
+            right: 0;
+          }
+        }
+      }
+
+      button {
+        display: block;
+        margin: 0.2em auto;
+      }
+    }
+  }
 }
