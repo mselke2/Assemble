@@ -63,7 +63,7 @@
                         <label for="job-id" id="job-id-label" class="info-left">JobId:</label>
                         <p id="job-id">XX</p><br>
                         <label for="product-choice" class="info-left">Product:</label>
-                        <select name="product-choice-id" id="product-choice">
+                        <select name="product-choice-id" id="product-choice" <c:if test="${!requestingUser.clearanceAtLeast('editor')}">disabled</c:if>>
                             <c:if test="${not empty productTypes}">
                                 <c:forEach var="productType" items="${productTypes}">
                                     <option value="${productType.id}">${productType.description}</option>
@@ -71,16 +71,18 @@
                             </c:if>
                         </select><br>
                         <label for="start-time" class="info-left">From:</label>
-                        <input type="time" name="start-time" id="start-time"><br>
+                        <input type="time" name="start-time" id="start-time" <c:if test="${!requestingUser.clearanceAtLeast('editor')}">disabled</c:if>><br>
                         <label for="end-time" class="info-left">To:</label>
-                        <input type="time" name="end-time" id="end-time"><br>
+                        <input type="time" name="end-time" id="end-time" <c:if test="${!requestingUser.clearanceAtLeast('editor')}">disabled</c:if>><br>
                         <label for="num-members" class="info-left">#OfTeamMembers:</label>
-                        <input  type="number" min="1" name="num-members" id="num-members">
+                        <input  type="number" min="1" name="num-members" id="num-members" <c:if test="${!requestingUser.clearanceAtLeast('editor')}">disabled</c:if>>
                         <label for="line-num">Line #:</label>
-                        <input type="number" min="1" name="line-num" id="line-num"><br>
+                        <input type="number" min="1" name="line-num" id="line-num" <c:if test="${!requestingUser.clearanceAtLeast('editor')}">disabled</c:if>><br>
                         <button id="cancel-btn">Cancel</button>
-                        <button id="submit-btn">Submit</button><br><br>
-                        <button id="delete-btn">Delete</button><br>
+                        <c:if test="${requestingUser.clearanceAtLeast('editor')}">
+                          <button id="submit-btn">Submit</button><br><br>
+                          <button id="delete-btn">Delete</button><br>
+                        </c:if>
                         <p id="error" class="error"></p>
                     </div>
                 </div>
@@ -90,6 +92,12 @@
     <a id="back-button" href="Calendar">Go Back</a>
 </main>
 <script src="assets/js/scheduler.js"></script>
+<script>
+  editorPermission = false;
+  <c:if test="${requestingUser.clearanceAtLeast('editor')}">
+  editorPermission = true;
+  </c:if>
+</script>
 <script src="assets/js/job-color.js"></script>
 </body>
 </html>
