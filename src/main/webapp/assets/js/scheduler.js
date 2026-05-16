@@ -11,6 +11,7 @@ let $lineNumInput;
 let $submitBtn;
 let $deleteBtn;
 let $errorMessage;
+let editorPermission;
 
 let lastValidStartTime;
 let lastValidEndTime;
@@ -204,7 +205,7 @@ function convertTimeToFloat(timeString) {
 }
 
 function updateGhostVisibility() {
-  $newJobGhost.toggle(timelineLanesHovered && validNewJobHover && !editingJob || addingJob);
+  $newJobGhost.toggle((timelineLanesHovered && validNewJobHover && !editingJob || addingJob) && editorPermission);
 }
 
 function cancelEdit() {
@@ -400,44 +401,46 @@ $(function() {
         +$this.css("--lane"));
   })
 
-  $timelineLanes = $("#timeline-lanes").on("mouseover", function(e) {
-    if (e.target === this) {
-      timelineLanesHovered = true;
-      updateGhostVisibility();
-    }
-  }).on("mousemove", function(e) {
-    timelineMouseX = e.pageX - $timelineLanes.position().left - $timelineWrapper.scrollLeft();
-    timelineMouseY = e.pageY - $timelineLanes.position().top - $timelineWrapper.scrollTop();
+  if (editorPermission) {
+    $timelineLanes = $("#timeline-lanes").on("mouseover", function (e) {
+      if (e.target === this) {
+        timelineLanesHovered = true;
+        updateGhostVisibility();
+      }
+    }).on("mousemove", function (e) {
+      timelineMouseX = e.pageX - $timelineLanes.position().left - $timelineWrapper.scrollLeft();
+      timelineMouseY = e.pageY - $timelineLanes.position().top - $timelineWrapper.scrollTop();
 
-    updateGhostPosition();
-  }).on("mouseout", function(e) {
-    if (e.target === this) {
-      timelineLanesHovered = false;
-      updateGhostVisibility()
-    }
-  }).on("click", function(e) {
-    if (e.target === this && validNewJobHover) {
-      cancelEdit();
+      updateGhostPosition();
+    }).on("mouseout", function (e) {
+      if (e.target === this) {
+        timelineLanesHovered = false;
+        updateGhostVisibility()
+      }
+    }).on("click", function (e) {
+      if (e.target === this && validNewJobHover) {
+        cancelEdit();
 
-      $activeJobEntry = $newJobGhost;
-      addingJob = true;
+        $activeJobEntry = $newJobGhost;
+        addingJob = true;
 
-      $productChoiceInput[0].selectedIndex = 0;
+        $productChoiceInput[0].selectedIndex = 0;
 
-      lastValidStartTime = newJobStartTime;
-      $startTimeInput.val(lastValidStartTime);
+        lastValidStartTime = newJobStartTime;
+        $startTimeInput.val(lastValidStartTime);
 
-      lastValidEndTime = newJobEndTime;
-      $endTimeInput.val(lastValidEndTime);
+        lastValidEndTime = newJobEndTime;
+        $endTimeInput.val(lastValidEndTime);
 
-      $numMembersInput.val(1);
+        $numMembersInput.val(1);
 
-      $lineNumInput.val(newJobLane);
+        $lineNumInput.val(newJobLane);
 
-      // show the job form since we are now editing the clicked job
-      showForm();
-    }
-  });
+        // show the job form since we are now editing the clicked job
+        showForm();
+      }
+    });
+  }
 
   $timelineWrapper = $(".timeline-wrapper").on("scroll", updateGhostPosition);
 

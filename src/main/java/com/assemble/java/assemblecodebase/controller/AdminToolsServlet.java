@@ -1,10 +1,7 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
-import com.assemble.java.assemblecodebase.dao.UserDao;
-import com.assemble.java.assemblecodebase.dao.UserDaoImpl;
 import com.assemble.java.assemblecodebase.model.User;
-import com.assemble.java.assemblecodebase.model.UserPermission;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,10 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet(name = "CreateUserServlet", value = "/CreateUser")
-public class CreateUserServlet extends HttpServlet {
+@WebServlet(name = "AdminToolsServlet", value = "/AdminTools")
+public class AdminToolsServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     User requester = Authenticate.RetrieveRequestingUser(request);
@@ -24,9 +20,6 @@ public class CreateUserServlet extends HttpServlet {
       return;
     }
 
-    UserDao userDao = new UserDaoImpl();
-    request.setAttribute("userPermissionTypes", userDao.retrievePermissions());
-
-    getServletContext().getRequestDispatcher("/add-account.jsp").forward(request, response);
+    getServletContext().getRequestDispatcher("/admin-tools.jsp").forward(request, response);
   }
 }

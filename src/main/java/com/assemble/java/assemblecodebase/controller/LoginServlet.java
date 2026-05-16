@@ -22,8 +22,10 @@ public class LoginServlet extends HttpServlet {
   }
   
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    
-    getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
+    if (Authenticate.RetrieveRequestingUser(request) == null)
+      getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
+    else
+      response.sendRedirect("Calendar");
     
   }
   
