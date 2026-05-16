@@ -24,7 +24,7 @@
     <input class="userFormInput" type="text" id="username" name="username"/><br>
 
     <label for="password">Password: (Leave blank to keep old password)</label>
-    <input class="userFormInput" type="password" id="password" name="password" /><br>
+    <input class="userFormInput" type="password" id="password" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$"/><br>
 
     <label for="password-repeat">Confirm Password:</label>
     <input class="userFormInput" type="password" id="password-repeat" name="password-repeat" /><br>
