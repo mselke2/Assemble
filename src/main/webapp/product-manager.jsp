@@ -84,6 +84,7 @@
         </c:if>
         </ul>
         <button class="editor-submit">Ok</button>
+        <button class="editor-cancel">Cancel</button>
     </div>
 </div>
 <div id="equipment-editor" class="editor" hidden>
@@ -100,6 +101,7 @@
         </c:if>
         </ul>
         <button class="editor-submit">Ok</button>
+        <button class="editor-cancel">Cancel</button>
     </div>
 </div>
 <script src="assets/js/resource-manager.js"></script>

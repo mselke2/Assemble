@@ -32,6 +32,8 @@ function initializeInventoryEditor() {
     $inventoryEditor.hide();
   });
 
+  $inventoryEditor.find(".editor-cancel").on("click", () => $inventoryEditor.hide());
+
   $(".inventory-btn").on("click", function () {
     let $row = $(this).parent().parent();
     let $inventoryIds = $row.find(".inventory-ids");
@@ -82,6 +84,8 @@ function initializeEquipmentEditor() {
 
     $equipmentEditor.hide();
   });
+
+  $equipmentEditor.find(".editor-cancel").on("click", () => $equipmentEditor.hide());
 
   $(".equipment-btn").on("click", function () {
     let $row = $(this).parent().parent();
