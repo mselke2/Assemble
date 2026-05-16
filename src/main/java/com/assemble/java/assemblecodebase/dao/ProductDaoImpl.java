@@ -46,41 +46,73 @@ public class ProductDaoImpl implements ProductDao {
 
   @Override
   public boolean updateProduct(Product product) {
+    try (Connection connection = MySQLUtility.createConnection()) {
+      // Update product entry
+      String mySqlUpdateProduct = "UPDATE product SET Description = ?, MinutesDuration = ?, targetPersonnelCount = ? WHERE ID = ?;";
+      PreparedStatement updateStatement = connection.prepareStatement(mySqlUpdateProduct);
+      updateStatement.setString(1, product.getDescription());
+      updateStatement.setInt(2, product.getMinutesDuration());
+      updateStatement.setInt(3, product.getTargetPersonnelCount());
+      updateStatement.setInt(4, product.getId());
+      int effectedRows = updateStatement.executeUpdate();
 
-    try {
-      // Get a connection to the database
-      Connection connection = MySQLUtility.createConnection();
-      // Prepare a select statement to see if a product exists
-      // with this description and execute it.
-      String mySqlSelect = "SELECT * FROM product WHERE ID = ?;";
-      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
-      preparedStatement.setInt(1, product.getId());
-      ResultSet resultSet = preparedStatement.executeQuery();
-      // IF a product exists
-      // Prepare an update statement to update this product in the database and execute it.
-      if (resultSet.isBeforeFirst()) {
-        String mySqlUpdate = "UPDATE product SET Description = ?, MinutesDuration = ?, targetPersonnelCount = ? WHERE ID = ?;";
-        preparedStatement = connection.prepareStatement(mySqlUpdate);
-        preparedStatement.setString(1, product.getDescription());
-        preparedStatement.setInt(2, product.getMinutesDuration());
-        preparedStatement.setInt(3, product.getTargetPersonnelCount());
-        preparedStatement.setInt(4, product.getId());
-        preparedStatement.executeUpdate();
-        resultSet.close();
-        connection.close();
+      updateStatement.close();
 
-        return true;
-      } else {
-        throw new ProductDaoException("Product does not exists");
+      if (effectedRows == 0) return false;
+
+      // Delete all existing productinventory and productEquipment for that product
+      String mySqlDeleteProductInventory = "DELETE FROM productinventory WHERE ProductID = ?";
+      PreparedStatement deleteProductInventoryStatement = connection.prepareStatement(mySqlDeleteProductInventory);
+      deleteProductInventoryStatement.setInt(1, product.getId());
+      deleteProductInventoryStatement.executeUpdate();
+
+      deleteProductInventoryStatement.close();
+
+      String mySqlDeleteProductEquipment = "DELETE FROM productequipment WHERE ProductID = ?";
+      PreparedStatement deleteProductEquipmentStatement = connection.prepareStatement(mySqlDeleteProductEquipment);
+      deleteProductEquipmentStatement.setInt(1, product.getId());
+      deleteProductEquipmentStatement.executeUpdate();
+
+      deleteProductEquipmentStatement.close();
+
+      // Add new productinventory
+      String mySqlInsertProductInventory = "INSERT INTO productinventory (ProductID, InventoryTypeID, RequiredInventoryCount) VALUES (?, ?, ?)";
+      PreparedStatement insertProductInventoryStatement = connection.prepareStatement(mySqlInsertProductInventory);
+
+      for (int i = 0; i < product.getRequiredInventoryIds().size(); i++) {
+        insertProductInventoryStatement.setInt(1, product.getId());
+        insertProductInventoryStatement.setInt(2, product.getRequiredInventoryIds().get(i));
+        insertProductInventoryStatement.setInt(3, product.getRequiredInventoryCounts().get(i));
+        insertProductInventoryStatement.addBatch();
       }
 
-      // ELSE
-      // Throw a ProductDaoException with the message "Product does not exist."
-      // ENDIF
+      insertProductInventoryStatement.executeBatch();
+      insertProductInventoryStatement.close();
+
+      // Add new productequipment
+      String mySqlInsertProductEquipment = "INSERT INTO productequipment (ProductID, EquipmentTypeID, RequiredEquipmentTypeCount) VALUES (?, ?, ?)";
+      PreparedStatement insertProductEquipmentStatement = connection.prepareStatement(mySqlInsertProductEquipment);
+
+      for (int i = 0; i < product.getRequiredEquipmentIds().size(); i++) {
+        insertProductEquipmentStatement.setInt(1, product.getId());
+        insertProductEquipmentStatement.setInt(2, product.getRequiredEquipmentIds().get(i));
+        insertProductEquipmentStatement.setInt(3, product.getRequiredEquipmentCounts().get(i));
+        insertProductEquipmentStatement.addBatch();
+      }
+
+      insertProductEquipmentStatement.executeBatch();
+      insertProductEquipmentStatement.close();
+
+      String mySqlDeleteJobs = "DELETE FROM job WHERE ProductID = ?";
+      PreparedStatement deleteJobsStatement = connection.prepareStatement(mySqlDeleteJobs);
+      deleteJobsStatement.setInt(1, product.getId());
+      deleteJobsStatement.executeUpdate();
+      deleteJobsStatement.close();
     } catch (SQLException | ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
 
+    return true;
   }
 
   @Override
@@ -141,12 +173,7 @@ public class ProductDaoImpl implements ProductDao {
         // Move cursor to the result
         resultSet.next();
 
-        Product product = new Product(
-            resultSet.getInt("ID"),
-            resultSet.getString("Description"),
-            resultSet.getInt("MinutesDuration"),
-            resultSet.getInt("TargetPersonnelCount")
-        );
+        Product product = new Product(resultSet.getInt("ID"), resultSet.getString("Description"), resultSet.getInt("MinutesDuration"), resultSet.getInt("TargetPersonnelCount"));
 
         populateRequirements(product, connection);
 
@@ -175,10 +202,7 @@ public class ProductDaoImpl implements ProductDao {
 
       // Use a loop to move the cursor through the results and create a new job object for each result and add it to the array.
       while (resultSet.next()) {
-        Product product = new Product(resultSet.getInt("ID"),
-            resultSet.getString("Description"),
-            resultSet.getInt("MinutesDuration"),
-            resultSet.getInt("TargetPersonnelCount"));
+        Product product = new Product(resultSet.getInt("ID"), resultSet.getString("Description"), resultSet.getInt("MinutesDuration"), resultSet.getInt("TargetPersonnelCount"));
 
         populateRequirements(product, connection);
 
