@@ -6,6 +6,8 @@ import com.assemble.java.assemblecodebase.dao.EquipmentDaoException;
 import com.assemble.java.assemblecodebase.dao.EquipmentDaoImpl;
 import com.assemble.java.assemblecodebase.model.Equipment;
 import com.assemble.java.assemblecodebase.model.EquipmentType;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -49,7 +51,7 @@ public class EquipmentServlet extends HttpServlet {
       EquipmentDao dao = new EquipmentDaoImpl();
       Equipment equipment = new Equipment();
       equipment.setTypeId(typeId);
-      equipment.setStatus(0);
+      equipment.setStatus(1);
       dao.addEquipment(equipment);
     } catch (EquipmentDaoException e) {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -64,6 +66,29 @@ public class EquipmentServlet extends HttpServlet {
     }
 
     doGet(request, response);
+  }
+
+  @Override
+  public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    try {
+      int id = Integer.parseInt(request.getPathInfo().substring(1));
+      EquipmentDao equipmentDao = new EquipmentDaoImpl();
+      Equipment equipment = equipmentDao.retrieveById(id);
+
+      Gson gson = new Gson();
+      JsonObject json = gson.fromJson(request.getReader(), JsonObject.class);
+
+      int status = json.get("status").getAsInt();
+      equipment.setStatus(status);
+
+      equipmentDao.updateEquipment(equipment);
+    } catch (IllegalArgumentException e) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.getWriter().write(e.getMessage());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      response.getWriter().write(e.getMessage());
+    }
   }
 
   @Override

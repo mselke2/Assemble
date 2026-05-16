@@ -8,7 +8,7 @@ function initializeControls (endpoint) {
       id: resourceId
     };
 
-    $row.find("input").each(function() {
+    $row.find("input").add("select", $row).each(function() {
       data[$(this).attr("name")] = $(this).val();
     })
 

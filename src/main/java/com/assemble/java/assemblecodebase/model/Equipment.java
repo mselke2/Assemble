@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Equipment implements Serializable {
   private int id;
   private int typeId;
+  private String typeDescription;
   private int status;
   
   public Equipment() {
@@ -39,7 +40,15 @@ public class Equipment implements Serializable {
   public void setStatus(int status) {
     this.status = status;
   }
-  
+
+  public String getTypeDescription() {
+    return typeDescription;
+  }
+
+  public void setTypeDescription(String typeDescription) {
+    this.typeDescription = typeDescription;
+  }
+
   @Override
   public String toString() {
     return "Equipment: [id=" + id + ", typeId=" + typeId + ", status=" + status + "]";
