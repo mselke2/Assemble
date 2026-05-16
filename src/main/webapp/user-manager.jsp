@@ -35,8 +35,16 @@
     <label for="lName">Last Name:</label>
     <input class="userFormInput" type="text" id="lName" name="lName" /><br>
 
-    <label for="type">Permission Level</label>
-    <input class="userFormInput" type="text" id="type" name="type" /><br><br>
+    <div id="permission-field">
+      <label for="type">Permission Level</label>
+      <select id="type" name="type" class="userFormInput">
+        <c:if test="${not empty userPermissionTypes}">
+          <c:forEach var="permissionType" items="${userPermissionTypes}">
+            <option value="${permissionType.id}">${permissionType.description}</option>
+          </c:forEach>
+        </c:if>
+      </select>
+    </div>
 
     <label for="userToEdit" typeof="hidden"></label>
     <input class="userFormInput" type="hidden" id="userToEdit" name="userToEdit" /><br>
