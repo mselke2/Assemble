@@ -413,9 +413,6 @@ public class JobDaoImpl implements JobDao {
         String mySqlEquipmentRequired = "SELECT EquipmentTypeID, SUM(`RequiredEquipmentTypeCount`) AS `Count` FROM ProductEquipment WHERE ProductID = ? GROUP BY EquipmentTypeID;";
         String mySqlInventoryAvailable = "SELECT TypeID, SUM(`Count`) AS `Count` FROM Inventory WHERE TypeID = ? GROUP BY TypeID;";
         String mySqlEquipmentAvailable = "SELECT TypeID, SUM(Status) AS `Count` FROM Equipment WHERE TypeID = ? GROUP BY TypeID;";
-        
-        // Fill the 3rd row with committed inventory counts
-        fillCommittedInventoryCounts(startTime, projectedEndTime, job);
 
         // Fill in the inventoryCounts array with a rotating SQL statement
         // searching for counts by TypeIDs
@@ -444,13 +441,9 @@ public class JobDaoImpl implements JobDao {
           } else {
             throw new JobDaoException("Inventory Available Count Error");
           }
-          
-          
-          // Calculate what is available after subtracting commitment.
-          int availablePrime = inventoryCounts[2][i] - inventoryCounts[3][i];
-          
+
           // Calculate the difference
-          inventoryCounts[4][i] = availablePrime - inventoryCounts[1][i];
+          inventoryCounts[4][i] = inventoryCounts[2][i] - inventoryCounts[1][i];
           
           if (inventoryCounts[4][i] < 0) {
             InventoryDao inventoryDao = new InventoryDaoImpl();
@@ -518,127 +511,6 @@ public class JobDaoImpl implements JobDao {
     }
     
     return true;
-  }
-
-  public void fillCommittedInventoryCounts(Timestamp startTime, Timestamp endTime) {
-    fillCommittedInventoryCounts(startTime, endTime, null);
-  }
-
-  public void fillCommittedInventoryCounts(Timestamp startTime, Timestamp endTime, Job ignoreJob) {
-    // This method fills the current instance's inventoryCounts array's
-    // 3rd row index with the committed number of inventory at a given time
-    // for each TypeID stored in the first row index of the inventoryCounts array.
-    
-    int[] typeIDs;
-    
-    try {
-      // Get a connection
-      Connection connection = MySQLUtility.createConnection();
-      
-      // Prepare a query to select jobs at the time of the passed in job
-      String mySqlSelect = """
-        SELECT * FROM job WHERE ((StartTime <= ? AND ProjectedEndTime >= ?)
-          OR (StartTime > ? AND ProjectedEndTime <= ?)
-          OR (StartTime <= ? AND ProjectedEndTime >= ?))
-          AND ID <> ?;
-""";
-      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-      preparedStatement.setTimestamp(1, startTime);
-      preparedStatement.setTimestamp(2, startTime);
-      preparedStatement.setTimestamp(3, startTime);
-      preparedStatement.setTimestamp(4, endTime);
-      preparedStatement.setTimestamp(5, endTime);
-      preparedStatement.setTimestamp(6, endTime);
-      preparedStatement.setInt(7, ignoreJob.getId());
-      // Execute the query
-      ResultSet resultSet = preparedStatement.executeQuery();
-      
-      // If there's data
-      if (resultSet.isBeforeFirst()) {
-        
-        // Capture how many jobs we have to look at
-        resultSet.last();
-        int records = resultSet.getRow();
-        resultSet.beforeFirst();
-        
-        // We need to figure out how much inventory is committed for each
-        // TypeID stored in this DAOs inventoryCounts array at the time of the job.
-        
-        // Start a loop to step through jobs at the start time.
-        for(int j = 0 ; j < records; j++) {
-          // Advance the cursor.
-          resultSet.next();
-          
-          // Figure out which inventoryTypeIDs are used by this job and store them
-          // in the typeIDs array.
-          
-          // Prepare a select statement to retrieve all the typeIDs in this job's product.
-          String mySqlInventoryTypeIds = "SELECT * FROM ProductInventory WHERE ProductID = ?;";
-          PreparedStatement inventoryTypeIdStatement = connection.prepareStatement(mySqlInventoryTypeIds, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-          inventoryTypeIdStatement.setInt(1, resultSet.getInt("ProductID"));
-          ResultSet inventoryTypeIdResults = inventoryTypeIdStatement.executeQuery();
-          
-          if (inventoryTypeIdResults.isBeforeFirst()) {
-            inventoryTypeIdResults.last();
-            
-            // Initialize the typeIDs array with the number of different inventory types used by this job.
-            typeIDs = new int[inventoryTypeIdResults.getRow()];
-            inventoryTypeIdResults.beforeFirst();
-            
-            // Step through the typeIDs array and fill it with IDs from the result set.
-            for (int k = 0; k < typeIDs.length; k++) {
-              
-              inventoryTypeIdResults.next();
-              // Store the ID
-              typeIDs[k] = inventoryTypeIdResults.getInt("InventoryTypeID");
-              
-            }
-            
-            // Start a loop to step through TypeIDs stored in the inventoryCounts array.
-            // We need to see if this job uses the current TypeID, and if so, add that count to
-            // row index 3 of the inventoryCounts array.
-            for (int i = 0; i < inventoryCounts[0].length; i++) {
-              // Compare the current typeID in inventoryCounts to
-              // each typeID in typeIDs. If there's a match,
-              // add the required number
-              // to row index 3 of the inventoryCounts array.
-              
-              for (int l = 0; l < typeIDs.length; l++) {
-                
-                // There's a match
-                if (typeIDs[l] == inventoryCounts[0][i]) {
-                  
-                  // Prepare a select statement to get the required count for this typeID for the current job in the loop.
-                  String mySqlInventoryRequired = "SELECT * FROM ProductInventory WHERE InventoryTypeID = ? AND ProductID = ?;";
-                  PreparedStatement inventoryRequiredStatement = connection.prepareStatement(mySqlInventoryRequired);
-                  inventoryRequiredStatement.setInt(1, typeIDs[l]);
-                  inventoryRequiredStatement.setInt(2, resultSet.getInt("ProductID"));
-                  ResultSet inventoryRequiredResults = inventoryRequiredStatement.executeQuery();
-                  
-                  // If there's data.
-                  if (inventoryRequiredResults.isBeforeFirst()) {
-                    inventoryRequiredResults.next();
-                    // Add this TypeIDs required count for this job's product to the
-                    // total commited count.
-                    inventoryCounts[3][i] += inventoryRequiredResults.getInt("RequiredInventoryCount");
-                    
-                  } else {
-                    throw new JobDaoException("Inventory Required Count Error");
-                  }
-                }
-              }
-            }
-          }
-        }
-      } else {
-        // Fill the row with 0s
-        for (int i = 0; i < inventoryCounts[0].length; i++) {
-          inventoryCounts[3][i] = 0;
-        }
-      }
-    } catch (ClassNotFoundException | SQLException e) {
-      throw new JobDaoException(e.getMessage());
-    }
   }
 
   public void fillCommittedEquipmentCount(Timestamp startTime, Timestamp endTime) {
