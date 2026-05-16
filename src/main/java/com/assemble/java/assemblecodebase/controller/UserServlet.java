@@ -138,8 +138,6 @@ public class UserServlet extends HttpServlet {
   }
   
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    request.setAttribute("loggedInUser", Authenticate.RetrieveRequestingUser(request));
-
     if (request.getParameter("userToDisplay") == null) {
       User[] users;
       
