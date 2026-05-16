@@ -346,7 +346,7 @@ public class JobDaoImpl implements JobDao {
           resultSetPersonnel.next();
           personnelAvailableCount = resultSetPersonnel.getInt("Count");
         } else {
-          throw new JobDaoException("Personnel data does not exist at that time.");
+          personnelAvailableCount = 0;
         }
         
         // Get personnel required for product produced by job
@@ -396,14 +396,14 @@ public class JobDaoImpl implements JobDao {
           inventoryTypeIds.beforeFirst();
           // Initialize the array.
           inventoryCounts = new int[5][records];
-          
+
           for (int i = 0; i < records; i++) {
             inventoryTypeIds.next();
             // Add the IDs to the array
             inventoryCounts[0][i] = inventoryTypeIds.getInt("InventoryTypeID");
           }
         } else {
-          throw new JobDaoException("No inventory types exist for this product.");
+          inventoryCounts = new int[5][0];
         }
         
         // If our equipment query has data
@@ -421,7 +421,7 @@ public class JobDaoImpl implements JobDao {
             equipmentCounts[0][i] = equipmentTypeIds.getInt("EquipmentTypeID");
           }
         } else {
-          throw new JobDaoException("No equipment types exist for this product.");
+          equipmentCounts = new int[5][0];
         }
         
         // Prepare SQL statements to find the available and required counts
@@ -628,8 +628,6 @@ public class JobDaoImpl implements JobDao {
                 }
               }
             }
-          } else  {
-            throw new JobDaoException("Inventory Type ID Error");
           }
         }
       } else {
@@ -738,8 +736,6 @@ public class JobDaoImpl implements JobDao {
                 }
               }
             }
-          } else  {
-            throw new JobDaoException("Equipment Type ID Error");
           }
         }
       } else {
