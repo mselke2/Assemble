@@ -61,14 +61,14 @@ public class ProductDaoImpl implements ProductDao {
       if (effectedRows == 0) return false;
 
       // Delete all existing productinventory and productEquipment for that product
-      String mySqlDeleteProductInventory = "DELETE FROM productinventory WHERE ProductID = ?";
+      String mySqlDeleteProductInventory = "DELETE FROM productinventory WHERE ProductID = ?;";
       PreparedStatement deleteProductInventoryStatement = connection.prepareStatement(mySqlDeleteProductInventory);
       deleteProductInventoryStatement.setInt(1, product.getId());
       deleteProductInventoryStatement.executeUpdate();
 
       deleteProductInventoryStatement.close();
 
-      String mySqlDeleteProductEquipment = "DELETE FROM productequipment WHERE ProductID = ?";
+      String mySqlDeleteProductEquipment = "DELETE FROM productequipment WHERE ProductID = ?;";
       PreparedStatement deleteProductEquipmentStatement = connection.prepareStatement(mySqlDeleteProductEquipment);
       deleteProductEquipmentStatement.setInt(1, product.getId());
       deleteProductEquipmentStatement.executeUpdate();
@@ -76,7 +76,7 @@ public class ProductDaoImpl implements ProductDao {
       deleteProductEquipmentStatement.close();
 
       // Add new productinventory
-      String mySqlInsertProductInventory = "INSERT INTO productinventory (ProductID, InventoryTypeID, RequiredInventoryCount) VALUES (?, ?, ?)";
+      String mySqlInsertProductInventory = "INSERT INTO productinventory (ProductID, InventoryTypeID, RequiredInventoryCount) VALUES (?, ?, ?);";
       PreparedStatement insertProductInventoryStatement = connection.prepareStatement(mySqlInsertProductInventory);
 
       for (int i = 0; i < product.getRequiredInventoryIds().size(); i++) {
@@ -90,7 +90,7 @@ public class ProductDaoImpl implements ProductDao {
       insertProductInventoryStatement.close();
 
       // Add new productequipment
-      String mySqlInsertProductEquipment = "INSERT INTO productequipment (ProductID, EquipmentTypeID, RequiredEquipmentTypeCount) VALUES (?, ?, ?)";
+      String mySqlInsertProductEquipment = "INSERT INTO productequipment (ProductID, EquipmentTypeID, RequiredEquipmentTypeCount) VALUES (?, ?, ?);";
       PreparedStatement insertProductEquipmentStatement = connection.prepareStatement(mySqlInsertProductEquipment);
 
       for (int i = 0; i < product.getRequiredEquipmentIds().size(); i++) {
@@ -103,7 +103,7 @@ public class ProductDaoImpl implements ProductDao {
       insertProductEquipmentStatement.executeBatch();
       insertProductEquipmentStatement.close();
 
-      String mySqlDeleteJobs = "DELETE FROM job WHERE ProductID = ?";
+      String mySqlDeleteJobs = "DELETE FROM job WHERE ProductID = ?;";
       PreparedStatement deleteJobsStatement = connection.prepareStatement(mySqlDeleteJobs);
       deleteJobsStatement.setInt(1, product.getId());
       deleteJobsStatement.executeUpdate();
