@@ -63,7 +63,8 @@ function populateCalendar() {
         // add a div with the product name to the date box
         $dateBox.append($(`<div></div>`, {
           text: job["productName"],
-          class: "job-entry"
+          class: "job-entry",
+          style: `background-color: ${calculateJobColorString(job.jobId)};`
         }));
       }
     }));

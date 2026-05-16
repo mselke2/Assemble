@@ -286,4 +286,32 @@ public class InventoryDaoImpl implements InventoryDao{
       throw new InventoryDaoException(e.getMessage());
     }
   }
+
+  @Override
+  public InventoryType retrieveTypeById(int id) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String mySQLSelect = "SELECT * FROM inventorytype WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySQLSelect);
+      preparedStatement.setInt(1, id);
+      ResultSet results = preparedStatement.executeQuery();
+
+      if (results.next()) {
+        InventoryType inventoryType = new InventoryType();
+        inventoryType.setId(results.getInt("ID"));
+        inventoryType.setDescription(results.getString("Description"));
+
+        connection.close();
+        preparedStatement.close();
+
+        return inventoryType;
+      }
+
+      throw new InventoryDaoException("InventoryType does not exist.");
+
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new InventoryDaoException(e.getMessage());
+    }
+  }
 }

@@ -108,12 +108,21 @@ public class JobServlet extends HttpServlet {
 
       job.setLineNumber(json.get("lineNum").getAsInt());
 
+      job.setPersonnelCount(json.get("numMembers").getAsInt());
+
       JobDao jobDao = new JobDaoImpl();
-      jobDao.updateJob(job);
-    } catch (NumberFormatException | JobDaoException e) {
+      int newId = jobDao.updateJob(job);
+      response.setContentType("application/json");
+      response.getWriter().write("{ \"newId\": %s }".formatted(newId));
+    } catch (NumberFormatException e) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
+
     } catch (RuntimeException e) {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      response.setContentType("text/plain");
+      response.getWriter().write(e.getMessage());
     }
   }
 

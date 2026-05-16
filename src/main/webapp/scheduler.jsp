@@ -80,7 +80,8 @@
                         <input type="number" min="1" name="line-num" id="line-num"><br>
                         <button id="cancel-btn">Cancel</button>
                         <button id="submit-btn">Submit</button><br><br>
-                        <button id="delete-btn">Delete</button>
+                        <button id="delete-btn">Delete</button><br>
+                        <p id="error" class="error"></p>
                     </div>
                 </div>
             </div>
@@ -89,5 +90,6 @@
     <a id="back-button" href="Calendar">Go Back</a>
 </main>
 <script src="assets/js/scheduler.js"></script>
+<script src="assets/js/job-color.js"></script>
 </body>
 </html>

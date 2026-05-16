@@ -8,6 +8,7 @@
 <body>
 <%@ include file="navigation.jsp" %>
 <script src="assets/js/calendar.js"></script>
+<script src="assets/js/job-color.js"></script>
 <main>
     <div id="calendar-header">
         <button id="prev-btn">Previous</button>
@@ -15,6 +16,13 @@
         <button id="next-btn">Next</button>
     </div>
     <ol id="calendar-days">
+        <li class="weekday-header">Sunday</li>
+        <li class="weekday-header">Monday</li>
+        <li class="weekday-header">Tuesday</li>
+        <li class="weekday-header">Wednesday</li>
+        <li class="weekday-header">Thursday</li>
+        <li class="weekday-header">Friday</li>
+        <li class="weekday-header">Saturday</li>
         <% for (int i = 0; i < 35; i++) { %>
         <li class="calendar-day-wrapper">
             <a class="calendar-day">

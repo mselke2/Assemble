@@ -13,6 +13,12 @@ main {
     }
   }
 
+  .weekday-header {
+    text-align: center;
+    border: 1px solid black;
+    padding: 0.3em;
+  }
+
   #calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -44,7 +50,8 @@ main {
         .job-entry {
           border-radius: 5px;
           border: 1px solid black;
-          color: black;
+          color: white;
+          padding-left: 0.5em;
         }
       }
     }

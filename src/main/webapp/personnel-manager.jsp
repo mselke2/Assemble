@@ -14,7 +14,7 @@
     <form action="Personnel" method="post" class="new-entry-bar">
         <span>
             <label for="date">Add Personnel:</label>
-            <input type="date" name="date" id="date">
+            <input type="date" name="date" id="date" required>
             <input type="submit" name="submit" value="Submit">
         </span>
     </form>
