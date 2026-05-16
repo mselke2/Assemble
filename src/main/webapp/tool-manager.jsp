@@ -10,6 +10,7 @@
 <%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Equipment</h1>
+    <c:if test="${requestingUser.clearanceAtLeast('editor')}">
     <form action="Equipment" method="post" class="new-entry-bar">
         <label for="tool-type-id">Equipment Type</label>
         <select name="equipmentTypeId" id="tool-type-id">
@@ -21,6 +22,7 @@
         </select>
         <input type="submit" value="Submit">
     </form>
+    </c:if>
     <table>
         <tr>
             <th></th>
@@ -33,18 +35,18 @@
             <c:forEach var="equipment" items="${equipmentList}">
                 <tr resource-id="${equipment.id}">
                     <td>
-                      <button class="submit-btn">Submit</button>
+                      <c:if test="${requestingUser.clearanceAtLeast(\"editor\")}"><button class="submit-btn">Submit</button></c:if>
                     </td>
                     <td>${equipment.id}</td>
                     <td>${equipment.typeDescription}</td>
                     <td class="resource-count">
-                      <select name="status">
+                      <select name="status" <c:if test="${!requestingUser.clearanceAtLeast(\"editor\")}">disabled</c:if>>
                         <option value="0" <c:if test="${equipment.status == 0}">selected</c:if>>Lost/Damaged</option>
                         <option value="1" <c:if test="${equipment.status == 1}">selected</c:if>>Good</option>
                       </select>
                     </td>
                     <td>
-                        <button class="delete-btn">Delete</button>
+                      <c:if test="${requestingUser.clearanceAtLeast(\"editor\")}"><button class="delete-btn">Delete</button></c:if>
                     </td>
                 </tr>
             </c:forEach>
