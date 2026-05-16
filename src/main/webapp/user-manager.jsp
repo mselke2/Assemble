@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/user.css"/>
 </head>
 <body>
+<%@ include file="navigation.jsp" %>
 <div id="logged-in-user" user-id="${loggedInUser.id}" hidden></div>
 <div class="panel" id="formPanel">
   <h1>Edit User</h1>
