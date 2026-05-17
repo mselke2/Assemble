@@ -15,6 +15,10 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+-- Create schema
+CREATE SCHEMA IF NOT EXISTS `assemble` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin ;
+USE `assemble`;
+
 --
 -- Table structure for table `equipment`
 --
