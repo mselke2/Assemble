@@ -29,6 +29,8 @@ function initializeInventoryEditor() {
     $row.find(".inventory-ids").val(`[${inventoryIds}]`);
     $row.find(".inventory-counts").val(`[${inventoryCounts}]`);
 
+    $row.find("td:has(.inventory-btn)").addClass("edited");
+
     $inventoryEditor.hide();
   });
 
@@ -82,6 +84,8 @@ function initializeEquipmentEditor() {
     $row.find(".equipment-ids").val(`[${equipmentIds}]`);
     $row.find(".equipment-counts").val(`[${equipmentCounts}]`);
 
+    $row.find("td:has(.equipment-btn)").addClass("edited");
+
     $equipmentEditor.hide();
   });
 
@@ -106,8 +110,13 @@ function initializeEquipmentEditor() {
   });
 }
 
+function onSubmitClicked() {
+  $(this).parent().parent().find(".edited").removeClass("edited");
+}
+
 $(function () {
   initializeControls("Product");
+  $(".submit-btn").on("click", onSubmitClicked);
   initializeInventoryEditor();
   initializeEquipmentEditor();
 })
