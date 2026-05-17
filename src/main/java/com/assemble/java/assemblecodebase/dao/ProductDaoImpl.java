@@ -103,11 +103,8 @@ public class ProductDaoImpl implements ProductDao {
       insertProductEquipmentStatement.executeBatch();
       insertProductEquipmentStatement.close();
 
-      String mySqlDeleteJobs = "DELETE FROM job WHERE ProductID = ?;";
-      PreparedStatement deleteJobsStatement = connection.prepareStatement(mySqlDeleteJobs);
-      deleteJobsStatement.setInt(1, product.getId());
-      deleteJobsStatement.executeUpdate();
-      deleteJobsStatement.close();
+      JobDaoImpl jobDao = new JobDaoImpl();
+      jobDao.deleteJob(product.getId());
     } catch (SQLException | ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
