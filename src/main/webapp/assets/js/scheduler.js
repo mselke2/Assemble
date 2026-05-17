@@ -128,6 +128,9 @@ function validateChanges() {
     }
   }
 
+  if ($productChoiceInput[0].selectedIndex < 0)
+    isValid = false;
+
   $submitBtn.attr("disabled", !isValid);
 }
 
@@ -435,7 +438,7 @@ $(function() {
         $activeJobEntry = $newJobGhost;
         addingJob = true;
 
-        $productChoiceInput[0].selectedIndex = 0;
+        $productChoiceInput[0].selectedIndex = -1;
 
         lastValidStartTime = newJobStartTime;
         $startTimeInput.val(lastValidStartTime);
@@ -446,6 +449,8 @@ $(function() {
         $numMembersInput.val(1);
 
         $lineNumInput.val(newJobLane);
+
+        validateChanges();
 
         // show the job form since we are now editing the clicked job
         showForm();
