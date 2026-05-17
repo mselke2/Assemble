@@ -38,7 +38,7 @@
                   <td><c:if test="${requestingUser.clearanceAtLeast('editor')}"><button class="submit-btn">Submit</button></c:if></td>
                     <td>${resource.id}<input type="hidden" name="typeId" value="${resource.typeId}"> </td>
                     <td>${resource.typeDescription}</td>
-                  <td class="resource-count"><input type="number" name="count" required min="1" value="${resource.count}" <c:if test="${!requestingUser.clearanceAtLeast('editor')}">disabled</c:if>></td>
+                  <td class="resource-count"><input type="number" name="count" required min="0" value="${resource.count}" <c:if test="${!requestingUser.clearanceAtLeast('editor')}">disabled</c:if>></td>
                   <td><c:if test="${requestingUser.clearanceAtLeast('editor')}"><button class="delete-btn">Delete</button></c:if></td>
                 </tr>
             </c:forEach>

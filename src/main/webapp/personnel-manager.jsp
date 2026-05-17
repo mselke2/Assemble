@@ -32,7 +32,7 @@
                 <tr resource-id="${scheduledPersonnel.id}">
                   <td><c:if test="${requestingUser.clearanceAtLeast('editor')}"><button class="submit-btn">Submit</button></c:if></td>
                     <td>${scheduledPersonnel.date.toLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))}</td>
-                  <td class="resource-count"><input type="number" name="personnelCount" required min="1" value="${scheduledPersonnel.count}" <c:if test="${!requestingUser.clearanceAtLeast('editor')}">disabled</c:if>></td>
+                  <td class="resource-count"><input type="number" name="personnelCount" required min="0" value="${scheduledPersonnel.count}" <c:if test="${!requestingUser.clearanceAtLeast('editor')}">disabled</c:if>></td>
                   <td><c:if test="${requestingUser.clearanceAtLeast('editor')}"><button class="delete-btn">Delete</button></c:if></td>
                 </tr>
             </c:forEach>

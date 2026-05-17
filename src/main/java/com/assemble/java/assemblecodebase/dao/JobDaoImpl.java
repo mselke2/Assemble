@@ -1,12 +1,16 @@
 package com.assemble.java.assemblecodebase.dao;
 
+import com.assemble.java.assemblecodebase.model.EquipmentType;
 import com.assemble.java.assemblecodebase.model.InventoryType;
 import com.assemble.java.assemblecodebase.model.Job;
+import com.assemble.java.assemblecodebase.model.Product;
 import com.assemble.java.assemblecodebase.utility.MySQLUtility;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import static java.lang.Math.abs;
@@ -28,8 +32,9 @@ public class JobDaoImpl implements JobDao {
   // }
   
   private int[][] inventoryCounts;
-  private int[][] equipmentCounts;
-  
+
+  public record EquipmentPersonnelCommitment(HashMap<Integer, Integer> committedEquipment, Integer committedPersonnel) {}
+
   // Main functions
   @Override
   public int addJob(Job job) {
@@ -328,10 +333,11 @@ public class JobDaoImpl implements JobDao {
         // Check to see if we have personnel for the start date of the job
         
         int personnelAvailableCount;
-        
-        int personnelCommittedCount = calculateCommittedPersonnelCount(startTime, projectedEndTime, job);
-        
-        
+
+        EquipmentPersonnelCommitment equipmentPersonnelCommitment = getCommittedEquipmentPersonnelCounts(startTime, projectedEndTime, job);
+
+        int personnelCommittedCount = equipmentPersonnelCommitment.committedPersonnel;
+
         String mySqlPersonnelAvailable = "SELECT * FROM personnel WHERE `Date` = ?;";
         PreparedStatement preparedStatementPersonnel = connection.prepareStatement(mySqlPersonnelAvailable);
         preparedStatementPersonnel.setDate(1, new Date(startTime.getTime()));
@@ -390,6 +396,7 @@ public class JobDaoImpl implements JobDao {
         }
         
         // If our equipment query has data
+        int[][] equipmentCounts;
         if (equipmentTypeIds.isBeforeFirst()) {
           // Capture the number of equipment types required for this job.
           equipmentTypeIds.last();
@@ -453,10 +460,9 @@ public class JobDaoImpl implements JobDao {
           }
           
         }
-        
-        // Fill the 3rd row with committed equipment counts
-        fillCommittedEquipmentCount(startTime, projectedEndTime, job);
-        
+
+        HashMap<Integer, Integer> committedEquipmentCounts = equipmentPersonnelCommitment.committedEquipment;
+
         // Fill in the equipmentCounts array with a rotating SQL statement
         // searching for counts by TypeIDs
         for(int i = 0; i < equipmentCounts[0].length; i++) {
@@ -487,20 +493,21 @@ public class JobDaoImpl implements JobDao {
           
           
           // Calculate what is available after subtracting commitment.
-          int availablePrime = equipmentCounts[2][i] - equipmentCounts[3][i];
+          Integer committedCount = committedEquipmentCounts.getOrDefault(equipmentCounts[0][i], 0);
+          int availablePrime = equipmentCounts[2][i] - committedCount;
           
           // Calculate the difference
           equipmentCounts[4][i] = availablePrime - equipmentCounts[1][i];
           
           if (equipmentCounts[4][i] < 0) {
-            prerequisitesError += String.format("You need %d more of Equipment Type ID: %d. ", abs(equipmentCounts[4][i]), equipmentCounts[0][i]);
+            EquipmentDao equipmentDao = new EquipmentDaoImpl();
+            EquipmentType equipmentType = equipmentDao.retrieveTypeById(equipmentCounts[0][i]);
+
+            prerequisitesError += String.format("You need %d more of Equipment Type: %s.", abs(equipmentCounts[4][i]), equipmentType.getDescription());
           }
         
         }
-        
-        job.setInventoryCounts(inventoryCounts);
-        job.setEquipmentCounts(equipmentCounts);
-        
+
         if (!prerequisitesError.isEmpty()) {
           return false;
         }
@@ -513,23 +520,17 @@ public class JobDaoImpl implements JobDao {
     return true;
   }
 
-  public void fillCommittedEquipmentCount(Timestamp startTime, Timestamp endTime) {
-    fillCommittedEquipmentCount(startTime, endTime, null);
-  }
-  
-  public void fillCommittedEquipmentCount(Timestamp startTime, Timestamp endTime, Job ignoreJob) {
+  public EquipmentPersonnelCommitment getCommittedEquipmentPersonnelCounts(Timestamp startTime, Timestamp endTime, Job ignoreJob) {
     int ignoreId = ignoreJob == null ? -1 : ignoreJob.getId();
 
     // This method fills the current instance's equipmentCounts array's
     // 3rd row index with the committed number of equipment at a given time
     // for each TypeID stored in the first row index of the equipmentCounts array.
-    
-    int[] typeIDs;
-    
+
     try {
       // Get a connection
       Connection connection = MySQLUtility.createConnection();
-      
+
       // Prepare a query to select jobs at the time of the passed in job
       String mySqlSelect = """
         SELECT * FROM job WHERE ((StartTime <= ? AND ProjectedEndTime >= ?)
@@ -548,159 +549,75 @@ public class JobDaoImpl implements JobDao {
 
       // Execute the query
       ResultSet resultSet = preparedStatement.executeQuery();
-      
-      // If there's data
-      if (resultSet.isBeforeFirst()) {
-        
-        // Capture how many jobs we have to look at
-        resultSet.last();
-        int records = resultSet.getRow();
-        resultSet.beforeFirst();
-        
-        // We need to figure out how much equipment is committed for each
-        // TypeID stored in this DAOs equipmentCounts array at the time of the job.
-        
-        // Start a loop to step through jobs at the start time.
-        for(int j = 0 ; j < records; j++) {
-          // Advance the cursor.
-          resultSet.next();
-          
-          // Figure out which equipmentTypeIDs are used by this job and store them
-          // in the typeIDs array.
-          
-          // Prepare a select statement to retrieve all the typeIDs in this job's product.
-          String mySqlEquipmentTypeIds = "SELECT * FROM ProductEquipment WHERE ProductID = ?;";
-          PreparedStatement equipmentTypeIdStatement = connection.prepareStatement(mySqlEquipmentTypeIds, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-          equipmentTypeIdStatement.setInt(1, resultSet.getInt("ProductID"));
-          ResultSet equipmentTypeIdResults = equipmentTypeIdStatement.executeQuery();
-          
-          if (equipmentTypeIdResults.isBeforeFirst()) {
-            equipmentTypeIdResults.last();
-            
-            // Initialize the typeIDs array with the number of different equipment types used by this job.
-            typeIDs = new int[equipmentTypeIdResults.getRow()];
-            equipmentTypeIdResults.beforeFirst();
-            
-            // Step through the typeIDs array and fill it with IDs from the result set.
-            for (int k = 0; k < typeIDs.length; k++) {
-              
-              equipmentTypeIdResults.next();
-              // Store the ID
-              typeIDs[k] = equipmentTypeIdResults.getInt("EquipmentTypeID");
-              
-            }
-            
-            // Start a loop to step through TypeIDs stored in the equipmentCounts array.
-            // We need to see if this job uses the current TypeID, and if so, add that count to
-            // row index 3 of the equipmentCounts array.
-            for (int i = 0; i < equipmentCounts[0].length; i++) {
-              // Compare the current typeID in equipmentCounts to
-              // each typeID in typeIDs. If there's a match,
-              // add the required number
-              // to row index 3 of the equipmentCounts array.
-              
-              for (int l = 0; l < typeIDs.length; l++) {
-                
-                // There's a match
-                if (typeIDs[l] == equipmentCounts[0][i]) {
-                  
-                  // Prepare a select statement to get the required count for this typeID for the current job in the loop.
-                  String mySqlEquipmentRequired = "SELECT * FROM ProductEquipment WHERE EquipmentTypeID = ? AND ProductID = ?;";
-                  PreparedStatement equipmentRequiredStatement = connection.prepareStatement(mySqlEquipmentRequired);
-                  equipmentRequiredStatement.setInt(1, typeIDs[l]);
-                  equipmentRequiredStatement.setInt(2, resultSet.getInt("ProductID"));
-                  ResultSet equipmentRequiredResults = equipmentRequiredStatement.executeQuery();
-                  
-                  // If there's data.
-                  if (equipmentRequiredResults.isBeforeFirst()) {
-                    equipmentRequiredResults.next();
-                    // Add this TypeIDs required count for this job's product to the
-                    // total commited count.
-                    System.out.println(equipmentRequiredResults.getInt("RequiredEquipmentTypeCount"));
-                    equipmentCounts[3][i] += equipmentRequiredResults.getInt("RequiredEquipmentTypeCount");
-                    
-                  } else {
-                    throw new JobDaoException("Equipment Required Count Error");
-                  }
-                }
-              }
-            }
+
+      ProductDao productDao = new ProductDaoImpl();
+      List<Job> jobsSortedStart = new ArrayList<>();
+      while (resultSet.next()) {
+        Job job = new Job();
+        job.setId(resultSet.getInt("ID"));
+        job.setProductId(resultSet.getInt("ProductID"));
+        job.setStartTime(resultSet.getTimestamp("StartTime"));
+        job.setProjectedEndTime(resultSet.getTimestamp("ProjectedEndTime"));
+        job.setPersonnelCount(resultSet.getInt("PersonnelCount"));
+        job.setLineNumber(resultSet.getInt("LineNumber"));
+        job.setProduct(productDao.retrieve(job.getProductId()));
+        jobsSortedStart.add(job);
+      }
+
+      List<Job> jobsSortedEnd = new ArrayList<>(jobsSortedStart);
+
+      jobsSortedStart.sort(Comparator.comparing(Job::getStartTime));
+      jobsSortedEnd.sort(Comparator.comparing(Job::getProjectedEndTime));
+
+      HashMap<Integer, Integer> maxEquipmentCounts = new HashMap<>();
+      HashMap<Integer, Integer> currentEquipmentCounts = new HashMap<>();
+
+      int maxPersonnelCount = 0;
+      int currentPersonnelCount = 0;
+
+      int startIdx = 0;
+      int endIdx = 0;
+
+      while (startIdx < jobsSortedStart.size()) {
+        if (jobsSortedStart.get(startIdx).getStartTime().before(jobsSortedEnd.get(endIdx).getProjectedEndTime())) {
+          Product product = jobsSortedStart.get(startIdx).getProduct();
+
+          List<Integer> requiredEquipmentIds = product.getRequiredEquipmentIds();
+          List<Integer> requiredEquipmentCounts = product.getRequiredEquipmentCounts();
+
+          for (int i = 0; i < requiredEquipmentIds.size(); i++) {
+            int typeId = requiredEquipmentIds.get(i);
+            int typeCount = requiredEquipmentCounts.get(i);
+            currentEquipmentCounts.put(typeId, currentEquipmentCounts.getOrDefault(typeId, 0) + typeCount);
+
+            maxEquipmentCounts.put(typeId, Math.max(maxEquipmentCounts.getOrDefault(typeId, 0), currentEquipmentCounts.get(typeId)));
           }
-        }
-      } else {
-        // Fill the row with 0s
-        for (int i = 0; i < equipmentCounts[0].length; i++) {
-          equipmentCounts[3][i] = 0;
+
+          int requiredPersonnelCount = jobsSortedStart.get(startIdx).getPersonnelCount();
+          currentPersonnelCount += requiredPersonnelCount;
+          maxPersonnelCount = Math.max(maxPersonnelCount, currentPersonnelCount);
+
+          startIdx++;
+        } else {
+          Product product = jobsSortedEnd.get(endIdx).getProduct();
+          List<Integer> requiredEquipmentIds = product.getRequiredEquipmentIds();
+          List<Integer> requiredEquipmentCounts = product.getRequiredEquipmentCounts();
+          for (int i = 0; i < requiredEquipmentIds.size(); i++) {
+            int typeId = requiredEquipmentIds.get(i);
+            int typeCount = requiredEquipmentCounts.get(i);
+            currentEquipmentCounts.put(typeId, currentEquipmentCounts.getOrDefault(typeId, 0) - typeCount);
+          }
+
+          int requiredPersonnelCount = jobsSortedEnd.get(endIdx).getPersonnelCount();
+          currentPersonnelCount -= requiredPersonnelCount;
+
+          endIdx++;
         }
       }
-    } catch (ClassNotFoundException | SQLException e) {
-      throw new JobDaoException(e.getMessage());
-    }
-  }
 
-  public int calculateCommittedPersonnelCount(Timestamp startTime, Timestamp endTime) {
-    return calculateCommittedPersonnelCount(startTime, endTime, null);
-  }
-  
-  public int calculateCommittedPersonnelCount(Timestamp startTime, Timestamp endTime, Job ignoreJob) {
-
-    int ignoreId = ignoreJob == null ? -1 : ignoreJob.getId();
-
-    String mySqlSelect = """
-      SELECT * FROM job WHERE ((StartTime <= ? AND ProjectedEndTime >= ?)
-        OR (StartTime > ? AND ProjectedEndTime <= ?)
-        OR (StartTime <= ? AND ProjectedEndTime >= ?))
-        AND ID <> ?;
-""";
-    
-    try {
-      Connection connection = MySQLUtility.createConnection();
-      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-      preparedStatement.setTimestamp(1, startTime);
-      preparedStatement.setTimestamp(2, startTime);
-      preparedStatement.setTimestamp(3, startTime);
-      preparedStatement.setTimestamp(4, endTime);
-      preparedStatement.setTimestamp(5, endTime);
-      preparedStatement.setTimestamp(6, endTime);
-      preparedStatement.setInt(7, ignoreId);
-      ResultSet resultSet = preparedStatement.executeQuery();
-      
-      if (resultSet.isBeforeFirst()) {
-        resultSet.last();
-        int records = resultSet.getRow();
-        resultSet.beforeFirst();
-        
-        int personnelCount = 0;
-        for(int j = 0 ; j < records; j++) {
-          resultSet.next();
-          personnelCount += resultSet.getInt("PersonnelCount");
-        }
-        return personnelCount;
-      }
-      
+      return new EquipmentPersonnelCommitment(maxEquipmentCounts, maxPersonnelCount);
     } catch (SQLException | ClassNotFoundException e) {
       throw new JobDaoException(e.getMessage());
     }
-    return 0;
-  }
-  
-  public int[][] getInventoryCounts() {
-    return inventoryCounts;
-  }
-  
-  public void setInventoryCounts(int[][] inventoryCounts) {
-    this.inventoryCounts = inventoryCounts;
-  }
-  
-  public int[][] getEquipmentCounts() {
-    return equipmentCounts;
-  }
-  
-  public void setEquipmentCounts(int[][] equipmentCounts) {
-    this.equipmentCounts = equipmentCounts;
-  }
-  
-  public String getPrerequisitesError() {
-    return prerequisitesError;
   }
 }

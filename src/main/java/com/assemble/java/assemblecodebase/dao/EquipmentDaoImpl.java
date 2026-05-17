@@ -310,6 +310,34 @@ public class EquipmentDaoImpl implements EquipmentDao {
       
     } catch (SQLException | ClassNotFoundException e) {
       throw new InventoryDaoException(e.getMessage());
+	}
+  }
+
+  @Override
+  public EquipmentType retrieveTypeById(int id) {
+    try {
+      Connection connection = MySQLUtility.createConnection();
+
+      String mySQLSelect = "SELECT * FROM equipmenttype WHERE ID = ?;";
+      PreparedStatement preparedStatement = connection.prepareStatement(mySQLSelect);
+      preparedStatement.setInt(1, id);
+      ResultSet results = preparedStatement.executeQuery();
+
+      if (results.next()) {
+        EquipmentType equipmentType = new EquipmentType();
+        equipmentType.setId(results.getInt("ID"));
+        equipmentType.setDescription(results.getString("Description"));
+
+        connection.close();
+        preparedStatement.close();
+
+        return equipmentType;
+      }
+
+      throw new EquipmentDaoException("EquipmentType does not exist.");
+
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new EquipmentDaoException(e.getMessage());
     }
   }
 }
