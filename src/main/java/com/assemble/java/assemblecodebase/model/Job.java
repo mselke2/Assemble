@@ -13,9 +13,21 @@ public class Job implements Serializable {
   private Timestamp projectedEndTime;
   private Timestamp actualEndTime;
   private int personnelCount;
-
-  Product product;
-
+  
+  // These are 2D arrays used as a kind of database table on the server.
+  // The structure looks like this:
+  // {
+  //   {Col 0,           Col 1,           Col 2,           ...}
+  //   ------------------------------------------------------------
+  //   {TypeID1,         TypeID2,         TypeID3,         ...},  |   {Row 0}
+  //   {RequiredCount1,  RequiredCount2,  RequiredCount3,  ...},  |   {Row 1}
+  //   {AvailableCount1, AvailableCount2, AvailableCount3, ...},  |   {Row 2}
+  //   {Leftover1,       Leftover2,       Leftover3,       ...}   |   {Row 3}
+  // }
+  
+  private int[][] inventoryCounts;
+  private int[][] equipmentCounts;
+  
   public Job() {
   }
 
@@ -95,6 +107,22 @@ public class Job implements Serializable {
   public void setPersonnelCount(int personnelCount) {
     this.personnelCount = personnelCount;
   }
+  
+  public int[][] getInventoryCounts() {
+    return inventoryCounts;
+  }
+  
+  public void setInventoryCounts(int[][] inventoryCounts) {
+    this.inventoryCounts = inventoryCounts;
+  }
+  
+  public int[][] getEquipmentCounts() {
+    return equipmentCounts;
+  }
+  
+  public void setEquipmentCounts(int[][] equipmentCounts) {
+    this.equipmentCounts = equipmentCounts;
+  }
 
   public String getProductName() {
     return productName;
@@ -102,14 +130,6 @@ public class Job implements Serializable {
 
   public void setProductName(String productName) {
     this.productName = productName;
-  }
-
-  public Product getProduct() {
-    return product;
-  }
-
-  public void setProduct(Product product) {
-    this.product = product;
   }
 
   @Override
