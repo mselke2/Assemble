@@ -16,5 +16,4 @@ public interface EquipmentDao {
   boolean updateEquipmentType(EquipmentType equipmentType);
   int addEquipmentType(EquipmentType equipmentType);
   int deleteEquipmentTypeById(int id);
-  EquipmentType retrieveTypeById(int id);
 }
