@@ -64,6 +64,13 @@ public class EquipmentDaoImpl implements EquipmentDao {
       
       // IF Equipment exists
       if (resultSet.isBeforeFirst()) {
+        
+        // If equipment status is set to 0, delete all jobs with the associated
+        // equipmentTypeID
+        if(equipment.getStatus() == 0) {
+          deleteAssociatedJobs(equipment);
+        }
+        
         String mySqlUpdate = "UPDATE equipment SET TypeID = ?, Status = ? WHERE ID = ?;";
         preparedStatement = connection.prepareStatement(mySqlUpdate);
         preparedStatement.setInt(1, equipment.getTypeId());
@@ -100,6 +107,10 @@ public class EquipmentDaoImpl implements EquipmentDao {
       
       // IF Equipment exists
       if (resultSet.isBeforeFirst()) {
+        
+        // Delete all jobs with associated equipmentTypeID
+        deleteAssociatedJobs(retrieveById(id));
+        
         // Store the equipmentID in a variable
         resultSet.next();
         int returnId = resultSet.getInt("ID");
@@ -274,6 +285,31 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     } catch (SQLException | ClassNotFoundException e) {
       throw new EquipmentDaoException(e.getMessage());
+    }
+  }
+  
+  public void deleteAssociatedJobs(Equipment equipment) {
+    
+    try (Connection connection = MySQLUtility.createConnection()) {
+      
+      String mySqlSelect = """
+      SELECT j.ID FROM Job j
+      INNER JOIN Product p ON j.ProductID = p.ID
+      INNER JOIN ProductEquipment pe ON p.ID = pe.ProductID
+      WHERE pe.EquipmentTypeID = ?;
+      """;
+      
+      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
+      preparedStatement.setInt(1, equipment.getTypeId());
+      ResultSet result = preparedStatement.executeQuery();
+      
+      JobDaoImpl jobDao = new JobDaoImpl();
+      while (result.next()) {
+        jobDao.deleteJob(result.getInt("ID"));
+      }
+      
+    } catch (SQLException | ClassNotFoundException e) {
+      throw new InventoryDaoException(e.getMessage());
     }
   }
 }

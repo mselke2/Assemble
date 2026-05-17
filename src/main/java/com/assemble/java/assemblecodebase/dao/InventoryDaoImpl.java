@@ -327,15 +327,14 @@ public class InventoryDaoImpl implements InventoryDao{
   }
   
   private void deleteAssociatedJobs(int inventoryTypeId) {
-    
-    String mySqlSelect = """
+    try (Connection connection = MySQLUtility.createConnection()) {
+      
+      String mySqlSelect = """
       SELECT j.ID FROM Job j
       INNER JOIN Product p ON j.ProductID = p.ID
       INNER JOIN ProductInventory pi ON p.ID = pi.ProductID
       WHERE pi.InventoryTypeId = ?;
     """;
-    
-    try (Connection connection = MySQLUtility.createConnection()) {
       
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
       preparedStatement.setInt(1, inventoryTypeId);
@@ -345,6 +344,8 @@ public class InventoryDaoImpl implements InventoryDao{
       while (results.next()) {
         jobDao.deleteJob(results.getInt("ID"));
       }
+      results.close();
+      preparedStatement.close();
       
     } catch (SQLException | ClassNotFoundException e) {
       throw new RuntimeException(e);
@@ -373,6 +374,7 @@ public class InventoryDaoImpl implements InventoryDao{
         
         rs.close();
         selectPs.close();
+        connection.close();
         
         return false;
       } else {
