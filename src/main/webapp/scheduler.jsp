@@ -44,7 +44,7 @@
                         </div>
                         <c:if test="${not empty jobs}">
                             <c:forEach var="job" items="${jobs}">
-                                <div class="job-entry" job-id="${job.id}" style="--start-time: ${job.startTime.getHours() + job.startTime.getMinutes() / 60}; --end-time: ${job.projectedEndTime.getHours() + job.projectedEndTime.getMinutes() / 60}; --lane: ${job.lineNumber}; background-color: orange;">
+                                <div class="job-entry" job-id="${job.id}" style="--start-time: ${job.startTime.getHours() + job.startTime.getMinutes() / 60}; --end-time: ${job.projectedEndTime.getHours() + job.projectedEndTime.getMinutes() / 60}; --lane: ${job.lineNumber};">
                                     <p>${job.id}</p>
                                 </div>
                             </c:forEach>

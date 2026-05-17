@@ -54,7 +54,7 @@ body {
               top: calc(var(--start-time) * var(--hour-tick-space));
               left: calc((var(--lane) - 1) * var(--lane-width));
 
-              background-color: orange;
+              background-color: lightgray;
               border-radius: 5px;
               container-type: size;
               transition: filter 0.2s;
