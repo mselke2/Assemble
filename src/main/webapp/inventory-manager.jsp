@@ -10,7 +10,6 @@
 <%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Inventory</h1>
-    <p class="warning"  style="color: red">Warning: Decreasing inventory counts will delete all jobs associated with the deleted inventory type.</p>
     <c:if test="${requestingUser.clearanceAtLeast('editor')}">
     <form action="Inventory" method="post" class="new-entry-bar">
         <label for="inventory-type">Inventory Type</label>
