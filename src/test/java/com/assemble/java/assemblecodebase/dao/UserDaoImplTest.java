@@ -11,7 +11,7 @@ class UserDaoImplTest {
   @Test
   void addUser() {
     
-    String testPass = "password";
+    String testPass = "Password!";
     
     User user1 = new User("Test1", 1, "Test", "One", testPass);
     User user2 = new User("Test2", 1, "Test", "Two", testPass);
