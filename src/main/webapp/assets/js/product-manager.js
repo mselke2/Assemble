@@ -29,7 +29,9 @@ function initializeInventoryEditor() {
     $row.find(".inventory-ids").val(`[${inventoryIds}]`);
     $row.find(".inventory-counts").val(`[${inventoryCounts}]`);
 
-    $row.find("td:has(.inventory-btn)").addClass("edited");
+    if ($row.find(".inventory-btn").text().trim() === "Edit") {
+      $row.find("td:has(.inventory-btn)").addClass("edited");
+    }
 
     $inventoryEditor.hide();
   });
@@ -84,7 +86,9 @@ function initializeEquipmentEditor() {
     $row.find(".equipment-ids").val(`[${equipmentIds}]`);
     $row.find(".equipment-counts").val(`[${equipmentCounts}]`);
 
-    $row.find("td:has(.equipment-btn)").addClass("edited");
+    if ($row.find(".equipment-btn").text().trim() === "Edit") {
+      $row.find("td:has(.equipment-btn)").addClass("edited");
+    }
 
     $equipmentEditor.hide();
   });
