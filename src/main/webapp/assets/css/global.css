@@ -2,3 +2,13 @@
 .warning {
   color: red;
 }
+
+input {
+  transition: box-shadow 0.2s;
+  border: 1px solid rgb(143, 143, 157);
+  border-radius: .2em;
+
+  &:user-invalid {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px red;
+  }
+}
