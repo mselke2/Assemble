@@ -16,6 +16,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Create schema
+DROP DATABASE IF EXISTS `assemble`;
 CREATE SCHEMA IF NOT EXISTS `assemble` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin ;
 USE `assemble`;
 
