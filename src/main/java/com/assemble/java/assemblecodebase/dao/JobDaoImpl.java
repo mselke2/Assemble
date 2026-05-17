@@ -510,7 +510,7 @@ public class JobDaoImpl implements JobDao {
             EquipmentDao equipmentDao = new EquipmentDaoImpl();
             EquipmentType equipmentType = equipmentDao.retrieveTypeById(equipmentCounts[0][i]);
 
-            prerequisitesError += String.format("You need %d more of Equipment Type: %s.", abs(equipmentCounts[4][i]), equipmentType.getDescription());
+            prerequisitesError += String.format("You need %d more of Equipment Type: %s. ", abs(equipmentCounts[4][i]), equipmentType.getDescription());
           }
         
         }
