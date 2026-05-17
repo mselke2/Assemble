@@ -548,12 +548,12 @@ BEGIN
 	
     INSERT INTO `user` (`Username`, `PermissionID`, `FirstName`, `LastName`, `PasswordHash`)
     VALUES
-       ("jSmith05", 1, "John", "Smith", "0b14d501a594442a01c6859541bcb3e8164d183d32937b851835442f69d5c94e"),
-       ("sLantern9", 1, "Sarah", "Lantern", "6cf615d5bcaac778352a8f1f3360d23f02f34ec182e259897fd6ce485d7870d4"),
-       ("fRedd8", 2, "Felix", "Redd", "5906ac361a137e2d286465cd6588ebb5ac3f5ae955001100bc41577c3d751764"),
-       ("mLord4", 2, "Maxwell", "Lord", "b97873a40f73abedd8d685a7cd5e5f85e4a9cfb83eac26886640a0813850122b"),
-       ("lWater1", 2, "Llyod", "Water", "8b2c86ea9cf2ea4eb517fd1e06b74f399e7fec0fef92e3b482a6cf2e2b092023"),
-       ("viewUser", 3, "", "", "598a1a400c1dfdf36974e69d7e1bc98593f2e15015eed8e9b7e47a83b31693d5");
+       ("jSmith05", 1, "John", "Smith", "be6fded9eba153d774245490f8f4120cebe2a6d3a5467603eca3343de90d6275"),
+       ("sLantern9", 1, "Sarah", "Lantern", " 7ab048ba3931ced4c81ddc169a632642b38dbc3701ab5b9e616ad83a0eedbcb1"),
+       ("fRedd8", 2, "Felix", "Redd", "4396a959dd6b5e0bb46a1b8328afa4d1ba9420a1a5ce2ce94a92468cf977aae6"),
+       ("mLord4", 2, "Maxwell", "Lord", "8c37dca73a2d50b337534a6693a96c3c77015aec2a2c8facad45e225f91aed38"),
+       ("lWater1", 2, "Llyod", "Water", "b4526c6e38770dc68b7fceac04f3f1cf52415eff508482d058e26c6f8669c981"),
+       ("viewUser", 3, "", "", "c9bfbb12cada9a1a4e1ede3ae6b3003dfca37f6d2b1fd9065fabdd79e5929bc8");
 	
     SET currentDate = CURRENT_DATE();
     INSERT INTO `personnel` (`Date`, `Count`)
