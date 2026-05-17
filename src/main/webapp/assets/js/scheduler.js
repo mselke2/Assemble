@@ -128,6 +128,9 @@ function validateChanges() {
     }
   }
 
+  if ($productChoiceInput[0].selectedIndex < 0)
+    isValid = false;
+
   $submitBtn.attr("disabled", !isValid);
 }
 
@@ -329,7 +332,6 @@ $(function() {
   $newJobLabel = $("#new-job-label");
   $jobIdLabel = $("#job-id-label");
   $jobIdDisplay = $("#job-id");
-  $productChoiceInput = $("#product-choice");
   $errorMessage = $("#error");
 
   let $timeline = $(".timeline");
@@ -340,6 +342,18 @@ $(function() {
 
   let dateText = `${$dateInput.val().substring(5, 7)}/${$dateInput.val().substring(8)}/${$dateInput.val().substring(0, 4)}`;
   $("#date-display").text(dateText)
+
+  $productChoiceInput = $("#product-choice").on("input", function() {
+    $.getJSON(`Product/${this.value}?json=true`, data => {
+      $numMembersInput.val(data["targetPersonnel"]);
+
+      let endTime = convertTimeToFloat($startTimeInput.val()) + data["targetDuration"] / 60;
+      $endTimeInput.val(convertFloatToTime(endTime));
+
+      updateActiveJobStyles();
+      validateChanges();
+    });
+  });
 
   // onChange fires when the hour or minute fields are completed
   // individually, so if the user types in the hour and the browser
@@ -424,7 +438,7 @@ $(function() {
         $activeJobEntry = $newJobGhost;
         addingJob = true;
 
-        $productChoiceInput[0].selectedIndex = 0;
+        $productChoiceInput[0].selectedIndex = -1;
 
         lastValidStartTime = newJobStartTime;
         $startTimeInput.val(lastValidStartTime);
@@ -435,6 +449,8 @@ $(function() {
         $numMembersInput.val(1);
 
         $lineNumInput.val(newJobLane);
+
+        validateChanges();
 
         // show the job form since we are now editing the clicked job
         showForm();
