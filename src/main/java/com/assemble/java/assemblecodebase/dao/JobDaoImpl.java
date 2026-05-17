@@ -112,12 +112,13 @@ public class JobDaoImpl implements JobDao {
         
         // Release inventory
         replaceInventory(resultSet.getInt("ProductID"));
-        
+        connection.close();
         // Return the jobID.
         return id;
       } else {
         // ELSE
         // Throw a JobDaoException with the message "Job does not exist."
+        connection.close();
         throw new JobDaoException("Job does not exist.");
       }
       
@@ -154,11 +155,13 @@ public class JobDaoImpl implements JobDao {
         job.setPersonnelCount(resultSet.getInt("PersonnelCount"));
         job.setActualEndTime(resultSet.getTimestamp("ActualEndTime"));
         
+        connection.close();
         // Return the job object.
         return job;
       } else {
         // ELSE
         // Throw a JobDaoException with the message "Job does not exist."
+        connection.close();
         throw new JobDaoException("Job does not exist.");
       }
     } catch (SQLException | ClassNotFoundException e) {
@@ -257,7 +260,9 @@ public class JobDaoImpl implements JobDao {
             }
             
           }
+          connection.close();
         } else {
+          connection.close();
           throw new JobDaoException("Error updating inventory.");
         }
       }
@@ -296,6 +301,7 @@ public class JobDaoImpl implements JobDao {
           
         }
       }
+      connection.close();
     } catch (SQLException | ClassNotFoundException e) {
       throw new JobDaoException("Error updating inventory" + e.getMessage());
     }
@@ -326,6 +332,7 @@ public class JobDaoImpl implements JobDao {
       // IF a job exists
       if (resultSet.isBeforeFirst()) {
         // Throw a JobDaoException with the message "Job already exists."
+        connection.close();
         throw new JobDaoException("Job already exists at that time for this line.");
       } else {
         
@@ -509,9 +516,10 @@ public class JobDaoImpl implements JobDao {
         }
 
         if (!prerequisitesError.isEmpty()) {
+          connection.close();
           return false;
         }
-        
+        connection.close();
       } // End else
     } catch (Exception e) {
       throw new JobDaoException(e.getMessage());
@@ -614,7 +622,7 @@ public class JobDaoImpl implements JobDao {
           endIdx++;
         }
       }
-
+      connection.close();
       return new EquipmentPersonnelCommitment(maxEquipmentCounts, maxPersonnelCount);
     } catch (SQLException | ClassNotFoundException e) {
       throw new JobDaoException(e.getMessage());

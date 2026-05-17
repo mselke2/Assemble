@@ -27,6 +27,7 @@ public class InventoryDaoImpl implements InventoryDao{
       // IF inventory exists
       // Throw an InventoryDaoException with the message "Inventory already exists."
       if(resultSet.isBeforeFirst()) {
+        connection.close();
         throw new InventoryDaoException("Inventory already exists.");
       } else {
         // ELSE
@@ -85,6 +86,7 @@ public class InventoryDaoImpl implements InventoryDao{
         return true;
       
       } else {
+        connection.close();
         throw new InventoryDaoException("Inventory does not exists.");
       }
       // ELSE
@@ -129,6 +131,7 @@ public class InventoryDaoImpl implements InventoryDao{
         deleteAssociatedJobs(returnId);
         return returnId;
       } else {
+        connection.close();
         throw new InventoryDaoException("Inventory does not exists.");
       }
       
@@ -158,10 +161,12 @@ public class InventoryDaoImpl implements InventoryDao{
         // Create an inventory object with the data from the result and return it.
         Inventory inventory = new Inventory(resultSet.getInt("ID"), resultSet.getInt("TypeID"), resultSet.getInt("Count"));
         inventory.setTypeDescription(resultSet.getString("Description"));
+        connection.close();
         return inventory;
       } else {
         // ELSE
         // Throw an InventoryDaoException with the message "Inventory does not exist.
+        connection.close();
         throw new InventoryDaoException("Inventory does not exists.");
       }
       
@@ -378,6 +383,7 @@ public class InventoryDaoImpl implements InventoryDao{
         
         return false;
       } else {
+        connection.close();
         throw new InventoryDaoException("Inventory does not exist.");
       }
       

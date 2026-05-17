@@ -26,6 +26,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
       // IF Equipment exists
       if (resultSet.isBeforeFirst()) {
         // Throw an EquipmentDaoException with the message "Equipment already exists."
+        connection.close();
         throw new EquipmentDaoException("Equipment already exists.");
       } else {
         // ELSE
@@ -84,6 +85,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
         // ELSE
       } else {
         // Throw an EquipmentDaoException with the message "Equipment does not exist."
+        connection.close();
         throw new EquipmentDaoException("Equipment does not exist.");
       }
     } catch (SQLException | ClassNotFoundException e) {
@@ -126,6 +128,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
       } else {
         // ELSE
         // Throw an EquipmentDaoException with the message "Equipment does not exist."
+        connection.close();
         throw new EquipmentDaoException("Equipment does not exist.");
       }
     } catch (SQLException | ClassNotFoundException e) {
@@ -161,6 +164,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
       } else {
         // ELSE
         // Throw an EquipmentDaoException with the message "Equipment does not exist."
+        connection.close();
         throw new EquipmentDaoException("Equipment does not exist.");
       }
     } catch (SQLException | ClassNotFoundException e) {
@@ -310,7 +314,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
       
     } catch (SQLException | ClassNotFoundException e) {
       throw new InventoryDaoException(e.getMessage());
-	}
+	  }
   }
 
   @Override

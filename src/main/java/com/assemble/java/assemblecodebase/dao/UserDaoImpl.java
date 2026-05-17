@@ -80,6 +80,7 @@ public class UserDaoImpl implements UserDao {
           // Return the userID.
           // ENDIF
         } else {
+          conn.close();
           throw new UserDaoException("User was not created successfully.");
         }
       }
@@ -136,6 +137,7 @@ public class UserDaoImpl implements UserDao {
       } else {
         // ELSE
         // Throw a UserDaoException with the message "User does not exist."
+        conn.close();
         throw new UserDaoException("User does not exist.");
       }
       // ENDIF
@@ -166,14 +168,13 @@ public class UserDaoImpl implements UserDao {
         preparedStatement = conn.prepareStatement(mySqlDelete);
         preparedStatement.setInt(1, userId);
         preparedStatement.executeUpdate();
+        preparedStatement.close();
+        conn.close();
       } else {
         // ELSE
         // Throw a UserDaoException with the message "User does not exist."
         throw new UserDaoException("User does not exist.");
       }
-      // ENDIF
-      preparedStatement.close();
-      conn.close();
     } catch (SQLException | ClassNotFoundException e) {
       throw new UserDaoException(e.getMessage());
     }
@@ -203,10 +204,12 @@ public class UserDaoImpl implements UserDao {
         passwordIn = DigestUtils.sha256Hex(passwordIn);
         // IF the hashed password matches the password in the database
         if(passwordIn.equals(results.getString("passwordHash"))) {
+          conn.close();
           return id;
         } else {
           // ELSE
           // Throw a UserDaoException with the message "Incorrect password."
+          conn.close();
           throw new UserDaoException("Username or password does not match.");
         }
         // ENDIF
@@ -330,6 +333,7 @@ public class UserDaoImpl implements UserDao {
         return user;
         
       } else  {
+        connection.close();
         throw new UserDaoException("User does not exist.");
       }
       
@@ -354,6 +358,7 @@ public class UserDaoImpl implements UserDao {
         user.setLastName(results.getString("LastName"));
         user.setPermissionId(results.getInt("PermissionID"));
 
+        connection.close();
         return user;
       }
     } catch (SQLException | ClassNotFoundException e) {

@@ -102,11 +102,13 @@ public class SessionDaoImpl implements SessionDao {
         int userId = resultSet.getInt("UserID");
         
         stampSession(userId);
+        connection.close();
         return userId;
         // Return the userId associated with this sessionId
       } else {
         // ELSE
         // Return -1
+        connection.close();
         return -1;
       }
     } catch (SQLException | ClassNotFoundException e) {
@@ -129,9 +131,12 @@ public class SessionDaoImpl implements SessionDao {
       if (resultSet.isBeforeFirst()) {
         resultSet.next();
         stampSession(userId);
-        return resultSet.getString("SessionID");
+        String sessionId = resultSet.getString("SessionID");
+        connection.close();
+        return sessionId;
         
       } else  {
+        connection.close();
         return "";
       }
       

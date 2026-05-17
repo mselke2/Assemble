@@ -32,6 +32,8 @@ public class PersonnelDaoImpl implements PersonnelDao {
         preparedStatement.executeUpdate();
       }
       
+      connection.close();
+      
     } catch (SQLException | ClassNotFoundException e) {
       throw new PersonnelDaoException("Failed to set personnel count for date " + date);
     }
@@ -50,8 +52,10 @@ public class PersonnelDaoImpl implements PersonnelDao {
       if (resultSet.isBeforeFirst()) {
         resultSet.next();
         
+        connection.close();
         return resultSet.getInt("Count");
       } else {
+        connection.close();
         return 0;
       }
       
@@ -79,10 +83,12 @@ public class PersonnelDaoImpl implements PersonnelDao {
         // Create a personnel object with the data from the result and return it.
         Personnel personnel = new Personnel(resultSet.getDate("Date"), resultSet.getInt("Count"));
         personnel.setId(resultSet.getInt("ID"));
+        connection.close();
         return personnel;
       } else {
         // ELSE
         // Throw an PersonnelDaoException with the message "Personnel does not exist."
+        connection.close();
         throw new PersonnelDaoException("Personnel does not exists.");
       }
 
@@ -106,7 +112,9 @@ public class PersonnelDaoImpl implements PersonnelDao {
         preparedStatement = connection.prepareStatement(mySqlDelete);
         preparedStatement.setDate(1, date);
         preparedStatement.executeUpdate();
+        connection.close();
       } else {
+        connection.close();
         throw new PersonnelDaoException("No personnel record found for date " + date);
       }
       

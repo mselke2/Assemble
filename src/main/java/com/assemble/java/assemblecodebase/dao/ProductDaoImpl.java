@@ -37,6 +37,7 @@ public class ProductDaoImpl implements ProductDao {
         preparedStatement.setInt(4, product.getTargetPersonnelCount());
         preparedStatement.executeUpdate();
         // Return the productID.
+        connection.close();
         return product.getId();
       }
     } catch (SQLException | ClassNotFoundException e) {
@@ -143,6 +144,7 @@ public class ProductDaoImpl implements ProductDao {
       } else {
         // ELSE
         // Throw a ProductDaoException with the message "Product does not exist."
+        connection.close();
         throw new ProductDaoException("Product does not exists");
         // ENDIF
       }
@@ -173,10 +175,12 @@ public class ProductDaoImpl implements ProductDao {
         Product product = new Product(resultSet.getInt("ID"), resultSet.getString("Description"), resultSet.getInt("MinutesDuration"), resultSet.getInt("TargetPersonnelCount"));
 
         populateRequirements(product, connection);
-
+        
+        connection.close();
         return product;
 
       } else {
+        connection.close();
         throw new ProductDaoException("Product does not exists");
       }
     } catch (SQLException | ClassNotFoundException e) {
