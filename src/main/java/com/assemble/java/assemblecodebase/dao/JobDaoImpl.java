@@ -446,14 +446,14 @@ public class JobDaoImpl implements JobDao {
             inventoryRequiredResults.next();
             inventoryCounts[1][i] = inventoryRequiredResults.getInt("RequiredInventoryCount");
           } else {
-            throw new JobDaoException("Inventory Required Count Error");
+            inventoryCounts[1][i] = 0;
           }
-          
+
           if (inventoryAvailableResults.isBeforeFirst()) {
             inventoryAvailableResults.next();
             inventoryCounts[2][i] = inventoryAvailableResults.getInt("Count");
           } else {
-            throw new JobDaoException("Inventory Available Count Error");
+            inventoryCounts[2][i] = 0;
           }
 
           // Calculate the difference
@@ -487,14 +487,14 @@ public class JobDaoImpl implements JobDao {
             equipmentRequiredResults.next();
             equipmentCounts[1][i] = equipmentRequiredResults.getInt("Count");
           } else {
-            throw new JobDaoException("Equipment Required Count Error");
+            equipmentCounts[1][i] = 0;
           }
           
           if (equipmentAvailableResults.isBeforeFirst()) {
             equipmentAvailableResults.next();
             equipmentCounts[2][i] = equipmentAvailableResults.getInt("Count");
           } else {
-            throw new JobDaoException("Equipment Available Count Error");
+            equipmentCounts[2][i] = 0;
           }
           
           
