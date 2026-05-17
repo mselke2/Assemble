@@ -69,7 +69,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
         // If equipment status is set to 0, delete all jobs with the associated
         // equipmentTypeID
         if(equipment.getStatus() == 0) {
-          deleteAssociatedJobs(equipment);
+          deleteAssociatedJobs(equipment.getTypeId());
         }
         
         String mySqlUpdate = "UPDATE equipment SET TypeID = ?, Status = ? WHERE ID = ?;";
@@ -111,7 +111,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
       if (resultSet.isBeforeFirst()) {
         
         // Delete all jobs with associated equipmentTypeID
-        deleteAssociatedJobs(retrieveById(id));
+        deleteAssociatedJobs(retrieveById(id).getTypeId());
         
         // Store the equipmentID in a variable
         resultSet.next();
@@ -277,6 +277,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
       String MySQLDelete = "DELETE FROM equipmenttype WHERE ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLDelete);
       preparedStatement.setInt(1, id);
+      deleteAssociatedJobs(id);
       int effectedRows = preparedStatement.executeUpdate();
 
       preparedStatement.close();
@@ -284,6 +285,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
       if (effectedRows > 0)
         return id;
+      
 
       throw new EquipmentDaoException("EquipmentType does not exist.");
 
@@ -292,7 +294,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
     }
   }
   
-  public void deleteAssociatedJobs(Equipment equipment) {
+  public void deleteAssociatedJobs(int equipmentTypeId) {
     
     try (Connection connection = MySQLUtility.createConnection()) {
       
@@ -304,7 +306,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
       """;
       
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
-      preparedStatement.setInt(1, equipment.getTypeId());
+      preparedStatement.setInt(1, equipmentTypeId);
       ResultSet result = preparedStatement.executeQuery();
       
       JobDaoImpl jobDao = new JobDaoImpl();

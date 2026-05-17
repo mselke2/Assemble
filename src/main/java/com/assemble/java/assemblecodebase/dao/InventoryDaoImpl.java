@@ -288,6 +288,7 @@ public class InventoryDaoImpl implements InventoryDao{
       String MySQLDelete = "DELETE FROM inventorytype WHERE ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLDelete);
       preparedStatement.setInt(1, id);
+      deleteAssociatedJobs(id);
       int effectedRows = preparedStatement.executeUpdate();
 
       preparedStatement.close();
