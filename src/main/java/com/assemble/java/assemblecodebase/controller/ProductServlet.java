@@ -4,6 +4,7 @@ package com.assemble.java.assemblecodebase.controller;
 import com.assemble.java.assemblecodebase.dao.*;
 import com.assemble.java.assemblecodebase.model.EquipmentType;
 import com.assemble.java.assemblecodebase.model.InventoryType;
+import com.assemble.java.assemblecodebase.model.Job;
 import com.assemble.java.assemblecodebase.model.Product;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +24,37 @@ import java.util.List;
 public class ProductServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    String json = request.getParameter("json");
+    if (json != null && json.equals("true")) {
+      doGetJson(request, response);
+    } else {
+      doGetHtml(request, response);
+    }
+  }
+
+  private void doGetJson(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    response.setContentType("application/json");
+    try {
+      int productId = Integer.parseInt(request.getPathInfo().substring(1));
+      ProductDao productDao = new ProductDaoImpl();
+      Product product = productDao.retrieve(productId);
+
+      JsonObject productJson = new JsonObject();
+      productJson.addProperty("id", product.getId());
+
+      productJson.addProperty("description", product.getDescription());
+
+      productJson.addProperty("targetDuration", product.getMinutesDuration());
+
+      productJson.addProperty("targetPersonnel", product.getTargetPersonnelCount());
+
+      response.getWriter().write(productJson.toString());
+    } catch (RuntimeException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+  }
+
+  private void doGetHtml(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     ProductDao productDao = new ProductDaoImpl();
     InventoryDao inventoryDao = new InventoryDaoImpl();
     EquipmentDao equipmentDao = new EquipmentDaoImpl();
