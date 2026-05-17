@@ -83,63 +83,6 @@ class JobDaoImplTest {
   }
   
   @Test
-  void fillCommittedInventoryCounts() {
-    
-    JobDaoImpl jobDao = new JobDaoImpl();
-    assertDoesNotThrow(() -> {
-      
-      Job job = new Job(3, 6, new Timestamp(2026-1900, 0, 1, 14, 0, 0, 0));
-      job.setProjectedEndTime(new  Timestamp(2026-1900, 0, 1, 16, 0, 0, 0));
-      
-      jobDao.addJob(job);
-
-      int[][] inventoryCounts = jobDao.getInventoryCounts();
-      
-      for (int i = 0; i < inventoryCounts[3].length; i++) {
-        System.out.println(inventoryCounts[0][i] + ", " + inventoryCounts[3][i]);
-      }
-      
-    });
-    
-    
-  }
-  
-  @Test
-  void fillCommittedEquipmentCount() {
-    
-    JobDaoImpl jobDao = new JobDaoImpl();
-    assertDoesNotThrow(() -> {
-      
-      Job job = new Job(3, 6, new Timestamp(2026-1900, 0, 1, 14, 0, 0, 0));
-      job.setProjectedEndTime(new  Timestamp(2026-1900, 0, 1, 16, 0, 0, 0));
-      
-      jobDao.addJob(job);
-      jobDao.getCommittedEquipmentCounts(new Timestamp(2026-1900, 0, 1, 15, 0, 0, 0), new Timestamp(2026-1900, 0, 1, 16, 0, 0, 0));
-      
-      int[][] equipmentCounts = jobDao.getEquipmentCounts();
-      
-      for (int i = 0; i < equipmentCounts[3].length; i++) {
-        System.out.println(equipmentCounts[0][i] + ", " + equipmentCounts[3][i]);
-      }
-      
-    });
-  }
-  
-  @Test
-  void calculateCommittedPersonnelCount() {
-    
-    JobDaoImpl jobDao = new JobDaoImpl();
-    assertDoesNotThrow(() -> {
-      
-      int count = jobDao.calculateCommittedPersonnelCount(new Timestamp(2026-1900, 0, 1, 19, 0, 0, 0), new Timestamp(2026-1900, 0, 1, 20, 0, 0, 0));
-      assertEquals(10, count);
-      
-      System.out.println(count);
-      
-    });
-  }
-  
-  @Test
   void replaceInventory() {
     
     JobDaoImpl jobDao = new JobDaoImpl();
