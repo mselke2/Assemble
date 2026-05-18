@@ -100,7 +100,7 @@ class EquipmentDaoImplTest {
       }
       
       assertThrows(Exception.class, () -> {
-        Equipment equipment = equipmentDaoImpl.retrieveById(15);
+        equipmentDaoImpl.retrieveById(15);
       });
     });
   }
