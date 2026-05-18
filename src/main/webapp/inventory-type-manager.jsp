@@ -10,7 +10,6 @@
 <%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Inventory Type</h1>
-    <p class="warning" style="color: red">Warning: Deleting inventory types will delete all jobs associated with the deleted inventory type.</p>
     <c:if test="${requestingUser.clearanceAtLeast('admin')}">
     <form action="InventoryType" method="post" class="new-entry-bar">
         <label for="inventory-type-description">Description</label>

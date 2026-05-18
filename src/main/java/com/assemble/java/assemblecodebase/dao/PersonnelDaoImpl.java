@@ -130,7 +130,7 @@ public class PersonnelDaoImpl implements PersonnelDao {
     try {
       Connection conn = MySQLUtility.createConnection();
 
-      String mySqlSelectAll = "SELECT * FROM personnel";
+      String mySqlSelectAll = "SELECT * FROM personnel ORDER BY date";
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(mySqlSelectAll);
       while (result.next()) {

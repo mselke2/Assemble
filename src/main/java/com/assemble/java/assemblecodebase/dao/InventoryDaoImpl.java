@@ -68,12 +68,6 @@ public class InventoryDaoImpl implements InventoryDao{
       // IF inventory exists
       // Prepare an update statement to update this inventory in the database and execute it.
       if(resultSet.isBeforeFirst()) {
-        
-        if(isReduction(inventory)) {
-          // If this update is a reduction in inventory count, delete all jobs associated with this inventory type
-          deleteAssociatedJobs(inventory.getTypeId());
-        }
-        
         String mySqlUpdate = "UPDATE inventory SET TypeID = ?, Count = ? WHERE ID = ?;";
         PreparedStatement preparedStatementUpdate = connection.prepareStatement(mySqlUpdate);
         preparedStatementUpdate.setInt(1, inventory.getTypeId());
@@ -127,8 +121,6 @@ public class InventoryDaoImpl implements InventoryDao{
         preparedStatementDelete.close();
         connection.close();
         
-        // delete all jobs associated with this inventory type
-        deleteAssociatedJobs(returnId);
         return returnId;
       } else {
         connection.close();
@@ -288,7 +280,6 @@ public class InventoryDaoImpl implements InventoryDao{
       String MySQLDelete = "DELETE FROM inventorytype WHERE ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLDelete);
       preparedStatement.setInt(1, id);
-      deleteAssociatedJobs(id);
       int effectedRows = preparedStatement.executeUpdate();
 
       preparedStatement.close();
@@ -327,68 +318,6 @@ public class InventoryDaoImpl implements InventoryDao{
 
       throw new InventoryDaoException("InventoryType does not exist.");
 
-    } catch (SQLException | ClassNotFoundException e) {
-      throw new InventoryDaoException(e.getMessage());
-    }
-  }
-  
-  private void deleteAssociatedJobs(int inventoryTypeId) {
-    try (Connection connection = MySQLUtility.createConnection()) {
-      
-      String mySqlSelect = """
-      SELECT j.ID FROM Job j
-      INNER JOIN Product p ON j.ProductID = p.ID
-      INNER JOIN ProductInventory pi ON p.ID = pi.ProductID
-      WHERE pi.InventoryTypeId = ?;
-    """;
-      
-      PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
-      preparedStatement.setInt(1, inventoryTypeId);
-      ResultSet results = preparedStatement.executeQuery();
-      JobDaoImpl jobDao = new JobDaoImpl();
-      
-      while (results.next()) {
-        jobDao.deleteJob(results.getInt("ID"));
-      }
-      results.close();
-      preparedStatement.close();
-      
-    } catch (SQLException | ClassNotFoundException e) {
-      throw new RuntimeException(e);
-    }
-  
-  }
-  
-  private boolean isReduction(Inventory inventory) {
-    
-    try(Connection connection = MySQLUtility.createConnection()) {
-      
-      String selectSql = "SELECT Count FROM inventory WHERE ID = ?";
-      PreparedStatement selectPs = connection.prepareStatement(selectSql);
-      selectPs.setInt(1, inventory.getId());
-      ResultSet rs = selectPs.executeQuery();
-      
-      if (rs.next()) {
-        int currentCount = rs.getInt("Count");
-        int newCount = inventory.getCount();
-        
-        if (newCount < currentCount) {
-          rs.close();
-          selectPs.close();
-          return true;
-        }
-        
-        rs.close();
-        selectPs.close();
-        connection.close();
-        
-        return false;
-      } else {
-        connection.close();
-        throw new InventoryDaoException("Inventory does not exist.");
-      }
-      
-      
     } catch (SQLException | ClassNotFoundException e) {
       throw new InventoryDaoException(e.getMessage());
     }
