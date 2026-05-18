@@ -47,7 +47,7 @@ public class SessionDaoImpl implements SessionDao {
       // Return sessionId
       return sessionId;
     } catch (SQLException | ClassNotFoundException e) {
-      throw new RuntimeException(e);
+      throw new SessionDaoException(e.getMessage());
     }
   }
   
@@ -73,7 +73,7 @@ public class SessionDaoImpl implements SessionDao {
         // Return the userId that was returned by retrieve()
         return sessionId;
       } catch (SQLException | ClassNotFoundException e) {
-        throw new RuntimeException(e);
+        throw new SessionDaoException(e.getMessage());
       }
     } else {
       // ELSE return null
@@ -112,7 +112,7 @@ public class SessionDaoImpl implements SessionDao {
         return -1;
       }
     } catch (SQLException | ClassNotFoundException e) {
-      throw new RuntimeException(e.getMessage());
+      throw new SessionDaoException(e.getMessage());
     }
   }
   @Override
@@ -142,7 +142,7 @@ public class SessionDaoImpl implements SessionDao {
       }
       
     } catch (SQLException | ClassNotFoundException e) {
-      throw new RuntimeException(e);
+      throw new SessionDaoException(e.getMessage());
     }
   }
   @Override
@@ -162,7 +162,7 @@ public class SessionDaoImpl implements SessionDao {
       return true;
       
     } catch (SQLException | ClassNotFoundException e) {
-      throw new RuntimeException(e.getMessage());
+      throw new SessionDaoException(e.getMessage());
     }
   }
 }
