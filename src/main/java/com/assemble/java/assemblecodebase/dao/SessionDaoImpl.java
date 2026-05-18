@@ -115,6 +115,7 @@ public class SessionDaoImpl implements SessionDao {
       throw new RuntimeException(e.getMessage());
     }
   }
+  @Override
   public String retrieve(int userId) {
     // Return the sessionId associated with a userId,
     // or an empty string if there is no session.
@@ -144,6 +145,7 @@ public class SessionDaoImpl implements SessionDao {
       throw new RuntimeException(e);
     }
   }
+  @Override
   public boolean stampSession(int userId) {
     // Update the LastUsed column for the session associated with the passed in userId to the current time.
     

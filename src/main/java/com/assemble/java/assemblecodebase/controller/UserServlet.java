@@ -148,7 +148,7 @@ public class UserServlet extends HttpServlet {
       User[] users;
       
       try {
-        UserDaoImpl dao = new UserDaoImpl();
+        UserDao dao = new UserDaoImpl();
         users = dao.retrieveAll();
         List<UserPermission> userPermissionTypes = dao.retrievePermissions();
         

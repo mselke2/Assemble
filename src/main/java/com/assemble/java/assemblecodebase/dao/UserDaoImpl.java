@@ -250,6 +250,7 @@ public class UserDaoImpl implements UserDao {
     return permissions;
   }
   
+  @Override
   public User[] retrieveAll() {
     
     try {
@@ -299,6 +300,7 @@ public class UserDaoImpl implements UserDao {
     }
   }
   
+  @Override
   public User retrieveByUsername(String userToGrab) {
     
     try {
@@ -343,6 +345,7 @@ public class UserDaoImpl implements UserDao {
     
   }
 
+  @Override
   public User retrieveById(int id) {
     try {
       Connection connection = MySQLUtility.createConnection();

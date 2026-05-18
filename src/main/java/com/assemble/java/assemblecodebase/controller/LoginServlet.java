@@ -35,7 +35,7 @@ public class LoginServlet extends HttpServlet {
     // Validate and sanitize username and password.
     
     // Create UserDAO object
-    UserDaoImpl userDao = new UserDaoImpl();
+    UserDao userDao = new UserDaoImpl();
     // Run retrieve() and pass in username and password
     int userID = -1;
     int userPermissionID = -1;
