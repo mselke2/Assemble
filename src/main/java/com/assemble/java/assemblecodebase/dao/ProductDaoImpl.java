@@ -175,7 +175,7 @@ public class ProductDaoImpl implements ProductDao {
         Product product = new Product(resultSet.getInt("ID"), resultSet.getString("Description"), resultSet.getInt("MinutesDuration"), resultSet.getInt("TargetPersonnelCount"));
 
         populateRequirements(product, connection);
-        
+
         connection.close();
         return product;
 

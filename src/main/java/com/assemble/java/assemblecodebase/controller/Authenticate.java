@@ -1,6 +1,7 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
+import com.assemble.java.assemblecodebase.dao.SessionDao;
 import com.assemble.java.assemblecodebase.dao.SessionDaoImpl;
 import com.assemble.java.assemblecodebase.dao.UserDao;
 import com.assemble.java.assemblecodebase.dao.UserDaoImpl;
@@ -20,7 +21,7 @@ public class Authenticate {
           .findFirst();
 
       if (maybeCookie.isPresent()) {
-        SessionDaoImpl session = new SessionDaoImpl();
+        SessionDao session = new SessionDaoImpl();
         int userID = session.retrieve(maybeCookie.get().getValue());
         UserDao userDao = new UserDaoImpl();
         return userDao.retrieveById(userID);

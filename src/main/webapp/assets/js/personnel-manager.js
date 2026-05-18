@@ -1,3 +1,3 @@
-$(function() {
+$(function () {
   initializeControls("Personnel");
 })

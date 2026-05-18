@@ -1,29 +1,31 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
-import java.io.*;
-
 import com.assemble.java.assemblecodebase.dao.SessionDaoImpl;
-import com.assemble.java.assemblecodebase.model.Session;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 
 @WebServlet(name = "LogoutServlet", value = "/Logout")
 public class LogoutServlet extends HttpServlet {
-  
+
   public void init() {
-    
+
   }
-  
+
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    
+
     getServletContext().getRequestDispatcher("").forward(request, response);
-    
+
   }
-  
+
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    
+
     // Get sessionId from client cookies
     Cookie[] cookies = request.getCookies();
     Cookie loginTokenCookie = null;
@@ -36,7 +38,7 @@ public class LogoutServlet extends HttpServlet {
         if (name.equals("loginToken")) {
           loginTokenCookie = cookie;
         }
-        if (name.equals("permissionLevel")){
+        if (name.equals("permissionLevel")) {
           permissionCookie = cookie;
         }
       }
@@ -65,11 +67,11 @@ public class LogoutServlet extends HttpServlet {
 
     }
     getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
-    
+
   }
-  
+
   public void destroy() {
-    
+
   }
-  
+
 }

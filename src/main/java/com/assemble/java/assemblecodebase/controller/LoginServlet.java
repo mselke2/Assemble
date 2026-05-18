@@ -1,44 +1,42 @@
 package com.assemble.java.assemblecodebase.controller;
 
 
-import java.io.*;
-
-import com.assemble.java.assemblecodebase.dao.SessionDaoImpl;
-import com.assemble.java.assemblecodebase.dao.UserDao;
-import com.assemble.java.assemblecodebase.dao.UserDaoException;
-import com.assemble.java.assemblecodebase.dao.UserDaoImpl;
-import com.assemble.java.assemblecodebase.model.User;
-import com.google.gson.JsonObject;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import com.assemble.java.assemblecodebase.dao.*;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.text.StringEscapeUtils;
+
+import java.io.IOException;
 
 @WebServlet(name = "LoginServlet", value = "/Login")
 public class LoginServlet extends HttpServlet {
-  
+
   public void init() {
-    
+
   }
-  
+
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     if (Authenticate.RetrieveRequestingUser(request) == null)
       getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
     else
       response.sendRedirect("Calendar");
-    
+
   }
-  
+
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     // Get username from client
-      String username = StringEscapeUtils.escapeHtml4(request.getParameter("username"));
+    String username = StringEscapeUtils.escapeHtml4(request.getParameter("username"));
     // Get password from client
-      String password = StringEscapeUtils.escapeHtml4(request.getParameter("password"));
+    String password = StringEscapeUtils.escapeHtml4(request.getParameter("password"));
     // Validate and sanitize username and password.
-    
+
     // Create UserDAO object
-    UserDaoImpl userDao = new UserDaoImpl();
+    UserDao userDao = new UserDaoImpl();
     // Run retrieve() and pass in username and password
     int userID = -1;
     int userPermissionID = -1;
@@ -50,7 +48,7 @@ public class LoginServlet extends HttpServlet {
       // return failure
       request.setAttribute("message", e.getMessage());
       request.setAttribute("color", "red");
-      
+
       getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
     }
 
@@ -58,7 +56,7 @@ public class LoginServlet extends HttpServlet {
     // IF retrieve() returns a positive integer (a userID),
     if (userID > 0) {
       // Create a SessionDao object
-      SessionDaoImpl session = new SessionDaoImpl();
+      SessionDao session = new SessionDaoImpl();
       // run createSession() and pass in the userId returned from retrieve()
 
       // IF createSession returns a String
@@ -72,7 +70,7 @@ public class LoginServlet extends HttpServlet {
         response.addCookie(loginTokenCookie);
 
         //create permission cookie
-        Cookie permissionCookie = new Cookie("permissionLevel",  "" + userPermissionID);
+        Cookie permissionCookie = new Cookie("permissionLevel", "" + userPermissionID);
         // Set the max age of the cookie to 24 hours
         permissionCookie.setMaxAge(60 * 60 * 24);
         // Add the cookie to the response
@@ -81,26 +79,25 @@ public class LoginServlet extends HttpServlet {
         // Return success
         request.setAttribute("message", "success");
         request.setAttribute("color", "green");
-        
+
         getServletContext().getRequestDispatcher("/calendar.jsp").forward(request, response);
-        
+
       } catch (Exception e) {
         // ELSE return failure
         request.setAttribute("message", e.getMessage());
         request.setAttribute("color", "red");
-        
+
         getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
 
       } // ENDIF
 
     }// ENDIF
-    
-    
-    
+
+
   }
-  
+
   public void destroy() {
-    
+
   }
-  
+
 }

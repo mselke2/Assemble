@@ -1,4 +1,4 @@
-function initializeControls (endpoint) {
+function initializeControls(endpoint) {
   $(".submit-btn").on("click", function (e) {
     let $target = $(e.target);
     let $row = $target.parent().parent();
@@ -8,7 +8,7 @@ function initializeControls (endpoint) {
       id: resourceId
     };
 
-    $row.find("input").add("select", $row).each(function() {
+    $row.find("input").add("select", $row).each(function () {
       data[$(this).attr("name")] = $(this).val();
     })
 
@@ -31,11 +31,11 @@ function initializeControls (endpoint) {
     $row.remove();
   });
 
-  $("table input").on("input", function() {
+  $("table input").on("input", function () {
     let $row = $(this).parent().parent();
 
     let valid = true;
-    $row.find("input").each(function() {
+    $row.find("input").each(function () {
       valid &= this.checkValidity();
     })
 

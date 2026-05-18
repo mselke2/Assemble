@@ -3,9 +3,9 @@ let editedProductId = -1;
 function initializeInventoryEditor() {
   let $inventoryEditor = $("#inventory-editor");
 
-  let $inputs = $inventoryEditor.find("input").on("input", function() {
+  let $inputs = $inventoryEditor.find("input").on("input", function () {
     let valid = true;
-    $inputs.each(function() {
+    $inputs.each(function () {
       valid &= this.checkValidity();
     })
 
@@ -60,9 +60,9 @@ function initializeInventoryEditor() {
 function initializeEquipmentEditor() {
   let $equipmentEditor = $("#equipment-editor");
 
-  let $inputs = $equipmentEditor.find("input").on("input", function() {
+  let $inputs = $equipmentEditor.find("input").on("input", function () {
     let valid = true;
-    $inputs.each(function() {
+    $inputs.each(function () {
       valid &= this.checkValidity();
     })
 

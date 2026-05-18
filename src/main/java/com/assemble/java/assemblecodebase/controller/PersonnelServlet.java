@@ -92,7 +92,7 @@ public class PersonnelServlet extends HttpServlet {
 
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    try{
+    try {
       int personnelId = Integer.parseInt(request.getPathInfo().substring(1));
       PersonnelDao personnelDao = new PersonnelDaoImpl();
       Personnel personnel = personnelDao.retrieve(personnelId);

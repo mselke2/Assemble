@@ -8,14 +8,14 @@ import java.sql.*;
 public class SessionDaoImpl implements SessionDao {
   @Override
   public String createSession(int userId) {
-    
+
     // run LoginToken.getNewToken() and store the String it returns as sessionId
     String sessionId = LoginToken.getNewToken();
-    
+
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
-      
+
       // Prepare a MySQL select statement to check for existing sessions
       // with the passed in userId.
       String mySqlSelect = "SELECT * FROM session WHERE UserID = ?;";
@@ -23,7 +23,7 @@ public class SessionDaoImpl implements SessionDao {
       preparedStatement.setInt(1, userId);
       // Execute the select statement
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       // IF data exists for this userId, prepare a MySQL update statement to update the sessionId
       // with the new sessionId, and execute it.
       if (resultSet.isBeforeFirst()) {
@@ -47,19 +47,19 @@ public class SessionDaoImpl implements SessionDao {
       // Return sessionId
       return sessionId;
     } catch (SQLException | ClassNotFoundException e) {
-      throw new RuntimeException(e);
+      throw new SessionDaoException(e.getMessage());
     }
   }
-  
+
   @Override
   public String removeSession(int userId) {
-    
+
     // run retrieve() to check if sessionId exists in the database.
-    
+
     // IF retrieve() returns a positive number (SessionID)
     String sessionId = retrieve(userId);
-    
-    if(sessionId != null) {
+
+    if (sessionId != null) {
       // Get a connection to the database
       try {
         Connection connection = MySQLUtility.createConnection();
@@ -69,38 +69,38 @@ public class SessionDaoImpl implements SessionDao {
         preparedStatement.setInt(1, userId);
         preparedStatement.executeUpdate();
         connection.close();
-        
+
         // Return the userId that was returned by retrieve()
         return sessionId;
       } catch (SQLException | ClassNotFoundException e) {
-        throw new RuntimeException(e);
+        throw new SessionDaoException(e.getMessage());
       }
     } else {
       // ELSE return null
       return null;
     }
   }
-  
+
   @Override
   public int retrieve(String sessionId) {
     // Return the userId associated with a sessionId,
     // or -1 if there is no session.
-    
+
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
-      
+
       // Prepare a select statement to see if a session exists with the passed in sessionId and execute it.
       String mySqlSelect = "SELECT * FROM session WHERE SessionID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
       preparedStatement.setString(1, sessionId);
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       // IF data exists
       if (resultSet.isBeforeFirst()) {
         resultSet.next();
         int userId = resultSet.getInt("UserID");
-        
+
         stampSession(userId);
         connection.close();
         return userId;
@@ -112,43 +112,47 @@ public class SessionDaoImpl implements SessionDao {
         return -1;
       }
     } catch (SQLException | ClassNotFoundException e) {
-      throw new RuntimeException(e.getMessage());
+      throw new SessionDaoException(e.getMessage());
     }
   }
+
+  @Override
   public String retrieve(int userId) {
     // Return the sessionId associated with a userId,
     // or an empty string if there is no session.
-    
+
     try {
       Connection connection = MySQLUtility.createConnection();
-      
+
       String mySqlSelect = "SELECT * FROM session WHERE UserID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
       preparedStatement.setInt(1, userId);
-      
+
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       if (resultSet.isBeforeFirst()) {
         resultSet.next();
         stampSession(userId);
         String sessionId = resultSet.getString("SessionID");
         connection.close();
         return sessionId;
-        
-      } else  {
+
+      } else {
         connection.close();
         return "";
       }
-      
+
     } catch (SQLException | ClassNotFoundException e) {
-      throw new RuntimeException(e);
+      throw new SessionDaoException(e.getMessage());
     }
   }
+
+  @Override
   public boolean stampSession(int userId) {
     // Update the LastUsed column for the session associated with the passed in userId to the current time.
-    
+
     try {
-      
+
       Connection connection = MySQLUtility.createConnection();
       String mySqlUpdate = "UPDATE session SET LastUsed = ? WHERE UserID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlUpdate);
@@ -158,9 +162,9 @@ public class SessionDaoImpl implements SessionDao {
       preparedStatement.close();
       connection.close();
       return true;
-      
+
     } catch (SQLException | ClassNotFoundException e) {
-      throw new RuntimeException(e.getMessage());
+      throw new SessionDaoException(e.getMessage());
     }
   }
 }

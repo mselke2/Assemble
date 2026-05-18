@@ -4,7 +4,6 @@ package com.assemble.java.assemblecodebase.controller;
 import com.assemble.java.assemblecodebase.dao.*;
 import com.assemble.java.assemblecodebase.model.EquipmentType;
 import com.assemble.java.assemblecodebase.model.InventoryType;
-import com.assemble.java.assemblecodebase.model.Job;
 import com.assemble.java.assemblecodebase.model.Product;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -15,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

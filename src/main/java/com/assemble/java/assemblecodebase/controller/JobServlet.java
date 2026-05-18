@@ -43,7 +43,7 @@ public class JobServlet extends HttpServlet {
       JobDao dao = new JobDaoImpl();
 
       try {
-        productId =  Integer.parseInt(request.getParameter("productId"));
+        productId = Integer.parseInt(request.getParameter("productId"));
       } catch (NumberFormatException e) {
         throw new RuntimeException("Invalid Product Id");
       }
@@ -61,13 +61,13 @@ public class JobServlet extends HttpServlet {
       }
 
       try {
-        numMembers =  Integer.parseInt(request.getParameter("numMembers"));
+        numMembers = Integer.parseInt(request.getParameter("numMembers"));
       } catch (NumberFormatException e) {
         throw new RuntimeException("Invalid Personnel Count");
       }
 
       try {
-        lineNum =  Integer.parseInt(request.getParameter("lineNum"));
+        lineNum = Integer.parseInt(request.getParameter("lineNum"));
       } catch (NumberFormatException e) {
         throw new RuntimeException("Invalid Line Number");
       }
@@ -93,7 +93,7 @@ public class JobServlet extends HttpServlet {
 
   @Override
   protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    try{
+    try {
       Job job = new Job();
       job.setId(Integer.parseInt(request.getPathInfo().substring(1)));
 
@@ -127,7 +127,7 @@ public class JobServlet extends HttpServlet {
   }
 
   public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    try{
+    try {
       int jobId = Integer.parseInt(request.getPathInfo().substring(1));
       JobDao jobDao = new JobDaoImpl();
       jobDao.deleteJob(jobId);

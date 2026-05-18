@@ -89,7 +89,7 @@ public class EquipmentTypeServlet extends HttpServlet {
 
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    try{
+    try {
       int equipmentTypeId = Integer.parseInt(request.getPathInfo().substring(1));
       EquipmentDao equipmentDao = new EquipmentDaoImpl();
       equipmentDao.deleteEquipmentTypeById(equipmentTypeId);

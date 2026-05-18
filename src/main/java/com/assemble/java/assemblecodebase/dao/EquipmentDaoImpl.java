@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EquipmentDaoImpl implements EquipmentDao {
-  
-  
+
+
   @Override
   public int addEquipment(Equipment equipment) {
     try {
@@ -22,7 +22,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
       PreparedStatement preparedStatement = connection.prepareStatement(sqlSelect);
       preparedStatement.setInt(1, equipment.getId());
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       // IF Equipment exists
       if (resultSet.isBeforeFirst()) {
         // Throw an EquipmentDaoException with the message "Equipment already exists."
@@ -38,7 +38,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
         preparedStatement.setInt(2, equipment.getTypeId());
         preparedStatement.setInt(3, equipment.getStatus());
         preparedStatement.executeUpdate();
-        
+
         preparedStatement.close();
         connection.close();
         // Return the equipmentID.
@@ -49,10 +49,10 @@ public class EquipmentDaoImpl implements EquipmentDao {
       throw new RuntimeException(e);
     }
   }
-  
+
   @Override
   public boolean updateEquipment(Equipment equipment) {
-    
+
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
@@ -62,16 +62,16 @@ public class EquipmentDaoImpl implements EquipmentDao {
       PreparedStatement preparedStatement = connection.prepareStatement(sqlSelect);
       preparedStatement.setInt(1, equipment.getId());
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       // IF Equipment exists
       if (resultSet.isBeforeFirst()) {
-        
+
         // If equipment status is set to 0, delete all jobs with the associated
         // equipmentTypeID
-        if(equipment.getStatus() == 0) {
+        if (equipment.getStatus() == 0) {
           deleteAssociatedJobs(equipment.getTypeId());
         }
-        
+
         String mySqlUpdate = "UPDATE equipment SET TypeID = ?, Status = ? WHERE ID = ?;";
         preparedStatement = connection.prepareStatement(mySqlUpdate);
         preparedStatement.setInt(1, equipment.getTypeId());
@@ -80,7 +80,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
         preparedStatement.executeUpdate();
         preparedStatement.close();
         connection.close();
-        
+
         return true;
         // ELSE
       } else {
@@ -93,10 +93,10 @@ public class EquipmentDaoImpl implements EquipmentDao {
     }
     // ENDIF
   }
-  
+
   @Override
   public int deleteEquipmentById(int id) {
-    
+
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
@@ -106,13 +106,13 @@ public class EquipmentDaoImpl implements EquipmentDao {
       PreparedStatement preparedStatement = connection.prepareStatement(sqlSelect);
       preparedStatement.setInt(1, id);
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       // IF Equipment exists
       if (resultSet.isBeforeFirst()) {
-        
+
         // Delete all jobs with associated equipmentTypeID
         deleteAssociatedJobs(retrieveById(id).getTypeId());
-        
+
         // Store the equipmentID in a variable
         resultSet.next();
         int returnId = resultSet.getInt("ID");
@@ -135,27 +135,27 @@ public class EquipmentDaoImpl implements EquipmentDao {
       throw new RuntimeException(e);
     }
   }
-  
+
   @Override
   public Equipment retrieveById(int id) {
-    
+
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
-      
+
       // Prepare a select statement to see if Equipment exists
       // with this typeID and execute it.
       String sqlSelect = "SELECT * FROM equipment LEFT JOIN equipmenttype ON equipment.TypeID = equipmenttype.id WHERE equipment.ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(sqlSelect);
       preparedStatement.setInt(1, id);
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       // IF Equipment exists
       // Move the cursor to the first result
       // Create an Equipment object with the data from the result and return it.
       if (resultSet.isBeforeFirst()) {
         resultSet.next();
-        
+
         Equipment equipment = new Equipment(resultSet.getInt("ID"), resultSet.getInt("TypeID"), resultSet.getInt("Status"));
         equipment.setTypeDescription(resultSet.getString("Description"));
         preparedStatement.close();
@@ -285,7 +285,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
       if (effectedRows > 0)
         return id;
-      
+
 
       throw new EquipmentDaoException("EquipmentType does not exist.");
 
@@ -293,30 +293,30 @@ public class EquipmentDaoImpl implements EquipmentDao {
       throw new EquipmentDaoException(e.getMessage());
     }
   }
-  
+
   public void deleteAssociatedJobs(int equipmentTypeId) {
-    
+
     try (Connection connection = MySQLUtility.createConnection()) {
-      
+
       String mySqlSelect = """
-      SELECT j.ID FROM Job j
-      INNER JOIN Product p ON j.ProductID = p.ID
-      INNER JOIN ProductEquipment pe ON p.ID = pe.ProductID
-      WHERE pe.EquipmentTypeID = ?;
-      """;
-      
+          SELECT j.ID FROM Job j
+          INNER JOIN Product p ON j.ProductID = p.ID
+          INNER JOIN ProductEquipment pe ON p.ID = pe.ProductID
+          WHERE pe.EquipmentTypeID = ?;
+          """;
+
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
       preparedStatement.setInt(1, equipmentTypeId);
       ResultSet result = preparedStatement.executeQuery();
-      
+
       JobDaoImpl jobDao = new JobDaoImpl();
       while (result.next()) {
         jobDao.deleteJob(result.getInt("ID"));
       }
-      
+
     } catch (SQLException | ClassNotFoundException e) {
       throw new InventoryDaoException(e.getMessage());
-	  }
+    }
   }
 
   @Override
