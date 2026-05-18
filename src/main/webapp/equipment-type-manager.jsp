@@ -10,7 +10,7 @@
 <%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Equipment Type</h1>
-    <p class="warning" style="color: red">Warning: Deleting equipment types will delete all jobs associated with the deleted equipment type.</p>
+    <c:if test="${requestingUser.clearanceAtLeast('admin')}"><p class="warning" style="color: red">Warning: Deleting equipment types will delete all jobs associated with the deleted equipment type.</p></c:if>
     <c:if test="${requestingUser.clearanceAtLeast('admin')}">
     <form action="EquipmentType" method="post" class="new-entry-bar">
         <label for="equipment-type-description">Description</label>

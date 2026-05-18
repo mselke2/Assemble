@@ -10,7 +10,7 @@
 <%@ include file="navigation.jsp" %>
 <div class="panel">
     <h1>Equipment</h1>
-    <p class="warning" style="color: red;">Warning: Setting an equipment status to lost/broken will delete all jobs with the associated equipment type.</p>
+    <c:if test="${requestingUser.clearanceAtLeast('editor')}"><p class="warning" style="color: red;">Warning: Setting an equipment status to lost/broken will delete all jobs with the associated equipment type.</p></c:if>
     <c:if test="${requestingUser.clearanceAtLeast('editor')}">
     <form action="Equipment" method="post" class="new-entry-bar">
         <label for="tool-type-id">Equipment Type</label>
