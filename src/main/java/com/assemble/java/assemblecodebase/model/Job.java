@@ -11,7 +11,6 @@ public class Job implements Serializable {
   private int lineNumber;
   private Timestamp startTime;
   private Timestamp projectedEndTime;
-  private Timestamp actualEndTime;
   private int personnelCount;
 
   Product product;
@@ -80,14 +79,6 @@ public class Job implements Serializable {
     this.projectedEndTime = startTime;
   }
   
-  public Timestamp getActualEndTime() {
-    return actualEndTime;
-  }
-  
-  public void setActualEndTime(Timestamp actualEndTime) {
-    this.actualEndTime = actualEndTime;
-  }
-  
   public int getPersonnelCount() {
     return personnelCount;
   }
@@ -116,7 +107,7 @@ public class Job implements Serializable {
   public String toString() {
     return "Job [id=" + id + ", productId=" + productId + ", lineNumber=" +
       lineNumber + ", startTime=" + startTime + ", projectedEndTime=" +
-      projectedEndTime + ", actualEndTime=" + actualEndTime +
+      projectedEndTime +
       ", personnelCount=" + personnelCount + "]";
   }
 }

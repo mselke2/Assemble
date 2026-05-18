@@ -153,8 +153,7 @@ public class JobDaoImpl implements JobDao {
         job.setStartTime(resultSet.getTimestamp("StartTime"));
         job.setProjectedEndTime(resultSet.getTimestamp("ProjectedEndTime"));
         job.setPersonnelCount(resultSet.getInt("PersonnelCount"));
-        job.setActualEndTime(resultSet.getTimestamp("ActualEndTime"));
-        
+
         connection.close();
         // Return the job object.
         return job;
@@ -189,7 +188,6 @@ public class JobDaoImpl implements JobDao {
         Job job = new Job(resultSet.getInt("ProductID"), resultSet.getInt("LineNumber"), resultSet.getTimestamp("StartTime"),resultSet.getInt("PersonnelCount"));
         job.setId(resultSet.getInt("ID"));
         job.setProjectedEndTime(resultSet.getTimestamp("ProjectedEndTime"));
-        job.setActualEndTime(resultSet.getTimestamp("ActualEndTime"));
         job.setProductName(resultSet.getString("ProductDescription"));
 
         jobs.add(job);
