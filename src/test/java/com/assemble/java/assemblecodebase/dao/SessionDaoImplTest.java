@@ -9,7 +9,7 @@ class SessionDaoImplTest {
   @Test
   void createSession() {
     
-    SessionDaoImpl sessionDaoImpl = new SessionDaoImpl();
+    SessionDao sessionDaoImpl = new SessionDaoImpl();
     
     assertDoesNotThrow(() -> {
       String sessionId = sessionDaoImpl.createSession(3275);
@@ -19,7 +19,7 @@ class SessionDaoImplTest {
   
   @Test
   void removeSession() {
-    SessionDaoImpl sessionDaoImpl = new SessionDaoImpl();
+    SessionDao sessionDaoImpl = new SessionDaoImpl();
     
     assertDoesNotThrow(() -> {
       String sessionId = sessionDaoImpl.removeSession(3275);
@@ -30,7 +30,7 @@ class SessionDaoImplTest {
   
   @Test
   void retrieve() {
-    SessionDaoImpl sessionDaoImpl = new SessionDaoImpl();
+    SessionDao sessionDaoImpl = new SessionDaoImpl();
     
     assertDoesNotThrow(() -> {
       String sessionId = sessionDaoImpl.retrieve(3275);
@@ -45,7 +45,7 @@ class SessionDaoImplTest {
   
   @Test
   void stampSession() {
-    SessionDaoImpl sessionDaoImpl = new SessionDaoImpl();
+    SessionDao sessionDaoImpl = new SessionDaoImpl();
     assertDoesNotThrow(() -> {
       sessionDaoImpl.stampSession(3275);
     });

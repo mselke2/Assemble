@@ -1,5 +1,6 @@
 package com.assemble.java.assemblecodebase.filter;
 
+import com.assemble.java.assemblecodebase.dao.SessionDao;
 import com.assemble.java.assemblecodebase.dao.SessionDaoImpl;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -46,7 +47,7 @@ public class LoggedInFilter implements Filter {
         if (cookie.getName().equals("loginToken")) {
           
           String loginToken = cookie.getValue();
-          SessionDaoImpl sessionDao = new SessionDaoImpl();
+          SessionDao sessionDao = new SessionDaoImpl();
           
           if(sessionDao.retrieve(loginToken) > 0) {
             return true;

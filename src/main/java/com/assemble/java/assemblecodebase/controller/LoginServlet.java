@@ -3,10 +3,7 @@ package com.assemble.java.assemblecodebase.controller;
 
 import java.io.*;
 
-import com.assemble.java.assemblecodebase.dao.SessionDaoImpl;
-import com.assemble.java.assemblecodebase.dao.UserDao;
-import com.assemble.java.assemblecodebase.dao.UserDaoException;
-import com.assemble.java.assemblecodebase.dao.UserDaoImpl;
+import com.assemble.java.assemblecodebase.dao.*;
 import com.assemble.java.assemblecodebase.model.User;
 import com.google.gson.JsonObject;
 import jakarta.servlet.http.*;
@@ -58,7 +55,7 @@ public class LoginServlet extends HttpServlet {
     // IF retrieve() returns a positive integer (a userID),
     if (userID > 0) {
       // Create a SessionDao object
-      SessionDaoImpl session = new SessionDaoImpl();
+      SessionDao session = new SessionDaoImpl();
       // run createSession() and pass in the userId returned from retrieve()
 
       // IF createSession returns a String
