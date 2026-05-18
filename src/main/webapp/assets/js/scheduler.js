@@ -105,7 +105,7 @@ function validateChanges() {
     let [jobId, jobData] = job;
 
     if (jobId === +$activeJobEntry.attr("job-id")
-        || $activeJobEntry.attr("id") === "create-job-ghost" && !addingJob) {
+      || $activeJobEntry.attr("id") === "create-job-ghost" && !addingJob) {
       continue;
     }
 
@@ -326,7 +326,7 @@ function onJobEntryClicked(e) {
   });
 }
 
-$(function() {
+$(function () {
   $jobForm = $("#job-form");
   $dateInput = $("#date");
   $newJobLabel = $("#new-job-label");
@@ -343,7 +343,7 @@ $(function() {
   let dateText = `${$dateInput.val().substring(5, 7)}/${$dateInput.val().substring(8)}/${$dateInput.val().substring(0, 4)}`;
   $("#date-display").text(dateText)
 
-  $productChoiceInput = $("#product-choice").on("input", function() {
+  $productChoiceInput = $("#product-choice").on("input", function () {
     $.getJSON(`Product/${this.value}?json=true`, data => {
       $numMembersInput.val(data["targetPersonnel"]);
 
@@ -359,7 +359,7 @@ $(function() {
   // individually, so if the user types in the hour and the browser
   // automatically proceeds to the minute field, onChange fires.
   // onBlur only fires when the input becomes unfocused.
-  $startTimeInput = $("#start-time").on("blur", function() {
+  $startTimeInput = $("#start-time").on("blur", function () {
     // start time cant be equal to or after end time
     if ($startTimeInput.val() >= $endTimeInput.val()) {
       $startTimeInput.val(lastValidStartTime);
@@ -371,7 +371,7 @@ $(function() {
     validateChanges();
   });
 
-  $endTimeInput = $("#end-time").on("blur", function() {
+  $endTimeInput = $("#end-time").on("blur", function () {
     // end time cant be equal to or before start time
     if ($startTimeInput.val() >= $endTimeInput.val()) {
       $endTimeInput.val(lastValidEndTime);
@@ -383,13 +383,13 @@ $(function() {
     validateChanges();
   });
 
-  $numMembersInput = $("#num-members").on("change", function() {
+  $numMembersInput = $("#num-members").on("change", function () {
     if ($numMembersInput.val() < 1) {
       $numMembersInput.val(1);
     }
   });
 
-  $lineNumInput = $("#line-num").on("change", function() {
+  $lineNumInput = $("#line-num").on("change", function () {
     if ($lineNumInput.val() < 1) {
       $lineNumInput.val(1);
     }
@@ -403,16 +403,16 @@ $(function() {
   $("#cancel-btn").on("click", cancelEdit);
 
   $(".job-entry").on("click", onJobEntryClicked)
-    .not("#create-job-ghost").each(function() {
-      // on page load, add job existing job entries into the map
-      let $this = $(this);
-      let id = +$this.attr("job-id");
+    .not("#create-job-ghost").each(function () {
+    // on page load, add job existing job entries into the map
+    let $this = $(this);
+    let id = +$this.attr("job-id");
 
-      updateLocalJobData(id,
-        id,
-        convertFloatToTime(+$this.css("--start-time")),
-        convertFloatToTime(+$this.css("--end-time")),
-        +$this.css("--lane"));
+    updateLocalJobData(id,
+      id,
+      convertFloatToTime(+$this.css("--start-time")),
+      convertFloatToTime(+$this.css("--end-time")),
+      +$this.css("--lane"));
   })
 
   if (editorPermission) {
@@ -460,7 +460,7 @@ $(function() {
 
   $timelineWrapper = $(".timeline-wrapper").on("scroll", updateGhostPosition);
 
-  $deleteBtn = $("#delete-btn").on("click", function() {
+  $deleteBtn = $("#delete-btn").on("click", function () {
     let jobId = +$activeJobEntry.attr("job-id");
     $.ajax(`Job/${jobId}`, {
       method: "DELETE"

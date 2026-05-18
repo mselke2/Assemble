@@ -29,7 +29,7 @@ public class InventoryType implements Serializable {
   public void setDescription(String description) {
     this.description = description;
   }
-  
+
   @Override
   public String toString() {
     return "InventoryType [id=" + id + ", description=" + description + "]";

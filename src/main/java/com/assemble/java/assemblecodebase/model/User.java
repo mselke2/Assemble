@@ -9,10 +9,10 @@ public class User implements Serializable {
   private String firstName;
   private String lastName;
   private String passwordHash;
-  
+
   public User() {
   }
-  
+
   public User(int id, String username, int permissionId, String firstName, String lastName, String passwordHash) {
     setId(id);
     setUsername(username);
@@ -21,7 +21,7 @@ public class User implements Serializable {
     setLastName(lastName);
     setPasswordHash(passwordHash);
   }
-  
+
   public User(String username, int permissionId, String firstName, String lastName, String passwordHash) {
     setUsername(username);
     setPermissionId(permissionId);
@@ -29,55 +29,55 @@ public class User implements Serializable {
     setLastName(lastName);
     setPasswordHash(passwordHash);
   }
-  
+
   public int getId() {
     return id;
   }
-  
+
   public void setId(int id) {
     this.id = id;
   }
-  
+
   public String getUsername() {
     return username;
   }
-  
+
   public void setUsername(String username) {
     this.username = username;
   }
-  
+
   public int getPermissionId() {
     return permissionId;
   }
-  
+
   public void setPermissionId(int permissionId) {
     this.permissionId = permissionId;
   }
-  
+
   public String getFirstName() {
     return firstName;
   }
-  
+
   public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
-  
+
   public String getLastName() {
     return lastName;
   }
-  
+
   public void setLastName(String lastName) {
     this.lastName = lastName;
   }
-  
+
   public String getPasswordHash() {
     return passwordHash;
   }
-  
+
   public void setPasswordHash(String passwordHash) {
     this.passwordHash = passwordHash;
   }
-  
+
   @Override
   public String toString() {
     return "User [id=" + id + ", username=" + username + ", permissionId=" + permissionId + ", firstName=" + firstName + ", lastName=" + lastName + "]";

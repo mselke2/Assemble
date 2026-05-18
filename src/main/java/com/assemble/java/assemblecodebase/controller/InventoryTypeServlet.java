@@ -46,7 +46,7 @@ public class InventoryTypeServlet extends HttpServlet {
       String description = json.get("description").getAsString();
       if (description.length() > 50)
         throw new IllegalArgumentException("Invalid Description");
-      
+
       InventoryType inventoryType = new InventoryType(id, description);
 
       InventoryDao inventoryDao = new InventoryDaoImpl();
@@ -88,7 +88,7 @@ public class InventoryTypeServlet extends HttpServlet {
 
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    try{
+    try {
       int inventoryTypeId = Integer.parseInt(request.getPathInfo().substring(1));
       InventoryDao inventoryDao = new InventoryDaoImpl();
       inventoryDao.deleteInventoryTypeById(inventoryTypeId);

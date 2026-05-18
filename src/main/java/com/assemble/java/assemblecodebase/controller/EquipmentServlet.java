@@ -43,7 +43,7 @@ public class EquipmentServlet extends HttpServlet {
     try {
       int typeId;
       try {
-        typeId =  Integer.parseInt(request.getParameter("equipmentTypeId"));
+        typeId = Integer.parseInt(request.getParameter("equipmentTypeId"));
       } catch (NumberFormatException e) {
         throw new RuntimeException("Invalid Equipment Type Id");
       }
@@ -93,7 +93,7 @@ public class EquipmentServlet extends HttpServlet {
 
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    try{
+    try {
       int equipmentId = Integer.parseInt(request.getPathInfo().substring(1));
       EquipmentDao equipmentDao = new EquipmentDaoImpl();
       equipmentDao.deleteEquipmentById(equipmentId);

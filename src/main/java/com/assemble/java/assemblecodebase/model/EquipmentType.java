@@ -29,7 +29,7 @@ public class EquipmentType implements Serializable {
   public void setDescription(String description) {
     this.description = description;
   }
-  
+
   @Override
   public String toString() {
     return "EquipmentType [id=" + id + ", description=" + description + "]";

@@ -1,62 +1,62 @@
 body {
 
 
-    #formPanel {
-        display: none;
+  #formPanel {
+    display: none;
+  }
+
+  .panel {
+    border: 1px solid black;
+    width: 55%;
+    margin: 0 auto;
+    position: relative;
+    top: 4rem;
+    padding: 2rem;
+    text-align: center;
+    line-height: 1.8rem;
+
+    .userForm {
+
+      .userFormInput {
+        position: absolute;
+        right: 5rem;
+      }
+
+      label {
+        position: absolute;
+        left: 5rem;
+      }
+
+      button {
+        margin: 0.2em;
+      }
     }
 
-    .panel {
-        border: 1px solid black;
-        width: 55%;
-        margin: 0 auto;
-        position: relative;
-        top: 4rem;
-        padding: 2rem;
+    #tablePanel {
+      margin-top: 5rem;
+    }
+
+    .userTable {
+      display: inline;
+      width: 70%;
+      margin: 0 auto;
+
+      .username {
+        cursor: pointer;
+      }
+
+      th,
+      td {
+        width: 15em;
         text-align: center;
-        line-height: 1.8rem;
+      }
 
-        .userForm {
-
-            .userFormInput {
-                position: absolute;
-                right: 5rem;
-            }
-
-            label {
-                position: absolute;
-                left: 5rem;
-            }
-
-            button {
-                margin: 0.2em;
-            }
-        }
-
-        #tablePanel {
-            margin-top: 5rem;
-        }
-
-        .userTable {
-            display: inline;
-            width: 70%;
-            margin: 0 auto;
-            .username {
-                cursor: pointer;
-            }
-
-            th,
-            td {
-                width: 15em;
-                text-align: center;
-            }
-
-            tbody {
-                margin: 0 auto;
-            }
-
-        }
-
-
+      tbody {
+        margin: 0 auto;
+      }
 
     }
+
+
+  }
 }

@@ -10,14 +10,14 @@ import java.util.List;
 public class PersonnelDaoImpl implements PersonnelDao {
   @Override
   public void set(Date date, int count) {
-    
+
     try {
       Connection connection = MySQLUtility.createConnection();
       String mySqlSelect = "SELECT * FROM personnel WHERE date = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
       preparedStatement.setDate(1, date);
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       if (resultSet.isBeforeFirst()) {
         String mySqlUpdate = "UPDATE personnel SET count = ? WHERE date = ?;";
         preparedStatement = connection.prepareStatement(mySqlUpdate);
@@ -31,34 +31,34 @@ public class PersonnelDaoImpl implements PersonnelDao {
         preparedStatement.setInt(2, count);
         preparedStatement.executeUpdate();
       }
-      
+
       connection.close();
-      
+
     } catch (SQLException | ClassNotFoundException e) {
       throw new PersonnelDaoException("Failed to set personnel count for date " + date);
     }
   }
-  
+
   @Override
   public int retrieveCount(Date date) {
-    
+
     try {
       Connection connection = MySQLUtility.createConnection();
       String mySqlSelect = "SELECT * FROM personnel WHERE date = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(mySqlSelect);
       preparedStatement.setDate(1, date);
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       if (resultSet.isBeforeFirst()) {
         resultSet.next();
-        
+
         connection.close();
         return resultSet.getInt("Count");
       } else {
         connection.close();
         return 0;
       }
-      
+
     } catch (SQLException | ClassNotFoundException e) {
       throw new PersonnelDaoException("Failed to retrieve personnel count for date " + date);
     }
@@ -77,7 +77,7 @@ public class PersonnelDaoImpl implements PersonnelDao {
       ResultSet resultSet = preparedStatement.executeQuery();
 
       // IF personnel exists
-      if(resultSet.isBeforeFirst()) {
+      if (resultSet.isBeforeFirst()) {
         // Move cursor to the result
         resultSet.next();
         // Create a personnel object with the data from the result and return it.
@@ -99,14 +99,14 @@ public class PersonnelDaoImpl implements PersonnelDao {
 
   @Override
   public void delete(Date date) {
-  
+
     try {
       Connection connection = MySQLUtility.createConnection();
       String MySqlSelect = "SELECT * FROM personnel WHERE date = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(MySqlSelect);
       preparedStatement.setDate(1, date);
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       if (resultSet.isBeforeFirst()) {
         String mySqlDelete = "DELETE FROM personnel WHERE date = ?;";
         preparedStatement = connection.prepareStatement(mySqlDelete);
@@ -117,7 +117,7 @@ public class PersonnelDaoImpl implements PersonnelDao {
         connection.close();
         throw new PersonnelDaoException("No personnel record found for date " + date);
       }
-      
+
     } catch (SQLException | ClassNotFoundException e) {
       throw new PersonnelDaoException("Failed to delete personnel record for date " + date);
     }

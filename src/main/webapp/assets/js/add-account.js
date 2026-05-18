@@ -1,9 +1,9 @@
-$(function() {
+$(function () {
   let $password = $("#password")
   let $passwordRepeat = $("#password-repeat");
   let $message = $("#message");
 
-  $password.add($passwordRepeat).on("change", function() {
+  $password.add($passwordRepeat).on("change", function () {
     if ($passwordRepeat.val() === $password.val()) {
       $passwordRepeat[0].setCustomValidity("");
     } else {
@@ -13,7 +13,7 @@ $(function() {
 
   let $submitBtn = $("#submit");
 
-  $("#create-user-form").on("submit", function(e) {
+  $("#create-user-form").on("submit", function (e) {
     e.preventDefault();
     $submitBtn.prop("disabled", true);
 

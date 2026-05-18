@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 
 public class Job implements Serializable {
+  Product product;
   private int id = -1;
   private int productId;
   private String productName;
@@ -12,8 +13,6 @@ public class Job implements Serializable {
   private Timestamp startTime;
   private Timestamp projectedEndTime;
   private int personnelCount;
-
-  Product product;
 
   public Job() {
   }
@@ -25,64 +24,64 @@ public class Job implements Serializable {
     setProjectedEndTime(startTime);
     setPersonnelCount(personnelCount);
   }
-  
+
   public Job(int productId, int lineNumber, Timestamp startTime) {
     setProductId(productId);
     setLineNumber(lineNumber);
     setStartTime(startTime);
   }
-  
+
   public int getId() {
     return id;
   }
-  
+
   public void setId(int id) {
     this.id = id;
   }
-  
+
   public int getProductId() {
     return productId;
   }
-  
+
   public void setProductId(int productId) {
     this.productId = productId;
   }
-  
+
   public int getLineNumber() {
     return lineNumber;
   }
-  
+
   public void setLineNumber(int lineNumber) {
     this.lineNumber = lineNumber;
   }
-  
+
   public Timestamp getStartTime() {
     return startTime;
   }
-  
+
   public void setStartTime(Timestamp startTime) {
     this.startTime = startTime;
   }
-  
+
   public Timestamp getProjectedEndTime() {
     return projectedEndTime;
   }
-  
+
+  public void setProjectedEndTime(Timestamp startTime) {
+    this.projectedEndTime = startTime;
+  }
+
   public void setProjectedEndTime(Timestamp startTime, int duration) {
-    Calendar cal =  Calendar.getInstance();
+    Calendar cal = Calendar.getInstance();
     cal.setTime(startTime);
     cal.add(Calendar.MINUTE, duration);
     this.projectedEndTime = new Timestamp(cal.getTime().getTime());
   }
-  
-  public void setProjectedEndTime(Timestamp startTime) {
-    this.projectedEndTime = startTime;
-  }
-  
+
   public int getPersonnelCount() {
     return personnelCount;
   }
-  
+
   public void setPersonnelCount(int personnelCount) {
     this.personnelCount = personnelCount;
   }
@@ -106,8 +105,8 @@ public class Job implements Serializable {
   @Override
   public String toString() {
     return "Job [id=" + id + ", productId=" + productId + ", lineNumber=" +
-      lineNumber + ", startTime=" + startTime + ", projectedEndTime=" +
-      projectedEndTime +
-      ", personnelCount=" + personnelCount + "]";
+        lineNumber + ", startTime=" + startTime + ", projectedEndTime=" +
+        projectedEndTime +
+        ", personnelCount=" + personnelCount + "]";
   }
 }

@@ -70,7 +70,7 @@ public class InventoryServlet extends HttpServlet {
     try {
       int typeId;
       try {
-        typeId =  Integer.parseInt(request.getParameter("inventoryTypeId"));
+        typeId = Integer.parseInt(request.getParameter("inventoryTypeId"));
       } catch (NumberFormatException e) {
         throw new RuntimeException("Invalid Inventory Type Id");
       }
@@ -95,7 +95,7 @@ public class InventoryServlet extends HttpServlet {
 
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    try{
+    try {
       int inventoryId = Integer.parseInt(request.getPathInfo().substring(1));
       InventoryDao inventoryDao = new InventoryDaoImpl();
       inventoryDao.deleteInventoryById(inventoryId);

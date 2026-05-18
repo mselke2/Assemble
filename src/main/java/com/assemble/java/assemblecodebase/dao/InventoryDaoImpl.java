@@ -8,25 +8,25 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InventoryDaoImpl implements InventoryDao{
-  
+public class InventoryDaoImpl implements InventoryDao {
+
   @Override
   public int addInventory(Inventory inventory) {
-    
+
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
-      
+
       // Prepare a select statement to see if Inventory exists
       // with this inventoryID and execute it.
       String MySQLSelect = "SELECT * FROM inventory WHERE ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
       preparedStatement.setInt(1, inventory.getId());
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       // IF inventory exists
       // Throw an InventoryDaoException with the message "Inventory already exists."
-      if(resultSet.isBeforeFirst()) {
+      if (resultSet.isBeforeFirst()) {
         connection.close();
         throw new InventoryDaoException("Inventory already exists.");
       } else {
@@ -41,7 +41,7 @@ public class InventoryDaoImpl implements InventoryDao{
         preparedStatementInsert.executeUpdate();
         preparedStatementInsert.close();
         connection.close();
-        
+
         return inventory.getId();
         // ENDIF
       }
@@ -49,25 +49,25 @@ public class InventoryDaoImpl implements InventoryDao{
       throw new InventoryDaoException(e.getMessage());
     }
   }
-  
+
   @Override
   public boolean updateInventory(Inventory inventory) {
-    
+
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
-      
+
       // Prepare a select statement to see if Inventory exists
       // with this inventoryID and execute it.
-      
+
       String MySQLSelect = "SELECT * FROM inventory WHERE ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
       preparedStatement.setInt(1, inventory.getId());
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       // IF inventory exists
       // Prepare an update statement to update this inventory in the database and execute it.
-      if(resultSet.isBeforeFirst()) {
+      if (resultSet.isBeforeFirst()) {
         String mySqlUpdate = "UPDATE inventory SET TypeID = ?, Count = ? WHERE ID = ?;";
         PreparedStatement preparedStatementUpdate = connection.prepareStatement(mySqlUpdate);
         preparedStatementUpdate.setInt(1, inventory.getTypeId());
@@ -76,9 +76,9 @@ public class InventoryDaoImpl implements InventoryDao{
         preparedStatementUpdate.executeUpdate();
         preparedStatementUpdate.close();
         connection.close();
-        
+
         return true;
-      
+
       } else {
         connection.close();
         throw new InventoryDaoException("Inventory does not exists.");
@@ -89,25 +89,25 @@ public class InventoryDaoImpl implements InventoryDao{
     } catch (SQLException | ClassNotFoundException e) {
       throw new InventoryDaoException(e.getMessage());
     }
-  
+
   }
-  
+
   @Override
   public int deleteInventoryById(int id) {
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
-      
+
       // Prepare a select statement to see if Inventory exists
       // with this inventoryID and execute it.
-      
+
       String MySQLSelect = "SELECT * FROM inventory WHERE ID = ?;";
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
       preparedStatement.setInt(1, id);
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       // IF inventory exists
-      if(resultSet.isBeforeFirst()) {
+      if (resultSet.isBeforeFirst()) {
         // Store the inventoryID in a variable
         resultSet.next();
         int returnId = resultSet.getInt("ID");
@@ -117,25 +117,25 @@ public class InventoryDaoImpl implements InventoryDao{
         PreparedStatement preparedStatementDelete = connection.prepareStatement(MySQLDelete);
         preparedStatementDelete.setInt(1, returnId);
         preparedStatementDelete.executeUpdate();
-        
+
         preparedStatementDelete.close();
         connection.close();
-        
+
         return returnId;
       } else {
         connection.close();
         throw new InventoryDaoException("Inventory does not exists.");
       }
-      
+
     } catch (SQLException | ClassNotFoundException e) {
       throw new InventoryDaoException(e.getMessage());
     }
-    
+
   }
-  
+
   @Override
   public Inventory retrieveById(int id) {
-    
+
     try {
       // Get a connection to the database
       Connection connection = MySQLUtility.createConnection();
@@ -145,9 +145,9 @@ public class InventoryDaoImpl implements InventoryDao{
       PreparedStatement preparedStatement = connection.prepareStatement(MySQLSelect);
       preparedStatement.setInt(1, id);
       ResultSet resultSet = preparedStatement.executeQuery();
-      
+
       // IF inventory exists
-      if(resultSet.isBeforeFirst()) {
+      if (resultSet.isBeforeFirst()) {
         // Move cursor to the result
         resultSet.next();
         // Create an inventory object with the data from the result and return it.
@@ -161,7 +161,7 @@ public class InventoryDaoImpl implements InventoryDao{
         connection.close();
         throw new InventoryDaoException("Inventory does not exists.");
       }
-      
+
     } catch (SQLException | ClassNotFoundException e) {
       throw new InventoryDaoException(e.getMessage());
     }

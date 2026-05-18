@@ -6,15 +6,24 @@ import com.assemble.java.assemblecodebase.model.EquipmentType;
 import java.util.List;
 
 public interface EquipmentDao {
-  
+
   int addEquipment(Equipment equipment);
+
   boolean updateEquipment(Equipment equipment);
+
   int deleteEquipmentById(int id);
+
   Equipment retrieveById(int id);
+
   List<EquipmentType> retrieveTypes();
+
   List<Equipment> retrieveAll();
+
   boolean updateEquipmentType(EquipmentType equipmentType);
+
   int addEquipmentType(EquipmentType equipmentType);
+
   int deleteEquipmentTypeById(int id);
+
   EquipmentType retrieveTypeById(int id);
 }

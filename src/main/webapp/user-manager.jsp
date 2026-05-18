@@ -9,8 +9,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Edit User</title>
-    <link rel="stylesheet" type="text/css" href="assets/css/user.css"/>
+  <title>Edit User</title>
+  <link rel="stylesheet" type="text/css" href="assets/css/user.css"/>
 </head>
 <body>
 <%@ include file="navigation.jsp" %>
@@ -24,16 +24,17 @@
     <input class="userFormInput" type="text" id="username" name="username"/><br>
 
     <label for="password">Password: (Leave blank to keep old password)</label>
-    <input class="userFormInput" type="password" id="password" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$"/><br>
+    <input class="userFormInput" type="password" id="password" name="password"
+           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$"/><br>
 
     <label for="password-repeat">Confirm Password:</label>
-    <input class="userFormInput" type="password" id="password-repeat" name="password-repeat" /><br>
+    <input class="userFormInput" type="password" id="password-repeat" name="password-repeat"/><br>
 
     <label for="fName">First Name:</label>
-    <input class="userFormInput" type="text" id="fName" name="fName" /><br>
+    <input class="userFormInput" type="text" id="fName" name="fName"/><br>
 
     <label for="lName">Last Name:</label>
-    <input class="userFormInput" type="text" id="lName" name="lName" /><br>
+    <input class="userFormInput" type="text" id="lName" name="lName"/><br>
 
     <div id="permission-field">
       <label for="type">Permission Level</label>
@@ -47,7 +48,7 @@
     </div>
 
     <label for="userToEdit" typeof="hidden"></label>
-    <input class="userFormInput" type="hidden" id="userToEdit" name="userToEdit" /><br>
+    <input class="userFormInput" type="hidden" id="userToEdit" name="userToEdit"/><br>
 
     <input type="submit" value="Submit"/><br>
   </form>
@@ -81,7 +82,8 @@
         </tr>
       </c:forEach>
 
-    </table><br>
+    </table>
+    <br>
 
     <h2 class="message" style="color: ${color}">${message}</h2>
   </div>

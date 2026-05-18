@@ -2,12 +2,12 @@ $(document).ready(function () {
   let requesterId = +$("#logged-in-user").attr("user-id");
   let selectedUser = -1;
   let $selectedUserRow;
-  
+
   // Set the click action of usernames
   $(".username").on("click", function (event) {
     let value = $(event.target).text();
     $selectedUserRow = $(this).parent();
-    
+
     $.ajax({
       type: "GET",
       url: "User",
@@ -15,7 +15,7 @@ $(document).ready(function () {
       data: {
         userToDisplay: value
       },
-      
+
       success: function (data) {
         $("#formPanel").show();
 
@@ -30,7 +30,7 @@ $(document).ready(function () {
     });
   });
 
-  $("#delete-user-btn").on("click", function() {
+  $("#delete-user-btn").on("click", function () {
     $.ajax(`User/${selectedUser}`, {
       method: "DELETE"
     }).done(() => {

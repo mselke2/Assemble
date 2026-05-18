@@ -7,8 +7,12 @@ import java.util.List;
 
 public interface JobDao {
   int addJob(Job job);
+
   int updateJob(Job job);
+
   int deleteJob(int id);
+
   Job retrieve(int id);
+
   List<Job> retrieveForDate(LocalDate date);
 }
