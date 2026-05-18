@@ -4,7 +4,6 @@ package com.assemble.java.assemblecodebase.controller;
 import java.io.*;
 
 import com.assemble.java.assemblecodebase.dao.SessionDaoImpl;
-import com.assemble.java.assemblecodebase.model.Session;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.ServletException;
