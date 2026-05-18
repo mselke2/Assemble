@@ -6,30 +6,16 @@
   Time: 10:43 PM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-  <link rel="stylesheet" href="assets/css/navigation.css">
-</head>
-<body>
+
 <%
-  Cookie[] cookies = request.getCookies();
-
-  Cookie permissionCookie = null;
-  if (cookies != null && cookies.length >= 3) {
-    for (Cookie cookie : cookies) {
-      String name = cookie.getName();
-      if (name.equals("permissionLevel")) {
-        permissionCookie = cookie;
-      }
-    }
-  } else {
-
+  if (Authenticate.RetrieveRequestingUser(request) == null) {
 %>
 <c:redirect url="Calendar"/>
 <%}%>
 
+
 <header>
+  <link rel="stylesheet" href="assets/css/navigation.css">
   <div class="navDiv">
     <h1 id="navH1">Assemble</h1>
     <form action="Logout" method="post"><input type="submit" name="logout" value="Logout"></form>
@@ -47,5 +33,3 @@
     </c:if>
   </nav>
 </header>
-</body>
-</html>
